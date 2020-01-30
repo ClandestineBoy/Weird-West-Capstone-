@@ -50,14 +50,17 @@ public class Player_Controller : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
+    void Update()
+    {
+        CheckInput();
+    }
     void FixedUpdate()
     {
         Movement();
         Look();
     }
 
-    void Movement()
+    void CheckInput()
     {
         moveDirection = Vector3.zero;
         if (Input.GetKey(forward))
@@ -79,6 +82,14 @@ public class Player_Controller : MonoBehaviour
         moveDirection.Normalize();
         moveDirection *= speed;
 
+        if (Input.GetKeyDown(jump))
+        {
+            verticalVelocity = jumpForce;
+            onGround = false;
+        }
+    }
+    void Movement()
+    {
         //Rotation with look direction
         moveDirection = transform.rotation * moveDirection;
 
@@ -90,7 +101,7 @@ public class Player_Controller : MonoBehaviour
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
 
-        Jump();
+        ApplyGravity();
     }
 
     void Look()
@@ -110,17 +121,9 @@ public class Player_Controller : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, currentX, 0);
     }
 
-    void Jump()
+    void ApplyGravity()
     {
-        if (onGround)
-        {
-            if (Input.GetKeyDown(jump))
-            {
-                verticalVelocity = jumpForce;
-                onGround = false;
-            }
-        }
-        else
+        if (!onGround)
         {
             if (rb.velocity.y < 0)
             {

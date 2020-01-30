@@ -683,7 +683,7 @@ MonoBehaviour:
   back: 115
   left: 97
   right: 100
-  jump: 101
+  jump: 32
   speed: 20
   jumpForce: 30
   verticalVelocity: 0
