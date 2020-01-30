@@ -124,7 +124,6 @@ public class Player_Controller : MonoBehaviour
         {
             if (rb.velocity.y < 0)
             {
-                CheckForGround();
                 verticalVelocity -= fallGravity;
             }
             else if (Input.GetKey(jump))
@@ -135,6 +134,10 @@ public class Player_Controller : MonoBehaviour
             {
                 verticalVelocity -= jumpGravity;
             }
+        }
+        if(verticalVelocity <= 0)
+        {
+            CheckForGround();
         }
     }
 
@@ -150,6 +153,11 @@ public class Player_Controller : MonoBehaviour
             //Debug.Log(hit.transform.gameObject.name);
             //Debug.Log("ON GROUND");
             onGround = true;
+            verticalVelocity = 0;
+        }
+        else
+        {
+            onGround = false;
         }
 
     }
