@@ -48,11 +48,9 @@ public class Player_Controller : MonoBehaviour
 
     void Start()
     {
-<<<<<<< HEAD
         Cursor.lockState = CursorLockMode.Locked;
-=======
+
         instance = this;
->>>>>>> d4be3d4f0a69ff104b86678ae4cdcd4d61522b8e
 
         //access player components
         rb = GetComponent<Rigidbody>();
@@ -60,29 +58,23 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-<<<<<<< HEAD
         //Input functions should be used in Update
-        CheckInput();
-    }
-    void FixedUpdate()
-    {
-        //Applying physics should occur in FixedUpdate
-        Movement();
-=======
-        
+        if (SwingController.instance.state == SwingController.State.Walking)
+        {
+            CheckInput();
+        }
     }
     void FixedUpdate()
     {
         if (SwingController.instance.state == SwingController.State.Walking)
         {
+            //Applying physics should occur in FixedUpdate
             Movement();
-            CheckInput();
         }
         if (verticalVelocity <= 0)
         {
             CheckForGround();
         }
->>>>>>> d4be3d4f0a69ff104b86678ae4cdcd4d61522b8e
         Look();
     }
 
@@ -168,16 +160,13 @@ public class Player_Controller : MonoBehaviour
                 verticalVelocity -= jumpGravity;
             }
         }
-<<<<<<< HEAD
         //if the player is falling, we check for when they hit the ground
         //if the player is already on the ground, we check to see if they walk off a ledge
         if(verticalVelocity <= 0)
         {
             CheckForGround();
         }
-=======
-        
->>>>>>> d4be3d4f0a69ff104b86678ae4cdcd4d61522b8e
+       
     }
 
     void CheckForGround()
