@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SwingController : MonoBehaviour
 {
+    public static SwingController instance;
 
     public float speed = 6.0F;
     public float jumpSpeed = 20.0F;
@@ -10,8 +11,8 @@ public class SwingController : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     CharacterController controller;
     public Camera cam;
-    enum State { Swinging, Falling, Walking };
-    State state;
+    public enum State { Swinging, Falling, Walking };
+    public State state;
     public Pendulum pendulum;
     Vector3 previousPosition;
     float distToGround;
@@ -20,6 +21,7 @@ public class SwingController : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
@@ -59,7 +61,7 @@ public class SwingController : MonoBehaviour
     void DetermineState()
     {
         // Determine State
-        if (IsGrounded())
+        if (Player_Controller.instance.onGround)
         {
             state = State.Walking;
         }
@@ -73,8 +75,11 @@ public class SwingController : MonoBehaviour
                 {
                     if (state == State.Walking)
                     {
-                        pendulum.bob.velocity = moveDirection;
+                        pendulum.bob.velocity +=  new Vector3(0,Player_Controller.instance.verticalVelocity/2,0);
                     }
+                    Player_Controller.instance.onGround = false;
+                    Player_Controller.instance.rb.velocity = Vector3.zero;
+                    Player_Controller.instance.verticalVelocity = 0;
                     pendulum.SwitchTether(hit.point);
                     state = State.Swinging;
                 }
@@ -148,7 +153,7 @@ public class SwingController : MonoBehaviour
     {
 
         Vector3 undesiredMotion = collision.contacts[0].normal * Vector3.Dot(pendulum.bob.velocity, collision.contacts[0].normal);
-        pendulum.bob.velocity = pendulum.bob.velocity - (undesiredMotion * 1.2f);
+        pendulum.bob.velocity = -pendulum.bob.velocity/2;
         hitPos = transform.position;
 
         if (collision.gameObject.name == "Respawn")

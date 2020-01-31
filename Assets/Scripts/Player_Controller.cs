@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player_Controller : MonoBehaviour
 {
+    public static Player_Controller instance;
+
     [Header("KeyInputs")]
     //all of the key inputs
     public KeyCode forward;
@@ -26,7 +28,7 @@ public class Player_Controller : MonoBehaviour
     public float fallGravity;
 
     //the direction the player is moving in
-    private Vector3 moveDirection = Vector3.zero;
+    public Vector3 moveDirection = Vector3.zero;
 
     [Header("Look")]
     //mouse sensitivity
@@ -39,14 +41,18 @@ public class Player_Controller : MonoBehaviour
     public float downRayDistance;
 
     //access player components
-    Rigidbody rb;
+    public Rigidbody rb;
 
     //State Booleans
     public bool onGround = false;
 
     void Start()
     {
+<<<<<<< HEAD
         Cursor.lockState = CursorLockMode.Locked;
+=======
+        instance = this;
+>>>>>>> d4be3d4f0a69ff104b86678ae4cdcd4d61522b8e
 
         //access player components
         rb = GetComponent<Rigidbody>();
@@ -54,6 +60,7 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
+<<<<<<< HEAD
         //Input functions should be used in Update
         CheckInput();
     }
@@ -61,6 +68,21 @@ public class Player_Controller : MonoBehaviour
     {
         //Applying physics should occur in FixedUpdate
         Movement();
+=======
+        
+    }
+    void FixedUpdate()
+    {
+        if (SwingController.instance.state == SwingController.State.Walking)
+        {
+            Movement();
+            CheckInput();
+        }
+        if (verticalVelocity <= 0)
+        {
+            CheckForGround();
+        }
+>>>>>>> d4be3d4f0a69ff104b86678ae4cdcd4d61522b8e
         Look();
     }
 
@@ -111,7 +133,7 @@ public class Player_Controller : MonoBehaviour
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
 
-        ApplyGravity();
+       ApplyGravity();
     }
 
     void Look()
@@ -146,12 +168,16 @@ public class Player_Controller : MonoBehaviour
                 verticalVelocity -= jumpGravity;
             }
         }
+<<<<<<< HEAD
         //if the player is falling, we check for when they hit the ground
         //if the player is already on the ground, we check to see if they walk off a ledge
         if(verticalVelocity <= 0)
         {
             CheckForGround();
         }
+=======
+        
+>>>>>>> d4be3d4f0a69ff104b86678ae4cdcd4d61522b8e
     }
 
     void CheckForGround()
