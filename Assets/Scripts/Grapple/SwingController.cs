@@ -11,8 +11,8 @@ public class SwingController : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     CharacterController controller;
     public Camera cam;
-    enum State { Swinging, Falling, Walking };
-    State state;
+    public enum State { Swinging, Falling, Walking };
+    public State state;
     public Pendulum pendulum;
     Vector3 previousPosition;
     float distToGround;
@@ -61,7 +61,7 @@ public class SwingController : MonoBehaviour
     void DetermineState()
     {
         // Determine State
-        if (IsGrounded())
+        if (Player_Controller.instance.onGround)
         {
             state = State.Walking;
         }
@@ -75,8 +75,11 @@ public class SwingController : MonoBehaviour
                 {
                     if (state == State.Walking)
                     {
-                        pendulum.bob.velocity = moveDirection;
+                        pendulum.bob.velocity +=  new Vector3(0,Player_Controller.instance.verticalVelocity/2,0);
                     }
+                    Player_Controller.instance.onGround = false;
+                    Player_Controller.instance.rb.velocity = Vector3.zero;
+                    Player_Controller.instance.verticalVelocity = 0;
                     pendulum.SwitchTether(hit.point);
                     state = State.Swinging;
                 }

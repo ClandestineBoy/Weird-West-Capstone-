@@ -28,7 +28,7 @@ public class Player_Controller : MonoBehaviour
     public float fallGravity;
 
     //the direction the player is moving in
-    private Vector3 moveDirection = Vector3.zero;
+    public Vector3 moveDirection = Vector3.zero;
 
     [Header("Look")]
     //mouse sensitivity
@@ -41,7 +41,7 @@ public class Player_Controller : MonoBehaviour
     public float downRayDistance;
 
     //access player components
-    Rigidbody rb;
+    public Rigidbody rb;
 
     //State Booleans
     public bool onGround = false;
@@ -56,11 +56,19 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        CheckInput();
+        
     }
     void FixedUpdate()
     {
-        Movement();
+        if (SwingController.instance.state == SwingController.State.Walking)
+        {
+            Movement();
+            CheckInput();
+        }
+        if (verticalVelocity <= 0)
+        {
+            CheckForGround();
+        }
         Look();
     }
 
@@ -105,7 +113,7 @@ public class Player_Controller : MonoBehaviour
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
 
-       // ApplyGravity();
+       ApplyGravity();
     }
 
     void Look()
@@ -142,10 +150,7 @@ public class Player_Controller : MonoBehaviour
                 verticalVelocity -= jumpGravity;
             }
         }
-        if(verticalVelocity <= 0)
-        {
-            CheckForGround();
-        }
+        
     }
 
     void CheckForGround()
