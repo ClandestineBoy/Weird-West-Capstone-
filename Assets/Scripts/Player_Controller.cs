@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player_Controller : MonoBehaviour
 {
+    public static Player_Controller instance;
+
     [Header("KeyInputs")]
     //all of the key inputs
     public KeyCode forward;
@@ -46,6 +48,8 @@ public class Player_Controller : MonoBehaviour
 
     void Start()
     {
+        instance = this;
+
         //access player components
         rb = GetComponent<Rigidbody>();
     }
@@ -101,7 +105,7 @@ public class Player_Controller : MonoBehaviour
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
 
-        ApplyGravity();
+       // ApplyGravity();
     }
 
     void Look()

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SwingController : MonoBehaviour
 {
+    public static SwingController instance;
 
     public float speed = 6.0F;
     public float jumpSpeed = 20.0F;
@@ -20,6 +21,7 @@ public class SwingController : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
@@ -148,7 +150,7 @@ public class SwingController : MonoBehaviour
     {
 
         Vector3 undesiredMotion = collision.contacts[0].normal * Vector3.Dot(pendulum.bob.velocity, collision.contacts[0].normal);
-        pendulum.bob.velocity = pendulum.bob.velocity - (undesiredMotion * 1.2f);
+        pendulum.bob.velocity = -pendulum.bob.velocity/2;
         hitPos = transform.position;
 
         if (collision.gameObject.name == "Respawn")
