@@ -46,22 +46,27 @@ public class Player_Controller : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         //access player components
         rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        //Input functions should be used in Update
         CheckInput();
     }
     void FixedUpdate()
     {
+        //Applying physics should occur in FixedUpdate
         Movement();
         Look();
     }
 
     void CheckInput()
     {
+        //Movement Input
         moveDirection = Vector3.zero;
         if (Input.GetKey(forward))
         {
@@ -82,11 +87,16 @@ public class Player_Controller : MonoBehaviour
         moveDirection.Normalize();
         moveDirection *= speed;
 
+        //Jump Input
         if (Input.GetKeyDown(jump))
         {
             verticalVelocity = jumpForce;
             onGround = false;
         }
+
+        //Look Input
+        currentX += Input.GetAxis("Mouse X") * sensitivityX;
+        currentY += Input.GetAxis("Mouse Y") * sensitivityY;
     }
     void Movement()
     {
@@ -106,9 +116,6 @@ public class Player_Controller : MonoBehaviour
 
     void Look()
     {
-        currentX += Input.GetAxis("Mouse X") * sensitivityX;
-        currentY += Input.GetAxis("Mouse Y") * sensitivityY;
-
         if (currentY > 90f)
         {
             currentY = 90f;
@@ -123,6 +130,7 @@ public class Player_Controller : MonoBehaviour
 
     void ApplyGravity()
     {
+        //if the player is not on the ground, gravity will begin to apply to their vertical velocity
         if (!onGround)
         {
             if (rb.velocity.y < 0)
@@ -138,6 +146,8 @@ public class Player_Controller : MonoBehaviour
                 verticalVelocity -= jumpGravity;
             }
         }
+        //if the player is falling, we check for when they hit the ground
+        //if the player is already on the ground, we check to see if they walk off a ledge
         if(verticalVelocity <= 0)
         {
             CheckForGround();
