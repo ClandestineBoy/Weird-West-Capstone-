@@ -147,6 +147,10 @@ public class Player_Controller : MonoBehaviour
             verticalLook.localRotation = Quaternion.Euler(-currentY, 0, 0);
             transform.rotation = Quaternion.Euler(0, currentX, 0);
         }
+        else
+        {
+
+        }
     }
 
     void Look()
