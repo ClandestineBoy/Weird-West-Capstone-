@@ -30,6 +30,7 @@ public class Player_Controller : MonoBehaviour
     public float jumpHoldGravity;
     public float jumpGravity;
     public float fallGravity;
+    public float fallVelocityCap;
 
     //the direction the player is moving in
     public Vector3 moveDirection = Vector3.zero;
@@ -72,6 +73,7 @@ public class Player_Controller : MonoBehaviour
         {
             CheckInput();
         }
+        Look();
     }
     void FixedUpdate()
     {
@@ -85,7 +87,6 @@ public class Player_Controller : MonoBehaviour
         {
             CheckForGround();
         }
-        Look();
     }
 
     void CheckInput()
@@ -129,6 +130,10 @@ public class Player_Controller : MonoBehaviour
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
 
+        //rotate the player based on look direction
+        verticalLook.localRotation = Quaternion.Euler(-currentY, 0, 0);
+        transform.rotation = Quaternion.Euler(0, currentX, 0);
+
         ApplyGravity();
     }
 
@@ -144,9 +149,7 @@ public class Player_Controller : MonoBehaviour
         else if (currentY < -90f)
         {
             currentY = -90f;
-        }
-        verticalLook.localRotation = Quaternion.Euler(-currentY, 0, 0);
-        transform.rotation = Quaternion.Euler(0, currentX, 0);
+        } 
     }
 
     void ApplyGravity()
@@ -166,7 +169,10 @@ public class Player_Controller : MonoBehaviour
                 verticalVelocity -= jumpGravity;
             }
         }
-
+        if(verticalVelocity <= -fallVelocityCap)
+        {
+            verticalVelocity = -fallVelocityCap;
+        }
     }
 
     void CheckForGround()
