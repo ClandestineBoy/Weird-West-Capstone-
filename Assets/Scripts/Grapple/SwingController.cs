@@ -45,8 +45,8 @@ public class SwingController : MonoBehaviour
             case State.Falling:
                 DoFallingAction();
                 break;
-            //case State.Walking:
-              //  DoWalkingAction();
+                //case State.Walking:
+                //  DoWalkingAction();
                 //break;
         }
         previousPosition = transform.localPosition;
@@ -75,7 +75,7 @@ public class SwingController : MonoBehaviour
                 {
                     if (state == State.Walking)
                     {
-                        pendulum.bob.velocity +=  new Vector3(0,Player_Controller.instance.verticalVelocity/2,0);
+                        pendulum.bob.velocity += new Vector3(0, Player_Controller.instance.verticalVelocity / 2, 0);
                     }
                     Player_Controller.instance.onGround = false;
                     Player_Controller.instance.rb.velocity = Vector3.zero;
@@ -99,7 +99,7 @@ public class SwingController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            pendulum.bob.velocity += pendulum.bob.velocity.normalized * .1f;
+            pendulum.bob.velocity += pendulum.bob.velocity.normalized * .025f;
         }
         if (Input.GetKey(KeyCode.A))
         {
@@ -120,25 +120,25 @@ public class SwingController : MonoBehaviour
         previousPosition = transform.localPosition;
     }
 
- /*   void DoWalkingAction()
-    {
-        pendulum.bob.velocity = Vector3.zero;
-        if (controller.isGrounded)
-        {
-            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            moveDirection = Camera.main.transform.TransformDirection(moveDirection);
-            moveDirection.y = 0.0f;
-            moveDirection *= speed;
+    /*   void DoWalkingAction()
+       {
+           pendulum.bob.velocity = Vector3.zero;
+           if (controller.isGrounded)
+           {
+               moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+               moveDirection = Camera.main.transform.TransformDirection(moveDirection);
+               moveDirection.y = 0.0f;
+               moveDirection *= speed;
 
-            if (Input.GetButton("Jump"))
-            {
-                moveDirection.y = jumpSpeed;
-            }
+               if (Input.GetButton("Jump"))
+               {
+                   moveDirection.y = jumpSpeed;
+               }
 
-        }
-        moveDirection.y -= gravity * Time.deltaTime;
-        controller.Move(moveDirection * Time.deltaTime);
-    }*/
+           }
+           moveDirection.y -= gravity * Time.deltaTime;
+           controller.Move(moveDirection * Time.deltaTime);
+       }*/
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -151,10 +151,12 @@ public class SwingController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-
-        Vector3 undesiredMotion = collision.contacts[0].normal * Vector3.Dot(pendulum.bob.velocity, collision.contacts[0].normal);
-        pendulum.bob.velocity = -pendulum.bob.velocity/2;
-        hitPos = transform.position;
+        if (SwingController.instance.state == SwingController.State.Swinging)
+        {
+            Vector3 undesiredMotion = collision.contacts[0].normal * Vector3.Dot(pendulum.bob.velocity, collision.contacts[0].normal);
+            pendulum.bob.velocity = -pendulum.bob.velocity / 10;
+            hitPos = transform.position;
+        }
 
         if (collision.gameObject.name == "Respawn")
         {

@@ -48,8 +48,6 @@ public class Player_Controller : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-
         instance = this;
 
         //access player components
@@ -58,18 +56,14 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        //Input functions should be used in Update
-        if (SwingController.instance.state == SwingController.State.Walking)
-        {
-            CheckInput();
-        }
+
     }
     void FixedUpdate()
     {
         if (SwingController.instance.state == SwingController.State.Walking)
         {
-            //Applying physics should occur in FixedUpdate
             Movement();
+            CheckInput();
         }
         if (verticalVelocity <= 0)
         {
@@ -80,7 +74,6 @@ public class Player_Controller : MonoBehaviour
 
     void CheckInput()
     {
-        //Movement Input
         moveDirection = Vector3.zero;
         if (Input.GetKey(forward))
         {
@@ -101,16 +94,11 @@ public class Player_Controller : MonoBehaviour
         moveDirection.Normalize();
         moveDirection *= speed;
 
-        //Jump Input
         if (Input.GetKeyDown(jump))
         {
             verticalVelocity = jumpForce;
             onGround = false;
         }
-
-        //Look Input
-        currentX += Input.GetAxis("Mouse X") * sensitivityX;
-        currentY += Input.GetAxis("Mouse Y") * sensitivityY;
     }
     void Movement()
     {
@@ -120,16 +108,19 @@ public class Player_Controller : MonoBehaviour
         //Apply Gravity
         if (!onGround)
         {
-           moveDirection.y =  verticalVelocity;
+            moveDirection.y = verticalVelocity;
         }
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
 
-       ApplyGravity();
+        ApplyGravity();
     }
 
     void Look()
     {
+        currentX += Input.GetAxis("Mouse X") * sensitivityX;
+        currentY += Input.GetAxis("Mouse Y") * sensitivityY;
+
         if (currentY > 90f)
         {
             currentY = 90f;
@@ -144,7 +135,6 @@ public class Player_Controller : MonoBehaviour
 
     void ApplyGravity()
     {
-        //if the player is not on the ground, gravity will begin to apply to their vertical velocity
         if (!onGround)
         {
             if (rb.velocity.y < 0)
@@ -160,13 +150,7 @@ public class Player_Controller : MonoBehaviour
                 verticalVelocity -= jumpGravity;
             }
         }
-        //if the player is falling, we check for when they hit the ground
-        //if the player is already on the ground, we check to see if they walk off a ledge
-        if(verticalVelocity <= 0)
-        {
-            CheckForGround();
-        }
-       
+
     }
 
     void CheckForGround()

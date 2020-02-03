@@ -91,7 +91,14 @@ public class Pendulum
         bob.ApplyGravity();
         bob.CapMaxSpeed();
 
-        pos += bob.velocity *time;
+        if (bob.velocity.y > 0)
+        {
+            pos += (bob.velocity + new Vector3(0, 7.5f, 0)) * time;
+        }
+        else
+        {
+            pos += bob.velocity * time;
+        }
         return pos;
     }
 
