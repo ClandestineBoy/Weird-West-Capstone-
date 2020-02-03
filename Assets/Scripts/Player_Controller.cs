@@ -6,6 +6,10 @@ public class Player_Controller : MonoBehaviour
 {
     public static Player_Controller instance;
 
+    //References
+    public Mist mist;
+
+
     [Header("KeyInputs")]
     //all of the key inputs
     public KeyCode forward;
@@ -56,14 +60,26 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-
+        //Powers
+        if (SwingController.instance.state != SwingController.State.Swinging)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
+            {
+                StartCoroutine(mist.BecomeMist());
+            }
+        }
+        if (SwingController.instance.state == SwingController.State.Walking)
+        {
+            CheckInput();
+        }
     }
     void FixedUpdate()
     {
+     
         if (SwingController.instance.state == SwingController.State.Walking)
         {
             Movement();
-            CheckInput();
+
         }
         if (verticalVelocity <= 0)
         {
