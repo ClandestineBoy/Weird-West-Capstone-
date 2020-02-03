@@ -42,6 +42,7 @@ public class Pendulum
         bob.ApplyGravity();
         bob.ApplyDamping();
         bob.CapMaxSpeed();
+       
 
         pos += bob.velocity * time;
 
@@ -66,7 +67,8 @@ public class Pendulum
       
 
         distanceToTether = Vector3.Distance(currentPos, tether.position);
-        if (distanceToTether > arm.length) { 
+        if (distanceToTether > arm.length) {
+           
             constrainedPosition = Vector3.Normalize(currentPos - tether.position) * arm.length;
             //velocity because distance/time
             predictedPosition = (constrainedPosition - previousPos) / time;

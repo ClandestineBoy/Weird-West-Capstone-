@@ -1056,7 +1056,7 @@ MonoBehaviour:
   verticalVelocity: 0
   jumpHoldGravity: 1.5
   jumpGravity: 3
-  fallGravity: 4
+  fallGravity: 1.5
   moveDirection: {x: 0, y: 0, z: 0}
   sensitivityX: 5
   sensitivityY: 6

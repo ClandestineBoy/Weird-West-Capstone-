@@ -94,7 +94,7 @@ public class Player_Controller : MonoBehaviour
         moveDirection.Normalize();
         moveDirection *= speed;
 
-        if (Input.GetKeyDown(jump))
+        if (Input.GetKeyDown(jump) && onGround)
         {
             verticalVelocity = jumpForce;
             onGround = false;
