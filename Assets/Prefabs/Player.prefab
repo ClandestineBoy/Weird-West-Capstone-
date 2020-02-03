@@ -146,16 +146,18 @@ MonoBehaviour:
   jumpForce: 30
   verticalVelocity: 0
   jumpHoldGravity: 1.5
-  jumpGravity: 3
-  fallGravity: 4
+  jumpGravity: 2.5
+  fallGravity: 3
   fallVelocityCap: 100
   moveDirection: {x: 0, y: 0, z: 0}
   sensitivityX: 5
   sensitivityY: 6
   verticalLook: {fileID: 2837529745032620763}
   downRayDistance: 1.1
+  wallRayDistance: 1
   rb: {fileID: 0}
   onGround: 0
+  onWall: 0
 --- !u!54 &2837529743870906566
 Rigidbody:
   m_ObjectHideFlags: 0

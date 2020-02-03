@@ -44,12 +44,17 @@ public class Player_Controller : MonoBehaviour
 
     [Header("Raycasts")]
     public float downRayDistance;
+    public float wallRayDistance;
 
     //access player components
     public Rigidbody rb;
 
     //State Booleans
     public bool onGround = false;
+    public bool onWall = false;
+
+    //Wall Running
+    private Vector3 wallNormal;
 
     void Start()
     {
@@ -81,33 +86,35 @@ public class Player_Controller : MonoBehaviour
         if (SwingController.instance.state == SwingController.State.Walking)
         {
             Movement();
+            Rotation();
 
         }
         if (verticalVelocity <= 0)
         {
             CheckForGround();
         }
+        CheckForWall();
     }
 
     void CheckInput()
     {
-        moveDirection = Vector3.zero;
-        if (Input.GetKey(forward))
-        {
-            moveDirection += Vector3.forward;
-        }
-        if (Input.GetKey(back))
-        {
-            moveDirection += Vector3.back;
-        }
-        if (Input.GetKey(left))
-        {
-            moveDirection += Vector3.left;
-        }
-        if (Input.GetKey(right))
-        {
-            moveDirection += Vector3.right;
-        }
+            moveDirection = Vector3.zero;
+            if (Input.GetKey(forward))
+            {
+                moveDirection += Vector3.forward;
+            }
+            if (Input.GetKey(back))
+            {
+                moveDirection += Vector3.back;
+            }
+            if (Input.GetKey(left))
+            {
+                moveDirection += Vector3.left;
+            }
+            if (Input.GetKey(right))
+            {
+                moveDirection += Vector3.right;
+            }
         moveDirection.Normalize();
         moveDirection *= speed;
 
@@ -126,15 +133,20 @@ public class Player_Controller : MonoBehaviour
         if (!onGround)
         {
             moveDirection.y = verticalVelocity;
+            ApplyGravity();
         }
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
+    }
 
-        //rotate the player based on look direction
-        verticalLook.localRotation = Quaternion.Euler(-currentY, 0, 0);
-        transform.rotation = Quaternion.Euler(0, currentX, 0);
-
-        ApplyGravity();
+    void Rotation()
+    {
+        if (!onWall)
+        {
+            //rotate the player based on look direction
+            verticalLook.localRotation = Quaternion.Euler(-currentY, 0, 0);
+            transform.rotation = Quaternion.Euler(0, currentX, 0);
+        }
     }
 
     void Look()
@@ -193,6 +205,25 @@ public class Player_Controller : MonoBehaviour
         {
             onGround = false;
         }
+    }
 
+    void CheckForWall()
+    {
+        Ray wallRay = new Ray(transform.position, new Vector3(moveDirection.x, 0, moveDirection.z));
+        Debug.DrawRay(wallRay.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance))
+        {
+            Debug.Log("WALL HIT");
+            wallNormal = hit.normal;
+            onWall = true;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        CheckForWall();
     }
 }
