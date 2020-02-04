@@ -8,7 +8,7 @@ public class CameraShader : MonoBehaviour
 
     void OnEnable()
     {
-        GetComponent<Camera>().farClipPlane = 50;
+        GetComponent<Camera>().farClipPlane = 30;
         GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
     }
     private void OnDisable()
