@@ -86,9 +86,8 @@ public class Player_Controller : MonoBehaviour
         if (SwingController.instance.state == SwingController.State.Walking)
         {
             Movement();
-            Rotation();
-
         }
+        Rotation();
         if (verticalVelocity <= 0)
         {
             CheckForGround();
