@@ -93,12 +93,14 @@ public class Player_Controller : MonoBehaviour
         {
             CheckForGround();
         }
-        CheckForWall();
+       // CheckForWall();
     }
 
     void CheckInput()
     {
             moveDirection = Vector3.zero;
+        if (!onWall)
+        {
             if (Input.GetKey(forward))
             {
                 moveDirection += Vector3.forward;
@@ -115,20 +117,34 @@ public class Player_Controller : MonoBehaviour
             {
                 moveDirection += Vector3.right;
             }
+        }
+        
         moveDirection.Normalize();
         moveDirection *= speed;
 
-        if (Input.GetKeyDown(jump) && onGround)
+        if (Input.GetKeyDown(jump) && (onGround || onWall))
         {
-            verticalVelocity = jumpForce;
-            onGround = false;
+            if (onGround)
+            {
+                verticalVelocity = jumpForce;
+                onGround = false;
+            }
+            if (onWall)
+            {
+                verticalVelocity = jumpForce;
+                onWall = false;
+                onGround = false;
+            }
         }
     }
     void Movement()
     {
-        //Rotation with look direction
-        moveDirection = transform.rotation * moveDirection;
-
+        if (!onWall)
+        {
+            //move towards where the player is looking
+            moveDirection = transform.rotation * moveDirection;
+        }
+        
         //Apply Gravity
         if (!onGround)
         {
@@ -141,16 +157,9 @@ public class Player_Controller : MonoBehaviour
 
     void Rotation()
     {
-        if (!onWall)
-        {
             //rotate the player based on look direction
             verticalLook.localRotation = Quaternion.Euler(-currentY, 0, 0);
             transform.rotation = Quaternion.Euler(0, currentX, 0);
-        }
-        else
-        {
-
-        }
     }
 
     void Look()
@@ -170,7 +179,7 @@ public class Player_Controller : MonoBehaviour
 
     void ApplyGravity()
     {
-        if (!onGround)
+        if (!onGround && !onWall)
         {
             if (rb.velocity.y < 0)
             {
@@ -200,8 +209,6 @@ public class Player_Controller : MonoBehaviour
 
         if (Physics.Raycast(downRay.origin, downRay.direction, out hit, downRayDistance))
         {
-            //Debug.Log(hit.transform.gameObject.name);
-            //Debug.Log("ON GROUND");
             onGround = true;
             verticalVelocity = 0;
         }
@@ -220,9 +227,9 @@ public class Player_Controller : MonoBehaviour
 
         if (Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance))
         {
-            Debug.Log("WALL HIT");
             wallNormal = hit.normal;
             onWall = true;
+            verticalVelocity = 0;
         }
     }
 
