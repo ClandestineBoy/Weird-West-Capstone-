@@ -4,32 +4,32 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager instance;
+
     public float totalEnergy = 100;
     public float maxHealth;
     public float maxMana;
     public float currentHealth;
     public float currentMana;
+    private void Start()
+    {
+        instance = this;
+    }
 
-    public float manaCost;
-    public float ectoAmount;
-
-   
-    
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        /*if (Input.GetKeyDown(KeyCode.Space))
         {
-            manaCost = 10;
-            SpendMana();
-        }
+            
+            SpendMana(10);
+        }*/
         if (Input.GetKeyDown(KeyCode.P))
         {
-            ectoAmount = 25;
-            EctoStim();
+            EctoStim(25);
         }
     }
 
-    public void SpendMana()
+    public void SpendMana(float manaCost)
     {
        
             if (currentMana < manaCost)
@@ -42,13 +42,10 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 currentMana -= manaCost;
-            }
-
-        
-      
+            }  
     }
 
-    public void EctoStim()
+    public void EctoStim(float ectoAmount)
     {
         currentMana += ectoAmount;
         if (currentMana > maxMana)

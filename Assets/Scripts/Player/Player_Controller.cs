@@ -71,7 +71,7 @@ public class Player_Controller : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
             {
-                StartCoroutine(mist.BecomeMist());
+                StartCoroutine(mist.BecomeMist());       
             }
         }
         if (SwingController.instance.state == SwingController.State.Walking)
