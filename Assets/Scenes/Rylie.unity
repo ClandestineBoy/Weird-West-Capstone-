@@ -284,6 +284,45 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &415956126 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2837529743870906584, guid: 60c0a3423488fff4fa82399b8f45c09b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1140599238}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &415956134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 415956126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb36317e3425724a9b80c290ce44d7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalEnergy: 100
+  maxHealth: 0
+  maxMana: 0
+  currentHealth: 0
+  currentMana: 0
+--- !u!114 &415956135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 415956126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b93479de88858274aae5732b44b7d5ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mistDuration: 5
+  mistSpeed: 25
+  mistCost: 10
+  isMist: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,6 +552,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2837529743320011333, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: far clip plane
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 2837529743870906562, guid: 60c0a3423488fff4fa82399b8f45c09b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -568,6 +612,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2837529743870906566, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2837529743870906567, guid: 60c0a3423488fff4fa82399b8f45c09b,
         type: 3}
       propertyPath: speed
@@ -578,10 +627,20 @@ PrefabInstance:
       propertyPath: jumpForce
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2837529743870906567, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: mist
+      value: 
+      objectReference: {fileID: 415956135}
     - target: {fileID: 2837529743870906584, guid: 60c0a3423488fff4fa82399b8f45c09b,
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7452309770499770244, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}

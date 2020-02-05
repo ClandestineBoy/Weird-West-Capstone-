@@ -66,6 +66,10 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
+        Ray wallRay = new Ray(transform.position, new Vector3(moveDirection.x, 0, moveDirection.z));
+        Debug.DrawRay(wallRay.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
+
+
         //Powers
         if (SwingController.instance.state != SwingController.State.Swinging)
         {
@@ -97,31 +101,46 @@ public class Player_Controller : MonoBehaviour
 
     void CheckInput()
     {
-            moveDirection = Vector3.zero;
+        moveDirection = Vector3.zero;
         if (!onWall)
         {
-            if (Input.GetKey(forward))
+            
+                if (Input.GetKey(forward))
+                {
+                    moveDirection += Vector3.forward;
+                }
+                if (Input.GetKey(back))
+                {
+                    moveDirection += Vector3.back;
+                }
+                if (Input.GetKey(left))
+                {
+                    moveDirection += Vector3.left;
+                }
+                if (Input.GetKey(right))
+                {
+                    moveDirection += Vector3.right;
+                }
+
+            moveDirection.Normalize();
+            moveDirection = transform.rotation * moveDirection * speed;
+        }
+        else
+        {
+            moveDirection.Normalize();
+            Debug.Log("Normalized Move Direction: " + moveDirection);
+            float perpAngle;
+            if ((wallNormal.z > 0 && wallNormal.x > 0) || (wallNormal.z < 0 && wallNormal.x < 0)) //the wall normal is in quadrant 1 or 3
             {
-                moveDirection += Vector3.forward;
-            }
-            if (Input.GetKey(back))
-            {
-                moveDirection += Vector3.back;
-            }
-            if (Input.GetKey(left))
-            {
-                moveDirection += Vector3.left;
-            }
-            if (Input.GetKey(right))
-            {
-                moveDirection += Vector3.right;
+                if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle* Mathf.Deg2Rad) * wallNormal.z;
+                    moveDirection += new Vector3(-invertX, 0, wallNormal.z) * speed;
+                }
             }
         }
-        
-        moveDirection.Normalize();
-        moveDirection *= speed;
-
-        if (Input.GetKeyDown(jump) && (onGround || onWall))
+        if (Input.GetKeyDown(jump))
         {
             if (onGround)
             {
@@ -137,21 +156,11 @@ public class Player_Controller : MonoBehaviour
         }
     }
     void Movement()
-    {
-        if (!onWall)
-        {
-            //move towards where the player is looking
-            moveDirection = transform.rotation * moveDirection;
-        }
-        
-        //Apply Gravity
-        if (!onGround)
-        {
-            moveDirection.y = verticalVelocity;
-            ApplyGravity();
-        }
+    {        
+        ApplyGravity();
 
         rb.velocity = moveDirection * speed * Time.deltaTime;
+        //rb.AddForce(moveDirection * Time.deltaTime * speed, ForceMode.Impulse);
     }
 
     void Rotation()
@@ -178,6 +187,7 @@ public class Player_Controller : MonoBehaviour
 
     void ApplyGravity()
     {
+        moveDirection.y = verticalVelocity;
         if (!onGround && !onWall)
         {
             if (rb.velocity.y < 0)
@@ -227,6 +237,8 @@ public class Player_Controller : MonoBehaviour
         if (Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance))
         {
             wallNormal = hit.normal;
+            Debug.Log("Wall Normal: " + wallNormal.x + " " + wallNormal.y + " " + wallNormal.z);
+            Debug.Log("Move Direction: " + moveDirection);
             onWall = true;
             verticalVelocity = 0;
         }
@@ -234,6 +246,7 @@ public class Player_Controller : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if(!onWall)
         CheckForWall();
     }
 }
