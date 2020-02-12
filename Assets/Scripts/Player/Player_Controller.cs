@@ -241,6 +241,28 @@ public class Player_Controller : MonoBehaviour
         moveDirection.Normalize();
         Debug.Log("Normalized Move Direction: " + moveDirection);
         float perpAngle;
+        if(wallNormal.z == 0)
+        {
+            if(moveDirection.z < 0)
+            {
+                wallMoveDirection = new Vector3(0, 0, -1) * speed;
+            }
+            if (moveDirection.z > 0)
+            {
+                wallMoveDirection = new Vector3(0, 0, 1) * speed;
+            }
+        }
+        if (wallNormal.x == 0)
+        {
+            if (moveDirection.x < 0)
+            {
+                wallMoveDirection = new Vector3(-1, 0, 0) * speed;
+            }
+            if (moveDirection.x > 0)
+            {
+                wallMoveDirection = new Vector3(1, 0, 0) * speed;
+            }
+        }
         if ((wallNormal.z > 0 && wallNormal.x > 0) || (wallNormal.z < 0 && wallNormal.x < 0)) //the wall normal is in quadrant 1 or 3
         {
             if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
