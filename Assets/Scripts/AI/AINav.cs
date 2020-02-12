@@ -11,6 +11,7 @@ public class AINav : MonoBehaviour
     float runAwaySpeed;
     bool running;
     private Animator animator;
+    bool fallen;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +25,10 @@ public class AINav : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (fallen) {
+            agent.SetDestination(transform.position);
+            agent.speed = 0;
+        }
     }
    public void Reposition(Vector3 pos)
     {
@@ -32,11 +36,18 @@ public class AINav : MonoBehaviour
         agent.speed = 0;
         agent.radius = .5f;
         running = true;
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isFreakingOut", true);
+        if (!fallen)
         StartCoroutine(RunAway(pos));
     }
     IEnumerator RunAway(Vector3 pos)
     {
         yield return new WaitForSeconds(reactionTime);
+        animator.SetBool("isRunning", true);
+        animator.SetBool("isFreakingOut", false);
+        animator.SetBool("isWalking", false);
         agent.speed = runAwaySpeed;
         agent.SetDestination(pos);
     }
@@ -53,9 +64,11 @@ public class AINav : MonoBehaviour
             if (angle <270 && angle > 90)
             {
                 animator.SetBool("fallingForward", true);
+                fallen = true;
                 
             } else
             {
+                fallen = true;
                 animator.SetBool("fallingBackward", true);
             }
         }
