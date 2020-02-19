@@ -53,9 +53,13 @@ public class Player_Controller : MonoBehaviour
     //State Booleans
     public bool onGround = false;
     public bool onWall = false;
+    public bool onWallJump = false;
 
     //Wall Running
     private Vector3 wallNormal;
+    private Vector3 wallJumpDir;
+    private Vector3 wallRayDirection;
+    private GameObject currentWall;
 
     void Start()
     {
@@ -67,8 +71,17 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        Ray wallRay = new Ray(transform.position, new Vector3(moveDirection.x, 0, moveDirection.z));
-        Debug.DrawRay(wallRay.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
+        if (!onWall)
+        {
+            wallRayDirection = new Vector3(moveDirection.x, 0, moveDirection.z);
+        }
+        else
+        {
+            wallRayDirection =  -wallNormal;
+            CheckForWall();
+        }
+        Ray wallRay = new Ray(transform.position, wallRayDirection);
+        Debug.DrawRay(wallRay.origin, wallRayDirection, Color.red);
 
 
         //Powers
@@ -100,33 +113,40 @@ public class Player_Controller : MonoBehaviour
        // CheckForWall();
     }
 
+   
     void CheckInput()
     {
-        moveDirection = Vector3.zero;
-        if (!onWall)
+        if (onWallJump)
         {
-            
+            moveDirection = wallJumpDir;
+        }
+        else
+        {
+            moveDirection = Vector3.zero;
+        }
+        if (!onWall)
+        {   
                 if (Input.GetKey(forward))
                 {
-                    moveDirection += Vector3.forward;
+                    moveDirection += transform.rotation * Vector3.forward;
                 }
                 if (Input.GetKey(back))
                 {
-                    moveDirection += Vector3.back;
+                    moveDirection += transform.rotation * Vector3.back;
                 }
                 if (Input.GetKey(left))
                 {
-                    moveDirection += Vector3.left;
+                    moveDirection += transform.rotation * Vector3.left;
                 }
                 if (Input.GetKey(right))
                 {
-                    moveDirection += Vector3.right;
+                    moveDirection += transform.rotation * Vector3.right;
                 }
 
             moveDirection.Normalize();
-            moveDirection = transform.rotation * moveDirection * speed;
+            moveDirection = moveDirection * speed;
         }
-        else
+        if(onWall)
         {
             moveDirection += wallMoveDirection;
         }
@@ -141,11 +161,14 @@ public class Player_Controller : MonoBehaviour
             if (onWall)
             {
                 verticalVelocity = jumpForce;
+                moveDirection = wallJumpDir;
                 onWall = false;
                 onGround = false;
+                onWallJump = true;
             }
         }
     }
+    
     void Movement()
     {        
         ApplyGravity();
@@ -184,6 +207,7 @@ public class Player_Controller : MonoBehaviour
             if (rb.velocity.y < 0)
             {
                 verticalVelocity -= fallGravity;
+                onWallJump = false;
             }
             else if (Input.GetKey(jump))
             {
@@ -220,19 +244,25 @@ public class Player_Controller : MonoBehaviour
 
     void CheckForWall()
     {
-        Ray wallRay = new Ray(transform.position, new Vector3(moveDirection.x, 0, moveDirection.z));
+        Ray wallRay = new Ray(transform.position, wallRayDirection);
         Debug.DrawRay(wallRay.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
 
         RaycastHit hit;
 
-        if (Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance))
+        if (Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance) && (hit.normal.y > -.3f || hit.normal.y < .3f))
         {
             wallNormal = hit.normal;
             Debug.Log("Wall Normal: " + wallNormal.x + " " + wallNormal.y + " " + wallNormal.z);
             Debug.Log("Move Direction: " + moveDirection);
             CalculateWallRunDirection();
+            wallJumpDir = wallNormal;
+
             onWall = true;
             verticalVelocity = 0;
+        }
+        else
+        {
+            onWall = false;
         }
     }
 
@@ -263,41 +293,146 @@ public class Player_Controller : MonoBehaviour
                 wallMoveDirection = new Vector3(1, 0, 0) * speed;
             }
         }
-        if ((wallNormal.z > 0 && wallNormal.x > 0) || (wallNormal.z < 0 && wallNormal.x < 0)) //the wall normal is in quadrant 1 or 3
+        if ((wallNormal.z > 0 && wallNormal.x > 0)) //the wall normal is in quadrant 1
         {
-            if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+            if(Mathf.Abs(wallNormal.z) > Mathf.Abs(wallNormal.x)) //Subquadrant 1
             {
-                perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
-                float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
-                wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z) * speed;
+                if (moveDirection.x < 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) || (moveDirection.x > 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)))
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
             }
-            if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z))
+            if (Mathf.Abs(wallNormal.z) < Mathf.Abs(wallNormal.x)) //Subquadrant 2
             {
-                perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
-                float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
-                wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z) * speed;
+                if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z) || (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z > 0)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z < 0)
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
             }
         }
-        if ((wallNormal.z > 0 && wallNormal.x < 0) || (wallNormal.z < 0 && wallNormal.x > 0)) //the wall normal is in quadrant 2 or 4
+        if ((wallNormal.z < 0 && wallNormal.x < 0)) //the wall normal is in quadrant 3
         {
-            if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+            if (Mathf.Abs(wallNormal.z) > Mathf.Abs(wallNormal.x)) //Subquadrant 1
             {
-                perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.z / wallNormal.x);
-                float invertZ = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.x;
-                wallMoveDirection = new Vector3(wallNormal.x, 0, -invertZ) * speed;
+                if (moveDirection.x > 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) || (moveDirection.x < 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)))
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
             }
-            if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z))
+            if (Mathf.Abs(wallNormal.z) < Mathf.Abs(wallNormal.x)) //Subquadrant 2
             {
-                perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.z / wallNormal.x);
-                float invertZ = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.x;
-                wallMoveDirection = new Vector3(-wallNormal.x, 0, invertZ) * speed;
+                if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z) || (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z < 0)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z > 0)
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
+            }
+        }
+        if ((wallNormal.z > 0 && wallNormal.x < 0)) //the wall normal is in quadrant 2
+        {
+            if (Mathf.Abs(wallNormal.z) > Mathf.Abs(wallNormal.x)) //Subquadrant 1
+            {
+                if (moveDirection.x > 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) || (moveDirection.x < 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)))
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
+            }
+            if (Mathf.Abs(wallNormal.z) < Mathf.Abs(wallNormal.x)) //Subquadrant 2
+            {
+                if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z) || (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z < 0)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z > 0)
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
+            }
+        }
+        if ((wallNormal.z < 0 && wallNormal.x > 0)) //the wall normal is in quadrant 4
+        {
+            if (Mathf.Abs(wallNormal.z) > Mathf.Abs(wallNormal.x)) //Subquadrant 1
+            {
+                if (moveDirection.x < 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) || (moveDirection.x > 0 && Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z)))
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
+            }
+            if (Mathf.Abs(wallNormal.z) < Mathf.Abs(wallNormal.x)) //Subquadrant 2
+            {
+                if (Mathf.Abs(moveDirection.z) < Mathf.Abs(wallNormal.z) || (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z > 0)) //player must be sent left of the normal
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(-invertX, 0, wallNormal.z).normalized * speed;
+                }
+                else if (Mathf.Abs(moveDirection.z) > Mathf.Abs(wallNormal.z) && moveDirection.z < 0)
+                {
+                    perpAngle = 90 - Mathf.Rad2Deg * Mathf.Atan(wallNormal.x / wallNormal.z);
+                    float invertX = Mathf.Tan(perpAngle * Mathf.Deg2Rad) * wallNormal.z;
+                    wallMoveDirection = new Vector3(invertX, 0, -wallNormal.z).normalized * speed;
+                }
             }
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(!onWall)
-        CheckForWall();
+        if (!onWall)
+        {
+            currentWall = collision.gameObject;
+            CheckForWall();
+        }
     }
 }
