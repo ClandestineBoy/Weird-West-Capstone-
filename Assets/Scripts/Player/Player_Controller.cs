@@ -50,7 +50,9 @@ public class Player_Controller : MonoBehaviour
     //access player components
     public Rigidbody rb;
 
-    //State Booleans
+    public enum PlayerState { onGround, onWall, wallJump, rising, falling };
+    [Header("Player State")]
+    public PlayerState state = new PlayerState();
     public bool onGround = false;
     public bool onWall = false;
     public bool onWallJump = false;
@@ -64,7 +66,7 @@ public class Player_Controller : MonoBehaviour
     void Start()
     {
         instance = this;
-
+        state = PlayerState.onGround;
         //access player components
         rb = GetComponent<Rigidbody>();
     }
@@ -116,7 +118,7 @@ public class Player_Controller : MonoBehaviour
    
     void CheckInput()
     {
-        if (onWallJump)
+        if (state == PlayerState.wallJump)
         {
             moveDirection = wallJumpDir;
         }
@@ -124,7 +126,7 @@ public class Player_Controller : MonoBehaviour
         {
             moveDirection = Vector3.zero;
         }
-        if (!onWall)
+        if (state != PlayerState.onWall)
         {   
                 if (Input.GetKey(forward))
                 {
@@ -146,25 +148,23 @@ public class Player_Controller : MonoBehaviour
             moveDirection.Normalize();
             moveDirection = moveDirection * speed;
         }
-        if(onWall)
+        if(state == PlayerState.onWall)
         {
             moveDirection += wallMoveDirection;
         }
 
         if (Input.GetKeyDown(jump))
         {
-            if (onGround)
+            if (state == PlayerState.onGround)
             {
                 verticalVelocity = jumpForce;
-                onGround = false;
+                state = PlayerState.rising;
             }
-            if (onWall)
+            if (state == PlayerState.onWall)
             {
                 verticalVelocity = jumpForce;
                 moveDirection = wallJumpDir;
-                onWall = false;
-                onGround = false;
-                onWallJump = true;
+                state = PlayerState.wallJump;
             }
         }
     }
@@ -202,14 +202,9 @@ public class Player_Controller : MonoBehaviour
     void ApplyGravity()
     {
         moveDirection.y = verticalVelocity;
-        if (!onGround && !onWall)
+        if(state == PlayerState.rising || state == PlayerState.wallJump)
         {
-            if (rb.velocity.y < 0)
-            {
-                verticalVelocity -= fallGravity;
-                onWallJump = false;
-            }
-            else if (Input.GetKey(jump))
+            if (Input.GetKey(jump))
             {
                 verticalVelocity -= jumpHoldGravity;
             }
@@ -217,7 +212,16 @@ public class Player_Controller : MonoBehaviour
             {
                 verticalVelocity -= jumpGravity;
             }
+            if (rb.velocity.y < 0)
+            {
+                state = PlayerState.falling;
+            }
         }
+        if(state == PlayerState.falling)
+        {
+            verticalVelocity -= fallGravity;
+        }
+        
         if(verticalVelocity <= -fallVelocityCap)
         {
             verticalVelocity = -fallVelocityCap;
@@ -233,12 +237,8 @@ public class Player_Controller : MonoBehaviour
 
         if (Physics.Raycast(downRay.origin, downRay.direction, out hit, downRayDistance))
         {
-            onGround = true;
+            state = PlayerState.onGround;
             verticalVelocity = 0;
-        }
-        else
-        {
-            onGround = false;
         }
     }
 
@@ -257,12 +257,12 @@ public class Player_Controller : MonoBehaviour
             CalculateWallRunDirection();
             wallJumpDir = wallNormal;
 
-            onWall = true;
+            state = PlayerState.onWall;
             verticalVelocity = 0;
         }
         else
         {
-            onWall = false;
+            state = PlayerState.wallJump;
         }
     }
 
@@ -429,7 +429,7 @@ public class Player_Controller : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!onWall && !onGround)
+        if (state != PlayerState.onWall && state != PlayerState.onGround)
         {
             currentWall = collision.gameObject;
             CheckForWall();
