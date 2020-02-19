@@ -15,7 +15,7 @@ public class Swap : MonoBehaviour
 
     void Update()
     {
-       /* if (Input.GetMouseButtonDown(1))
+       if (Input.GetKeyDown(KeyCode.E))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -30,6 +30,6 @@ public class Swap : MonoBehaviour
                 }
 
             }
-        }*/
+        }
     }
 }
