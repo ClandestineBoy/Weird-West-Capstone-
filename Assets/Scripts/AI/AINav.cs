@@ -12,6 +12,12 @@ public class AINav : MonoBehaviour
     bool running;
     private Animator animator;
     bool fallen;
+
+    //Ragdoll
+    [HideInInspector]
+    public  Rigidbody[] rbs;
+    [HideInInspector]
+    public CapsuleCollider[] ccs;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +26,25 @@ public class AINav : MonoBehaviour
         agent.SetDestination(home.position);
         reactionTime = Random.Range(0, 1f);
         runAwaySpeed = Random.Range(7, 8);
+
+        //Ragdoll
+        ccs = GetComponentsInChildren<CapsuleCollider>();
+        rbs = GetComponentsInChildren<Rigidbody>();
+        foreach (CapsuleCollider cc in ccs)
+        {
+            cc.enabled = false;
+        }
+
+        foreach (Rigidbody rb in rbs)
+        {
+            rb.isKinematic = true;
+        }
+
+        GetComponentInChildren<BoxCollider>().enabled = false;
+        GetComponentInChildren<SphereCollider>().enabled = false;
+        GetComponent<CapsuleCollider>().enabled = true;
+        
+        
     }
 
     // Update is called once per frame
@@ -72,5 +97,25 @@ public class AINav : MonoBehaviour
                 animator.SetBool("fallingBackward", true);
             }
         }
+    }
+
+    public void RagDoll()
+    {
+        foreach (CapsuleCollider cc in ccs)
+        {
+            cc.enabled = true;
+        }
+        foreach (Rigidbody rb in rbs)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = false;
+            
+        }
+
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Animator>().enabled = false;
+        GetComponent<CapsuleCollider>().enabled = false;
+        GetComponentInChildren<BoxCollider>().enabled = true;
+        GetComponent<NavMeshAgent>().enabled = false;
     }
 }

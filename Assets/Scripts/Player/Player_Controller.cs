@@ -40,7 +40,7 @@ public class Player_Controller : MonoBehaviour
     //mouse sensitivity
     public float sensitivityX;
     public float sensitivityY;
-    private float currentX, currentY;
+    public float currentX, currentY;
     public Transform verticalLook;
 
     [Header("Raycasts")]
@@ -67,6 +67,8 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log(verticalLook.localEulerAngles.x);
+
         Ray wallRay = new Ray(transform.position, new Vector3(moveDirection.x, 0, moveDirection.z));
         Debug.DrawRay(wallRay.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
 

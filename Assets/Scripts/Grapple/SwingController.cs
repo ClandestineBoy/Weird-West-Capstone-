@@ -82,6 +82,9 @@ public class SwingController : MonoBehaviour
                     Player_Controller.instance.verticalVelocity = 0;
                     pendulum.SwitchTether(hit.point);
                     state = State.Swinging;
+
+                    // Give an initial push to get feet off ground (avoid collission that stope swing and pull up)
+                    transform.localPosition = pendulum.pullIn(2, transform.localPosition);
                 }
 
             }
@@ -99,16 +102,21 @@ public class SwingController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            pendulum.bob.velocity += pendulum.bob.velocity.normalized * .025f;
+            pendulum.bob.velocity += pendulum.bob.velocity.normalized * 1f;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            pendulum.bob.velocity += -cam.transform.right * .1f;
+            pendulum.bob.velocity += -cam.transform.right * 1f;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            pendulum.bob.velocity += cam.transform.right * .1f;
+            pendulum.bob.velocity += cam.transform.right * 1f;
         }
+
+        // First shorten arm length and pull up
+        transform.localPosition = pendulum.pullIn(Time.deltaTime * 10, transform.localPosition);
+
+        // Then calculate predicted position
         transform.localPosition = pendulum.MoveBob(transform.localPosition, previousPosition, Time.deltaTime);
         previousPosition = transform.localPosition;
     }

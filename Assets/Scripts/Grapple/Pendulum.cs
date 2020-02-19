@@ -18,14 +18,14 @@ public class Pendulum
     }
     public Vector3 MoveBob(Vector3 pos, float time)
     {
-        bob.velocity += GetConstrainedVelocity(pos,previousPos,time);
+        bob.velocity += GetConstrainedVelocity(pos, previousPos, time);
         bob.ApplyGravity();
         bob.ApplyDamping();
         bob.CapMaxSpeed();
 
         pos += bob.velocity * time;
 
-        if (Vector3.Distance(pos,tether.position) < arm.length)
+        if (Vector3.Distance(pos, tether.position) < arm.length)
         {
             pos = Vector3.Normalize(pos - tether.position) * arm.length;
             arm.length = (Vector3.Distance(pos, tether.position));
@@ -42,7 +42,7 @@ public class Pendulum
         bob.ApplyGravity();
         bob.ApplyDamping();
         bob.CapMaxSpeed();
-       
+
 
         pos += bob.velocity * time;
 
@@ -50,12 +50,12 @@ public class Pendulum
         {
             pos = Vector3.Normalize(pos - tether.position) * arm.length;
             arm.length = (Vector3.Distance(pos, tether.position));
-           
+
             return pos;
         }
 
         previousPos = pos;
-       
+
         return pos;
     }
 
@@ -64,18 +64,35 @@ public class Pendulum
         float distanceToTether;
         Vector3 constrainedPosition;
         Vector3 predictedPosition;
-      
+
 
         distanceToTether = Vector3.Distance(currentPos, tether.position);
-        if (distanceToTether > arm.length) {
-           
+        if (distanceToTether > arm.length)
+        {
+
             constrainedPosition = Vector3.Normalize(currentPos - tether.position) * arm.length;
             //velocity because distance/time
             predictedPosition = (constrainedPosition - previousPos) / time;
-            
+
             return predictedPosition;
         }
         return Vector3.zero;
+    }
+
+    public Vector3 pullIn(float time, Vector3 startPos)
+    {
+        Vector3 diff = Vector3.Normalize(startPos - tether.position);
+
+        if (diff.magnitude > 0 && arm.length > 5.0f)
+        {
+            arm.length -= time;
+            Vector3 endPos = Vector3.Normalize(startPos - tether.position) * arm.length;
+            return endPos;
+        }
+        else
+        {
+            return startPos;
+        }
     }
 
     public void SwitchTether(Vector3 newPos)
