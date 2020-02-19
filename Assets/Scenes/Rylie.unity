@@ -713,6 +713,11 @@ PrefabInstance:
       propertyPath: m_UseGravity
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2837529743870906566, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 112
+      objectReference: {fileID: 0}
     - target: {fileID: 2837529743870906567, guid: 60c0a3423488fff4fa82399b8f45c09b,
         type: 3}
       propertyPath: speed
