@@ -40,7 +40,7 @@ public class Player_Controller : MonoBehaviour
     //mouse sensitivity
     public float sensitivityX;
     public float sensitivityY;
-    private float currentX, currentY;
+    public float currentX, currentY;
     public Transform verticalLook;
 
     [Header("Raycasts")]
@@ -429,7 +429,7 @@ public class Player_Controller : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!onWall)
+        if (!onWall && !onGround)
         {
             currentWall = collision.gameObject;
             CheckForWall();
