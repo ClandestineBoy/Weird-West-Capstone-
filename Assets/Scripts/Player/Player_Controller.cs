@@ -73,7 +73,7 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        if (!onWall)
+        if (state != PlayerState.onWall)
         {
             wallRayDirection = new Vector3(moveDirection.x, 0, moveDirection.z);
         }
@@ -108,7 +108,7 @@ public class Player_Controller : MonoBehaviour
             Movement();
         }
         Rotation();
-        if (verticalVelocity <= 0)
+        if (state == PlayerState.falling || state == PlayerState.onGround)
         {
             CheckForGround();
         }
@@ -239,6 +239,10 @@ public class Player_Controller : MonoBehaviour
         {
             state = PlayerState.onGround;
             verticalVelocity = 0;
+        }
+        else
+        {
+            state = PlayerState.falling;
         }
     }
 
