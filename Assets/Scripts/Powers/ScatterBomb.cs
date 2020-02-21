@@ -103,7 +103,7 @@ public class ScatterBomb : MonoBehaviour
                 NPC.GetComponent<AINav>().Reposition(NPC.transform.position + (dir * 15f));
             }
         }
-
+        Debug.Log(collision.gameObject.name);
        Destroy(gameObject);
     }
 }

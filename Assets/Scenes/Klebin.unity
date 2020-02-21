@@ -4417,6 +4417,28 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 983148955, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1899562773, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}
+      propertyPath: bombVelocity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2127152880, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 903284957086115025, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2837529743320011333, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2837529743870906562, guid: 60c0a3423488fff4fa82399b8f45c09b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4477,13 +4499,45 @@ PrefabInstance:
       propertyPath: pendulum.tether.tetherTransform
       value: 
       objectReference: {fileID: 673250148}
+    - target: {fileID: 2837529743870906566, guid: 60c0a3423488fff4fa82399b8f45c09b,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 112
+      objectReference: {fileID: 0}
     - target: {fileID: 2837529743870906584, guid: 60c0a3423488fff4fa82399b8f45c09b,
         type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 903284957086115025, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}
+    - {fileID: 1409104561, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 60c0a3423488fff4fa82399b8f45c09b, type: 3}
+--- !u!1 &1142249728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8685541379432327592, guid: 60c0a3423488fff4fa82399b8f45c09b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1140599238}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1142249730
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142249728}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: b01d2b648044dcd40b5ad4628d221348, type: 3}
+  m_Controller: {fileID: 9100000, guid: f3cc7ec22b5c3194dbf12dd4b36ab36b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1156915424 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7328656289071676625, guid: 0b8a9239d95bb5e40b079bbf980e2842,

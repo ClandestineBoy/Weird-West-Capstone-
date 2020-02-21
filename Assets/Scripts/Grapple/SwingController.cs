@@ -123,6 +123,7 @@ public class SwingController : MonoBehaviour
 
     void DoFallingAction()
     {
+        Player_Controller.instance.state = Player_Controller.PlayerState.falling;
         pendulum.arm.length = Mathf.Infinity;
         transform.localPosition = pendulum.Fall(transform.localPosition, Time.deltaTime);
         previousPosition = transform.localPosition;
