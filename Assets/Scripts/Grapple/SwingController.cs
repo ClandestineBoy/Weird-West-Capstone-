@@ -61,7 +61,7 @@ public class SwingController : MonoBehaviour
     void DetermineState()
     {
         // Determine State
-        if (Player_Controller.instance.onGround)
+        if (Player_Controller.instance.state == Player_Controller.PlayerState.onGround)
         {
             state = State.Walking;
         }
