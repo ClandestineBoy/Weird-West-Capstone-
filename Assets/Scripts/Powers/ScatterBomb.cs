@@ -98,10 +98,12 @@ public class ScatterBomb : MonoBehaviour
             float variable = Random.Range(-5, 5);
             Vector3 dir = (NPC.transform.position - new Vector3(transform.position.x + variable,
                 NPC.transform.position.y, transform.position.z + variable)).normalized;
-
-            NPC.GetComponent<AINav>().Reposition(NPC.transform.position + (dir * 15f));
+            if (NPC.GetComponent<AINav>() != null)
+            {
+                NPC.GetComponent<AINav>().Reposition(NPC.transform.position + (dir * 15f));
+            }
         }
 
-       //Destroy(gameObject);
+       Destroy(gameObject);
     }
 }
