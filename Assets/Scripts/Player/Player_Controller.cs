@@ -73,11 +73,7 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        if (state != PlayerState.onWall)
-        {
-            wallRayDirection = new Vector3(moveDirection.x, 0, moveDirection.z);
-        }
-        else
+        if (state == PlayerState.onWall)
         {
             wallRayDirection =  -wallNormal;
             CheckForWall();
@@ -248,12 +244,14 @@ public class Player_Controller : MonoBehaviour
 
     void CheckForWall()
     {
-        Ray wallRay = new Ray(transform.position, wallRayDirection);
-        Debug.DrawRay(wallRay.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
+        Ray wallRayLeft = new Ray(transform.position, transform.rotation * Vector3.left);
+        Ray wallRayRight = new Ray(transform.position, transform.rotation * Vector3.right);
+        Debug.DrawRay(wallRayLeft.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
+        Debug.DrawRay(wallRayRight.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
 
         RaycastHit hit;
 
-        if (Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance) && (hit.normal.y > -.3f || hit.normal.y < .3f))
+        if ((Physics.Raycast(wallRayLeft.origin, wallRayLeft.direction, out hit, wallRayDistance) || Physics.Raycast(wallRayRight.origin, wallRayRight.direction, out hit, wallRayDistance)) && (hit.normal.y > -.3f || hit.normal.y < .3f))
         {
             wallNormal = hit.normal;
             Debug.Log("Wall Normal: " + wallNormal.x + " " + wallNormal.y + " " + wallNormal.z);
@@ -264,7 +262,7 @@ public class Player_Controller : MonoBehaviour
             state = PlayerState.onWall;
             verticalVelocity = 0;
         }
-        else
+        else if(state == PlayerState.onWall)
         {
             state = PlayerState.wallJump;
         }
@@ -435,6 +433,7 @@ public class Player_Controller : MonoBehaviour
     {
         if (state != PlayerState.onWall && state != PlayerState.onGround)
         {
+            wallRayDirection = new Vector3(collision.transform.position.x - transform.position.x, 0, collision.transform.position.z - transform.position.z);
             currentWall = collision.gameObject;
             CheckForWall();
         }
