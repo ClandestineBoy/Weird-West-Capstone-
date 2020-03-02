@@ -17,10 +17,17 @@ public class Player_Controller : MonoBehaviour
     public KeyCode left;
     public KeyCode right;
     public KeyCode jump;
+    public KeyCode sprint;
+    public KeyCode crouch;
 
     [Header("Mod Values")]
     //movement speed
-    public float speed = 6.0f;
+    public float speed;
+    public float crouchSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
+    public float wallRunSpeed;
+    public float mistSpeed;
 
     //the ammount of force applied when the player jumps
     public float jumpForce;
@@ -51,8 +58,10 @@ public class Player_Controller : MonoBehaviour
     public Rigidbody rb;
 
     public enum PlayerState { onGround, onWall, wallJump, rising, falling };
+    public enum WalkState { walk, sprint, crouch, slide}
     [Header("Player State")]
     public PlayerState state = new PlayerState();
+    public WalkState walkState = new WalkState();
     public bool onGround = false;
     public bool onWall = false;
     public bool onWallJump = false;
@@ -65,8 +74,10 @@ public class Player_Controller : MonoBehaviour
 
     void Start()
     {
+        speed = walkSpeed;
         instance = this;
         state = PlayerState.onGround;
+        walkState = WalkState.walk;
         //access player components
         rb = GetComponent<Rigidbody>();
     }
@@ -85,7 +96,7 @@ public class Player_Controller : MonoBehaviour
         //Powers
         if (SwingController.instance.state != SwingController.State.Swinging)
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
+            if (Input.GetKeyDown(KeyCode.Tab) && !mist.isMist)
             {
                 StartCoroutine(mist.BecomeMist());       
             }
@@ -123,7 +134,7 @@ public class Player_Controller : MonoBehaviour
             moveDirection = Vector3.zero;
         }
         if (state != PlayerState.onWall)
-        {   
+        {
                 if (Input.GetKey(forward))
                 {
                     moveDirection += transform.rotation * Vector3.forward;
@@ -140,13 +151,16 @@ public class Player_Controller : MonoBehaviour
                 {
                     moveDirection += transform.rotation * Vector3.right;
                 }
-
+            //Walk State Management
+            WalkStateManage();
+            
             moveDirection.Normalize();
             moveDirection = moveDirection * speed;
         }
         if(state == PlayerState.onWall)
         {
             moveDirection += wallMoveDirection;
+            speed = wallRunSpeed;
         }
 
         if (Input.GetKeyDown(jump))
@@ -165,6 +179,52 @@ public class Player_Controller : MonoBehaviour
         }
     }
     
+    void WalkStateManage()
+    {
+        if (Input.GetKeyDown(sprint))
+        {
+            if ((walkState == WalkState.walk || walkState == WalkState.crouch) && moveDirection != Vector3.zero)
+            {
+                walkState = WalkState.sprint;
+            }
+            else if (walkState == WalkState.sprint)
+            {
+                walkState = WalkState.walk;
+            }
+        }
+        if (Input.GetKeyDown(crouch))
+        {
+            if (walkState == WalkState.walk)
+            {
+                walkState = WalkState.crouch;
+            }
+            else if (walkState == WalkState.crouch)
+            {
+                walkState = WalkState.walk;
+            }
+            if (walkState == WalkState.sprint)
+            {
+                walkState = WalkState.slide;
+            }
+        }
+        if (moveDirection == Vector3.zero && walkState == WalkState.sprint)
+        {
+            walkState = WalkState.walk;
+        }
+
+        if (walkState == WalkState.walk)
+        {
+            speed = walkSpeed;
+        }
+        if (walkState == WalkState.sprint)
+        {
+            speed = sprintSpeed;
+        }
+        if (walkState == WalkState.crouch)
+        {
+            speed = crouchSpeed;
+        }
+    }
     void Movement()
     {        
         ApplyGravity();
@@ -234,6 +294,7 @@ public class Player_Controller : MonoBehaviour
         if (Physics.Raycast(downRay.origin, downRay.direction, out hit, downRayDistance))
         {
             state = PlayerState.onGround;
+            speed = walkSpeed;
             verticalVelocity = 0;
         }
         else
@@ -246,12 +307,13 @@ public class Player_Controller : MonoBehaviour
     {
         Ray wallRayLeft = new Ray(transform.position, transform.rotation * Vector3.left);
         Ray wallRayRight = new Ray(transform.position, transform.rotation * Vector3.right);
+        Ray wallRay = new Ray(transform.position, wallRayDirection);
         Debug.DrawRay(wallRayLeft.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
         Debug.DrawRay(wallRayRight.origin, new Vector3(moveDirection.x, 0, moveDirection.z), Color.red);
 
         RaycastHit hit;
 
-        if ((Physics.Raycast(wallRayLeft.origin, wallRayLeft.direction, out hit, wallRayDistance) || Physics.Raycast(wallRayRight.origin, wallRayRight.direction, out hit, wallRayDistance)) && (hit.normal.y > -.3f || hit.normal.y < .3f))
+        if (state != PlayerState.onWall && (Physics.Raycast(wallRayLeft.origin, wallRayLeft.direction, out hit, wallRayDistance) || Physics.Raycast(wallRayRight.origin, wallRayRight.direction, out hit, wallRayDistance)) && (hit.normal.y > -.3f || hit.normal.y < .3f))
         {
             wallNormal = hit.normal;
             Debug.Log("Wall Normal: " + wallNormal.x + " " + wallNormal.y + " " + wallNormal.z);
@@ -260,11 +322,13 @@ public class Player_Controller : MonoBehaviour
             wallJumpDir = wallNormal;
 
             state = PlayerState.onWall;
+            speed = wallRunSpeed;
             verticalVelocity = 0;
         }
-        else if(state == PlayerState.onWall)
+        else if(state == PlayerState.onWall && !Physics.Raycast(wallRay.origin, wallRay.direction, out hit, wallRayDistance))
         {
             state = PlayerState.wallJump;
+            verticalVelocity = jumpForce;
         }
     }
 
