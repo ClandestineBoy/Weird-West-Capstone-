@@ -11,10 +11,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float jumpSpeed = 8.0f;
     [SerializeField]
-    private float gravity = 20.0f;
+    private float gravity = 14.0f;
     [SerializeField]
     private float antiBumpFactor = .75f;
-    [HideInInspector]
+   // [HideInInspector]
     public Vector3 moveDirection = Vector3.zero;
     [HideInInspector]
     public Vector3 contactPoint;
@@ -68,10 +68,20 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         {
-            moveDirection = new Vector3(input.x, -antiBumpFactor, input.y);
-            moveDirection = transform.TransformDirection(moveDirection) * speed;
-            UpdateJump();
+            moveDirection = transform.rotation * new Vector3(input.x, -antiBumpFactor, input.y) * speed;
         }
+        else
+        {
+            Vector3 inputMod = new Vector3(input.x, 0, input.y);
+            inputMod = transform.rotation * inputMod;
+            moveDirection.x += inputMod.x / 4;
+            moveDirection.z += inputMod.z / 4;
+            //moveDirection.Normalize();
+            Debug.Log(moveDirection.y);
+        }
+        //moveDirection = transform.TransformDirection(moveDirection);
+        UpdateJump();
+        
         
         // Apply gravity
         moveDirection.y -= gravity * Time.deltaTime;

@@ -78,6 +78,7 @@ public class PlayerInput : MonoBehaviour
 
     public void FixedUpdate()
     {
+        jump = false;
         if (!Input.GetKey(KeyCode.Space))
         {
             jump = false;
