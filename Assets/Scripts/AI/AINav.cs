@@ -12,19 +12,26 @@ public class AINav : MonoBehaviour
     bool running;
     private Animator animator;
     bool fallen;
+    public Transform spawn;
 
+    public bool ragDolled;
+
+
+    Vector3 runPos;
     //Ragdoll
     [HideInInspector]
     public  Rigidbody[] rbs;
     [HideInInspector]
     public CapsuleCollider[] ccs;
+    [HideInInspector]
+    public SphereCollider[] scs;
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         agent = this.GetComponent<NavMeshAgent>();
-        agent.SetDestination(home.position);
-        reactionTime = Random.Range(0, 1f);
+      //  agent.SetDestination(home.position);
+        reactionTime = Random.Range(.25f, 1.25f);
         runAwaySpeed = Random.Range(7, 8);
 
         //Ragdoll
@@ -39,9 +46,13 @@ public class AINav : MonoBehaviour
         {
             rb.isKinematic = true;
         }
+        foreach (SphereCollider sc in scs)
+        {
+            sc.enabled = false;
+        }
 
         GetComponentInChildren<BoxCollider>().enabled = false;
-        GetComponentInChildren<SphereCollider>().enabled = false;
+        GetComponent<SphereCollider>().enabled = true;
         GetComponent<CapsuleCollider>().enabled = true;
         
         
@@ -50,10 +61,14 @@ public class AINav : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (fallen) {
+       /* if (fallen) {
             agent.SetDestination(transform.position);
             agent.speed = 0;
         }
+        if (running && transform.position == runPos)
+        {
+            agent.SetDestination(home.position);    
+        }*/
     }
    public void Reposition(Vector3 pos)
     {
@@ -75,6 +90,7 @@ public class AINav : MonoBehaviour
         animator.SetBool("isWalking", false);
         agent.speed = runAwaySpeed;
         agent.SetDestination(pos);
+        runPos = pos;
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -98,9 +114,17 @@ public class AINav : MonoBehaviour
             }
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        //if (other.gameObject.transform == home)
+        //{
+          //  transform.position = spawn.position;
+        //}
+    }
 
     public void RagDoll()
     {
+        ragDolled = true;
         foreach (CapsuleCollider cc in ccs)
         {
             cc.enabled = true;

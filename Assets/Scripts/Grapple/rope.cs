@@ -32,22 +32,12 @@ public class rope : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetButtonDown("Fire1"))
+        if (SwingController.instance.state == SwingController.State.Swinging)
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
-            {
-                
-                    print(hit.transform.name);
-                    lr.enabled = true;
-                
-            }
+            lr.enabled = true;
         }
-        else if (Input.GetButtonDown("Fire2"))
-        {
+        else
             lr.enabled = false;
-        }
 
         lr = GetComponent<LineRenderer>();
         if (hasParent)

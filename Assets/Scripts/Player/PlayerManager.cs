@@ -11,8 +11,30 @@ public class PlayerManager : MonoBehaviour
     public float maxMana;
     public float currentHealth;
     public float currentMana;
+
+
+    public int equippedPower;
+
+    private Mist mist;
+    private Swap swap;
+    private SwingController swingController;
+    private Telekinesis telekinesis;
+
+    public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
+    public LightLevel lightState = new LightLevel();
+
+   GameObject[] NPCS;
     private void Start()
     {
+        NPCS = GameObject.FindGameObjectsWithTag("NPC");
+
+
+        mist = GetComponent<Mist>();
+        swap = GetComponent<Swap>();
+        swingController = GetComponent<SwingController>();
+        telekinesis = GetComponent<Telekinesis>();
+
+        equippedPower = 2;
         instance = this;
     }
 
@@ -23,10 +45,49 @@ public class PlayerManager : MonoBehaviour
             
             SpendMana(10);
         }*/
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.P) && maxHealth > 0)
         {
             EctoStim(25);
+        } else if (Input.GetKeyDown(KeyCode.O) && maxMana > 0)
+        {
+            HealthStim(25);
         }
+        if (Input.GetMouseButtonDown(1))
+        {
+            switch (equippedPower)
+            {
+                case 0:
+                    mist.enabled = true;
+                    mist.DoMist();
+                    break;
+                case 1:
+                    swap.DoSwap();
+                    break;
+              case 2:
+                    if (swingController.state != SwingController.State.Swinging)
+                    {
+                        swingController.DoSwing();
+                    }
+                    else
+                    {
+                        swingController.StopSwing();
+                    }
+                    break;
+                case 3:
+                    telekinesis.DoTelekinesis();
+                    break;
+                        
+            }
+
+        }
+
+        /*if (SwingController.instance.state != SwingController.State.Swinging)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
+            {
+                StartCoroutine(mist.BecomeMist());
+            }
+        }*/
     }
 
     public void SpendMana(float manaCost)
@@ -59,4 +120,40 @@ public class PlayerManager : MonoBehaviour
             maxMana = currentMana;
         }
     }
+
+    public void HealthStim(float healthAmount)
+    {
+        currentHealth += healthAmount;
+        if (currentHealth > maxHealth)
+        {
+            float diff = currentHealth - maxHealth;
+            maxMana -= diff;
+            if (maxMana < currentMana)
+            {
+                currentMana = maxMana;
+            }
+            maxHealth = currentHealth;
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("DimLight") || other.gameObject.CompareTag("BrightLight"))
+        {
+            //When entering bright light access npcs from array to activate light changes in enemyAI script
+   
+            foreach (GameObject n in NPCS)
+            {
+                if (n.GetComponent<EnemyAI>() != null)
+                {
+                    if (other.gameObject.CompareTag("BrightLight")) 
+                        n.GetComponent<EnemyAI>().BrightLight();
+
+                    else if (other.gameObject.CompareTag("DimLight"))
+                        n.GetComponent<EnemyAI>().DimLight();
+                }
+            }
+        } 
+    }   
+        
 }

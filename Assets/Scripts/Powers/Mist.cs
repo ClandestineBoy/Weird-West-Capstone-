@@ -6,17 +6,27 @@ public class Mist : MonoBehaviour
 {
    public float mistDuration;
    public float mistSpeed;
-   public float mistCost;
+   public float manaCost;
     float originalSpeed;
    public bool isMist = false;
 
-   public IEnumerator BecomeMist()
+  
+    
+    public void DoMist()
+    {
+        
+        if (!isMist && PlayerManager.instance.currentHealth > manaCost *2)
+        {
+            StartCoroutine(BecomeMist());
+        }
+    }
+    public IEnumerator BecomeMist()
     {
         isMist = true;
         Physics.IgnoreLayerCollision(9, 10, true);
         originalSpeed = Player_Controller.instance.speed;
         Player_Controller.instance.speed = mistSpeed;
-        PlayerManager.instance.SpendMana(mistCost);
+        PlayerManager.instance.SpendMana(manaCost);
         GetComponentInChildren<CameraShader>().enabled = true;
         yield return new WaitForSeconds(mistDuration);
         BecomeHuman();

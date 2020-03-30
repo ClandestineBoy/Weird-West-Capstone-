@@ -18,12 +18,11 @@ public class SwingController : MonoBehaviour
     float distToGround;
     Vector3 hitPos;
 
-
+    public float manaCost;
     void Start()
     {
         instance = this;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        
         controller = GetComponent<CharacterController>();
         state = State.Walking;
         pendulum.bobTransform.transform.parent = pendulum.tether.tetherTransform;
@@ -65,36 +64,34 @@ public class SwingController : MonoBehaviour
         {
             state = State.Walking;
         }
-        if (Input.GetButtonDown("Fire1"))
+       
+       
+    }
+
+
+    //After Reference call, place tether can change player state
+    void StartSwing()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            if (hit.distance > 5)
             {
-                if (hit.distance > 5)
+                if (state == State.Walking)
                 {
-                    if (state == State.Walking)
-                    {
-                        pendulum.bob.velocity += new Vector3(0, Player_Controller.instance.verticalVelocity / 2, 0);
-                    }
-                    Player_Controller.instance.onGround = false;
-                    Player_Controller.instance.rb.velocity = Vector3.zero;
-                    Player_Controller.instance.verticalVelocity = 0;
-                    pendulum.SwitchTether(hit.point);
-                    state = State.Swinging;
-
-                    // Give an initial push to get feet off ground (avoid collission that stope swing and pull up)
-                    transform.localPosition = pendulum.pullIn(2, transform.localPosition);
+                    pendulum.bob.velocity += new Vector3(0, Player_Controller.instance.verticalVelocity / 2, 0);
                 }
+                Player_Controller.instance.onGround = false;
+                Player_Controller.instance.rb.velocity = Vector3.zero;
+                Player_Controller.instance.verticalVelocity = 0;
+                pendulum.SwitchTether(hit.point);
+                state = State.Swinging;
 
+                // Give an initial push to get feet off ground (avoid collission that stope swing and pull up)
+                transform.localPosition = pendulum.pullIn(2, transform.localPosition);
             }
-        }
-        if (Input.GetButtonDown("Fire2"))
-        {
-            if (state == State.Swinging)
-            {
-                state = State.Falling;
-            }
+
         }
     }
 
@@ -127,6 +124,26 @@ public class SwingController : MonoBehaviour
         pendulum.arm.length = Mathf.Infinity;
         transform.localPosition = pendulum.Fall(transform.localPosition, Time.deltaTime);
         previousPosition = transform.localPosition;
+    }
+
+
+
+    // Checks for if Swing and Fall are accessible
+    
+     public void DoSwing()
+    {
+        if (PlayerManager.instance.currentHealth > manaCost * 2)
+        {
+            StartSwing();
+        }
+    }
+
+    public void StopSwing()
+    {
+        if (state == State.Swinging)
+        {
+            state = State.Falling;
+        }
     }
 
     /*   void DoWalkingAction()
@@ -163,7 +180,7 @@ public class SwingController : MonoBehaviour
         if (SwingController.instance.state == SwingController.State.Swinging)
         {
             Vector3 undesiredMotion = collision.contacts[0].normal * Vector3.Dot(pendulum.bob.velocity, collision.contacts[0].normal);
-            pendulum.bob.velocity = -pendulum.bob.velocity / 10;
+           // pendulum.bob.velocity = -pendulum.bob.velocity / 10;
             hitPos = transform.position;
         }
 

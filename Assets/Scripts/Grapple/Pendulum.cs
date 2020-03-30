@@ -83,7 +83,7 @@ public class Pendulum
     {
         Vector3 diff = Vector3.Normalize(startPos - tether.position);
 
-        if (diff.magnitude > 0 && arm.length > 5.0f)
+        if (diff.magnitude > 0 && arm.length > 3.0f)
         {
             arm.length -= time;
             Vector3 endPos = Vector3.Normalize(startPos - tether.position) * arm.length;
@@ -91,6 +91,7 @@ public class Pendulum
         }
         else
         {
+            SwingController.instance.state = SwingController.State.Falling;
             return startPos;
         }
     }

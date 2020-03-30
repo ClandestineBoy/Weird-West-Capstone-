@@ -8,7 +8,7 @@ public class Player_Controller : MonoBehaviour
 
     //References
     public Mist mist;
-
+    PowerSwap powerSwap;
 
     [Header("KeyInputs")]
     //all of the key inputs
@@ -67,6 +67,7 @@ public class Player_Controller : MonoBehaviour
     {
         instance = this;
         state = PlayerState.onGround;
+        powerSwap = GetComponent<PowerSwap>();
         //access player components
         rb = GetComponent<Rigidbody>();
     }
@@ -80,21 +81,19 @@ public class Player_Controller : MonoBehaviour
         }
         Ray wallRay = new Ray(transform.position, wallRayDirection);
         Debug.DrawRay(wallRay.origin, wallRayDirection, Color.red);
-
-
-        //Powers
         if (SwingController.instance.state != SwingController.State.Swinging)
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
             {
-                StartCoroutine(mist.BecomeMist());       
+                StartCoroutine(mist.BecomeMist());
             }
         }
         if (SwingController.instance.state == SwingController.State.Walking)
         {
             CheckInput();
         }
-        Look();
+        if (!powerSwap.swapping)
+            Look();
     }
     void FixedUpdate()
     {
@@ -103,7 +102,8 @@ public class Player_Controller : MonoBehaviour
         {
             Movement();
         }
-        Rotation();
+        if (!powerSwap.swapping)
+            Rotation();
         if (state == PlayerState.falling || state == PlayerState.onGround)
         {
             CheckForGround();
