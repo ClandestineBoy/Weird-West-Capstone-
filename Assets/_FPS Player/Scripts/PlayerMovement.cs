@@ -76,8 +76,10 @@ public class PlayerMovement : MonoBehaviour
             inputMod = transform.rotation * inputMod;
             moveDirection.x += inputMod.x / 4;
             moveDirection.z += inputMod.z / 4;
-            //moveDirection.Normalize();
-            Debug.Log(moveDirection.y);
+            Vector2 normalizedDir = new Vector2(moveDirection.x, moveDirection.z);
+            normalizedDir.Normalize();
+            moveDirection.x = normalizedDir.x * speed;
+            moveDirection.z = normalizedDir.y * speed;
         }
         //moveDirection = transform.TransformDirection(moveDirection);
         UpdateJump();

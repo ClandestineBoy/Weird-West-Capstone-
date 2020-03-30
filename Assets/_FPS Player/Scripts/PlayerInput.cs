@@ -9,8 +9,8 @@ public class PlayerInput : MonoBehaviour
         get
         {
             Vector2 i = Vector2.zero;
-            i.x = Input.GetAxis("Horizontal");
-            i.y = Input.GetAxis("Vertical");
+            i.x = Input.GetAxis("Right") - Input.GetAxis("Left");
+            i.y = Input.GetAxis("Forward") - Input.GetAxis("Backward");
             i *= (i.x != 0.0f && i.y != 0.0f) ? .7071f : 1.0f;
             return i;
         }
@@ -26,8 +26,8 @@ public class PlayerInput : MonoBehaviour
         get
         {
             Vector2 i = Vector2.zero;
-            i.x = Input.GetAxisRaw("Horizontal");
-            i.y = Input.GetAxisRaw("Vertical");
+            i.x = Input.GetAxis("Right") - Input.GetAxis("Left");
+            i.y = Input.GetAxis("Forward") - Input.GetAxis("Backward");
             i *= (i.x != 0.0f && i.y != 0.0f) ? .7071f : 1.0f;
             return i;
         }

@@ -323,7 +323,7 @@ public class PlayerController : MonoBehaviour
         if (!hasWallToSide(wallDir) || movement.grounded)
             status = Status.moving;
 
-        movement.Move(move, movement.runSpeed, (1f - s) + (s / 4f));
+        movement.Move(move, movement.runSpeed, (1f - s) + (s / 4f)/2);
     }
 
     void CheckForWallrun()
@@ -387,9 +387,11 @@ public class PlayerController : MonoBehaviour
         //Check for ledge to grab onto 
         Vector3 dir = transform.TransformDirection(new Vector3(0, -0.5f, 1).normalized);
         Vector3 pos = transform.position + (Vector3.up * height / 3f) + (transform.forward * radius / 2f);
+       
         bool right = Physics.Raycast(pos + (transform.right * radius / 2f), dir, radius + 0.125f, ledgeLayer);
         bool left = Physics.Raycast(pos - (transform.right * radius / 2f), dir, radius + 0.125f, ledgeLayer);
-
+        Debug.DrawRay(pos + (transform.right * radius / 2f), dir, Color.red, radius + 0.125f);
+        Debug.DrawRay(pos - (transform.right * radius / 2f), dir, Color.red, radius + 0.125f);
         if (Physics.Raycast(pos, dir, out var hit, radius + 0.125f, ledgeLayer) && right && left)
         {
             Vector3 rotatePos = transform.InverseTransformPoint(hit.point);
