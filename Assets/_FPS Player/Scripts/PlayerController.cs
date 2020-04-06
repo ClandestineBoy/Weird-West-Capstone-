@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grabbedLedge, climbingLedge, vaulting }
+public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, swinging, grabbedLedge, climbingLedge, vaulting }
 
 public class PlayerController : MonoBehaviour
 {
     public Status status;
+
+    public Pendulum pendulum;
+    public GameObject tether;
+
     [SerializeField]
     private LayerMask vaultLayer;
     [SerializeField]
@@ -45,6 +49,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        pendulum.tether.tetherTransform = tether.transform;
         CreateVaultHelper();
         playerInput = GetComponent<PlayerInput>();
         movement = GetComponent<PlayerMovement>();
@@ -87,8 +92,24 @@ public class PlayerController : MonoBehaviour
         {
             if (movement.grounded || movement.moveDirection.y < 0)
                 canInteract = true;
+            //If valid swing, set up the tether and change state
+            if (Input.GetMouseButtonDown(1))
+            {
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit))
+                {
+                   // if (hit.distance > 5)
+                   // {
+                        status = Status.swinging;
+                        pendulum.bob.velocity += new Vector3(0, movement.moveDirection.y / 2, 0);
+                        pendulum.SwitchTether(hit.point);
+                        transform.localPosition = pendulum.pullIn(2, transform.localPosition);
+                    //}
+                }
+            }
         }
-        else if ((int)status >= 6)
+        else if ((int)status >= 7)
             canInteract = false;
     }
 
@@ -99,6 +120,7 @@ public class PlayerController : MonoBehaviour
             status = Status.idle;
             if (playerInput.input.magnitude > 0.02f)
                 status = Status.moving;
+
         }
     }
 
@@ -139,6 +161,9 @@ public class PlayerController : MonoBehaviour
                 break;
             case Status.vaulting:
                 VaultMovement();
+                break;
+            case Status.swinging:
+                SwingMovement();
                 break;
             default:
                 DefaultMovement();
@@ -491,6 +516,32 @@ public class PlayerController : MonoBehaviour
         vaultHelper.transform.position = vaultOver;
         vaultHelper.transform.rotation = Quaternion.LookRotation(vaultDir);
     }
+    /*********************************************************************/
+
+    /***************************** SWINGING ******************************/
+
+    void SwingMovement()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            pendulum.bob.velocity += pendulum.bob.velocity.normalized * 1f;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            pendulum.bob.velocity += -Camera.main.transform.right * 1f;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            pendulum.bob.velocity += Camera.main.transform.right * 1f;
+        }
+
+        // First shorten arm length and pull up
+        transform.localPosition = pendulum.pullIn(Time.deltaTime * 10, transform.localPosition);
+
+        // Then calculate predicted position
+        movement.Move(pendulum.MoveBob(transform.localPosition, Time.deltaTime),6,0);
+    }
+
     /*********************************************************************/
 
     bool hasObjectInfront(float dis, LayerMask layer)
