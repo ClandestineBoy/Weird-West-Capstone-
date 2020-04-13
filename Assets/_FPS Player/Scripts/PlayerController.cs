@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grabbedLedge, climbingLedge, vaulting }
+public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grappling, grabbedLedge, climbingLedge, vaulting }
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
     public Status status;
+
     [SerializeField]
     private LayerMask vaultLayer;
     [SerializeField]
@@ -25,9 +27,11 @@ public class PlayerController : MonoBehaviour
     Vector3 vaultOver;
     Vector3 vaultDir;
 
-    PlayerMovement movement;
+   public PlayerMovement movement;
     PlayerInput playerInput;
     AnimateLean animateLean;
+
+    Rigidbody rb;
 
     bool canInteract;
     bool canGrabLedge;
@@ -45,6 +49,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        instance = this;
+        rb = GetComponent<Rigidbody>();
         CreateVaultHelper();
         playerInput = GetComponent<PlayerInput>();
         movement = GetComponent<PlayerMovement>();
@@ -63,6 +69,8 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
+        //Power Swap UI
+        
         //Updates
         UpdateInteraction();
         UpdateMovingStatus();
@@ -88,7 +96,7 @@ public class PlayerController : MonoBehaviour
             if (movement.grounded || movement.moveDirection.y < 0)
                 canInteract = true;
         }
-        else if ((int)status >= 6)
+        else if ((int)status >= 7)
             canInteract = false;
     }
 
@@ -99,6 +107,7 @@ public class PlayerController : MonoBehaviour
             status = Status.idle;
             if (playerInput.input.magnitude > 0.02f)
                 status = Status.moving;
+
         }
     }
 
@@ -140,6 +149,9 @@ public class PlayerController : MonoBehaviour
             case Status.vaulting:
                 VaultMovement();
                 break;
+            case Status.grappling:
+                grappleMovement();
+                break;
             default:
                 DefaultMovement();
                 break;
@@ -148,6 +160,7 @@ public class PlayerController : MonoBehaviour
 
     void DefaultMovement()
     {
+        //uncrouch the player if they begin sprinting
         if (playerInput.run && status == Status.crouching)
             Uncrouch();
 
@@ -491,6 +504,65 @@ public class PlayerController : MonoBehaviour
         vaultHelper.transform.position = vaultOver;
         vaultHelper.transform.rotation = Quaternion.LookRotation(vaultDir);
     }
+    /*********************************************************************/
+
+    /***************************** GRAPPLING ******************************/
+    public Pendulum pendulum;
+    Vector3 tetherPoint;
+    Vector3 dirToTether;
+    Vector3 previousPos;
+    float grappleArmLength;
+    float grappleRange = 100f;
+
+    void grappleMovement()
+    {
+        dirToTether = tetherPoint - transform.position;
+        dirToTether.Normalize();
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            pendulum.bob.velocity += pendulum.bob.velocity.normalized * 1f;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            pendulum.bob.velocity += -Camera.main.transform.right * 1f;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            pendulum.bob.velocity += Camera.main.transform.right * 1f;
+        }
+
+        // First shorten arm length and pull up
+        transform.localPosition = pendulum.pullIn(Time.deltaTime * 10, transform.localPosition);
+
+        // Then calculate predicted position
+        transform.localPosition = pendulum.MoveBob(transform.localPosition, previousPos, Time.deltaTime);
+        previousPos = transform.localPosition;
+    }
+
+    public void SetUpGrapple()
+    {
+        
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
+        {
+            tetherPoint = hit.point;
+            grappleArmLength = Vector3.Distance(transform.localPosition, tetherPoint);
+            if(grappleArmLength <= grappleRange)
+            {
+                pendulum.bob.velocity += new Vector3(0, movement.moveDirection.y / 2, 0);
+                pendulum.SwitchTether(hit.point);
+                PlayerController.instance.status = Status.grappling;
+            }
+        }
+    }
+
+    public void StopGrapple()
+    {
+        status = Status.idle;
+    }
+
     /*********************************************************************/
 
     bool hasObjectInfront(float dis, LayerMask layer)

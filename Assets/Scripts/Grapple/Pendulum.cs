@@ -91,7 +91,7 @@ public class Pendulum
         }
         else
         {
-            SwingController.instance.state = SwingController.State.Falling;
+            PlayerController.instance.status = Status.idle;
             return startPos;
         }
     }

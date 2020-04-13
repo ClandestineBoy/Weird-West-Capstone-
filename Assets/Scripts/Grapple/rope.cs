@@ -32,12 +32,12 @@ public class rope : MonoBehaviour
     void Update()
     {
 
-        if (SwingController.instance.state == SwingController.State.Swinging)
-        {
-            lr.enabled = true;
-        }
-        else
-            lr.enabled = false;
+        //if (SwingController.instance.state == SwingController.State.Swinging)
+       // {
+       //     lr.enabled = true;
+        //}
+        //else
+        //    lr.enabled = false;
 
         lr = GetComponent<LineRenderer>();
         if (hasParent)

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 public class PowerSwap : MonoBehaviour
 {
+    public static PowerSwap instance;
+
     public GameObject SwapUI;
     public bool swapping;
 
@@ -13,6 +15,7 @@ public class PowerSwap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }

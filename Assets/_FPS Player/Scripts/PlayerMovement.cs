@@ -81,7 +81,6 @@ public class PlayerMovement : MonoBehaviour
             moveDirection.x = normalizedDir.x * speed;
             moveDirection.z = normalizedDir.y * speed;
         }
-        //moveDirection = transform.TransformDirection(moveDirection);
         UpdateJump();
         
         
@@ -134,8 +133,19 @@ public class PlayerMovement : MonoBehaviour
         forceGravity = applyGravity;
         moveDirection = direction * speed;
     }
+    void CheckForGround()
+    {
+        Ray downRay = new Ray(transform.position, Vector3.down);
+        Debug.DrawRay(downRay.origin, new Vector3(0, -1.25f, 0), Color.red);
 
-    void OnControllerColliderHit(ControllerColliderHit hit)
+        RaycastHit hit;
+
+        if (Physics.Raycast(downRay.origin, downRay.direction, out hit, 1.25f))
+        {
+            grounded = true;
+        }
+    }
+        void OnControllerColliderHit(ControllerColliderHit hit)
     {
         contactPoint = hit.point;
     }

@@ -60,7 +60,7 @@ public class SwingController : MonoBehaviour
     void DetermineState()
     {
         // Determine State
-        if (Player_Controller.instance.state == Player_Controller.PlayerState.onGround)
+        if (IsGrounded())
         {
             state = State.Walking;
         }
@@ -70,7 +70,7 @@ public class SwingController : MonoBehaviour
 
 
     //After Reference call, place tether can change player state
-    void StartSwing()
+    public void StartSwing()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -80,7 +80,7 @@ public class SwingController : MonoBehaviour
             {
                 if (state == State.Walking)
                 {
-                    pendulum.bob.velocity += new Vector3(0, Player_Controller.instance.verticalVelocity / 2, 0);
+                    pendulum.bob.velocity += new Vector3(0, Player_Controller.instance.moveDirection.y / 2, 0);
                 }
                 Player_Controller.instance.onGround = false;
                 Player_Controller.instance.rb.velocity = Vector3.zero;
