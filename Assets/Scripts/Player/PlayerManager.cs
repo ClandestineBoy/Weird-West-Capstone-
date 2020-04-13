@@ -136,7 +136,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider other)
+   /* public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("DimLight") || other.gameObject.CompareTag("BrightLight"))
         {
@@ -154,6 +154,6 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         } 
-    }   
+    }   */
         
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class EnemyAI : MonoBehaviour
     private int wayPointIndex;
     private bool alerting;
 
+    public static float lightMod = 1;
+    public float distMod;
+
+    public Image detection;
 
     private void Awake()
     {
@@ -38,6 +43,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        detection.fillAmount = alertMeter;
         if (!aINav.ragDolled)
         {
             if (enemySight.playerInSight && alertMeter < alertMax)
@@ -67,10 +73,11 @@ public class EnemyAI : MonoBehaviour
    
     IEnumerator Alerting()
     {
+        Debug.Log("alerting");
         alerting = true;
         while (alertMeter < 1)
         {
-            alertMeter += Time.deltaTime/5;
+            alertMeter += Time.deltaTime*lightMod * distMod;
             yield return 0;
             if (!enemySight.playerInSight)
                 break;
@@ -88,12 +95,13 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator StopAlerting()
     {
+        Debug.Log("stopping");
         alerting = false;
         yield return new WaitForSeconds(2);
         if (!enemySight.playerInSight && alertMeter < alertMax) { 
         while (alertMeter > 0)
             {
-                alertMeter -= Time.deltaTime;
+                alertMeter -= Time.deltaTime*lightMod;
                 yield return 0;
                 if (enemySight.playerInSight)
                     break;
@@ -109,7 +117,7 @@ public class EnemyAI : MonoBehaviour
     
     void Shooting()
     {
-        Debug.Log("Shooting");
+      //  Debug.Log("Shooting");
         //may change this to spherical raycast
         nav.isStopped = true;
         //Reset vision timer if in sight
@@ -117,7 +125,7 @@ public class EnemyAI : MonoBehaviour
     }
     void Chasing()
     {
-        Debug.Log("Chasing!");
+        //Debug.Log("Chasing!");
         nav.isStopped = false;    
         nav.SetDestination(player.position);
         nav.speed = runSpeed;
@@ -132,7 +140,7 @@ public class EnemyAI : MonoBehaviour
 
     void StopChasing()
     {
-        Debug.Log("Losing");
+        //Debug.Log("Losing");
         nav.isStopped = false;
             nav.SetDestination(enemySight.personalLastSighting);
         nav.speed = runSpeed;
@@ -149,12 +157,13 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
+            alertMeter = 0;
             endChaseTimer = 0;
         }
     }
     void Patrolling()
     {
-        Debug.Log("Patrolling");
+       // Debug.Log("Patrolling");
         nav.isStopped = false;
         nav.speed = patrolSpeed;
         if (nav.destination == lastPlayerSighting.resetPosition || nav.remainingDistance < 1)
@@ -179,18 +188,6 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-    public void BrightLight()
-    {
-        enemySight.fieldOfViewAngle = 90;
-    }
-    public void DimLight()
-    {
-        enemySight.fieldOfViewAngle = 70;
-    }
-    public void AmbientLight()
-    {
-        enemySight.fieldOfViewAngle = 50;
-    }
-
+    
 
 }

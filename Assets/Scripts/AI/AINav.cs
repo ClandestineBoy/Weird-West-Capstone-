@@ -39,7 +39,7 @@ public class AINav : MonoBehaviour
         rbs = GetComponentsInChildren<Rigidbody>();
         foreach (CapsuleCollider cc in ccs)
         {
-            cc.enabled = false;
+            cc.isTrigger = true;
         }
 
         foreach (Rigidbody rb in rbs)
@@ -48,11 +48,10 @@ public class AINav : MonoBehaviour
         }
         foreach (SphereCollider sc in scs)
         {
-            sc.enabled = false;
+            sc.isTrigger = true;
         }
 
         GetComponentInChildren<BoxCollider>().enabled = false;
-        GetComponent<SphereCollider>().enabled = true;
         GetComponent<CapsuleCollider>().enabled = true;
         
         
@@ -127,7 +126,11 @@ public class AINav : MonoBehaviour
         ragDolled = true;
         foreach (CapsuleCollider cc in ccs)
         {
-            cc.enabled = true;
+            cc.isTrigger = false;
+        }
+        foreach (SphereCollider sc in scs)
+        {
+            sc.isTrigger = false;
         }
         foreach (Rigidbody rb in rbs)
         {

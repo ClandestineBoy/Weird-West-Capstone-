@@ -10,6 +10,7 @@ public class Telekinesis : MonoBehaviour
     bool isNPC;
     float objectVelocity = 18;
     public float manaCost;
+    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1<<11;
     // Start is called before the first frame update
     void Start()
     {
@@ -52,14 +53,18 @@ public class Telekinesis : MonoBehaviour
                 liftingObject = true;
 
             }
-            else if (hit.transform.gameObject.layer == 11)
+            else if (hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14)
             {
                 isNPC = true;
                 liftPoint.position = transform.position + transform.forward * 5;
-                liftedObject = hit.transform.gameObject;
+                if (hit.transform.gameObject.GetComponent<AINav>() != null)
+                    liftedObject = hit.transform.gameObject;
+                else
+                    liftedObject = hit.transform.root.gameObject;
 
                 //Ragdoll
-                liftedObject.GetComponent<AINav>().RagDoll();
+                if (liftedObject.GetComponent<AINav>() != null && !liftedObject.GetComponent<AINav>().ragDolled)
+                    liftedObject.GetComponent<AINav>().RagDoll();
                 liftingObject = true;
             }
         }
