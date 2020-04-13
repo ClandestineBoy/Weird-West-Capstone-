@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement instance;
     public float walkSpeed = 4.0f;
     public float runSpeed = 8.0f;
     public float slideSpeed = 10.0f;
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        instance = this;
         // Saving component references to improve performance.
         controller = GetComponent<CharacterController>();
     }

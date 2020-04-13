@@ -24,8 +24,8 @@ public class Mist : MonoBehaviour
     {
         isMist = true;
         Physics.IgnoreLayerCollision(9, 10, true);
-        originalSpeed = Player_Controller.instance.speed;
-        Player_Controller.instance.speed = mistSpeed;
+        originalSpeed = PlayerMovement.instance.walkSpeed;
+        PlayerMovement.instance.walkSpeed = mistSpeed;
         PlayerManager.instance.SpendMana(manaCost);
         GetComponentInChildren<CameraShader>().enabled = true;
         yield return new WaitForSeconds(mistDuration);
@@ -36,7 +36,7 @@ public class Mist : MonoBehaviour
         isMist = false;
         Physics.IgnoreLayerCollision(9,10, false);
         GetComponentInChildren<CameraShader>().enabled = false;
-        Player_Controller.instance.speed = originalSpeed;
+        PlayerMovement.instance.walkSpeed = originalSpeed;
         
     }
 }
