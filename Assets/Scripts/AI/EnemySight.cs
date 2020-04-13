@@ -6,12 +6,12 @@ using UnityEngine.AI;
 
 public class EnemySight : MonoBehaviour
 {
-    public float fieldOfViewAngle = 60f;
+    public static float fieldOfViewAngle = 60f;
     public bool playerInSight;
     public Vector3 personalLastSighting;
 
     private NavMeshAgent nav;
-    private SphereCollider col;
+    public SphereCollider col;
     private Animator anim;
     private LastPlayerSighting lastPlayerSighting;
     private GameObject player;
@@ -19,11 +19,14 @@ public class EnemySight : MonoBehaviour
     //private PlayerHealth playerHealth;
     private HashIDs hash;
     private Vector3 previousSighting;
+
+
+    public bool inRange;
+    
     // Start is called before the first frame update
     private void Awake()
     {
         nav = GetComponent<NavMeshAgent>();
-        col = GetComponent<SphereCollider>();
         anim = GetComponent<Animator>();
         lastPlayerSighting = GameObject.FindGameObjectWithTag("GameController").GetComponent<LastPlayerSighting>();
         player = GameObject.FindGameObjectWithTag("Player");
@@ -52,11 +55,36 @@ public class EnemySight : MonoBehaviour
 
         Debug.DrawLine(transform.position, endPoint2, Color.red);
 
+        if (inRange)
+        {
+           
+            Vector3 direction = player.transform.position - transform.position;
+            float angle = Vector3.Angle(direction, transform.forward);
+
+            if (angle < fieldOfViewAngle / 2)
+            {
+                RaycastHit hit;
+
+                if (Physics.Raycast(transform.position, direction.normalized, out hit, col.radius))
+                {
+                    if (hit.collider.gameObject == player)
+                    {
+                        playerInSight = true;
+                        lastPlayerSighting.position = player.transform.position;
+                    }
+                    else
+                        playerInSight = false;
+                }
+                else playerInSight = false;
+            } else
+                playerInSight = false;
+        }
+
     }
 
 
 
-    private void OnTriggerStay(Collider other)
+   /* private void OnTriggerStay(Collider other)
     {
         if (other.gameObject == player)
         {
@@ -78,10 +106,10 @@ public class EnemySight : MonoBehaviour
                 }
             }
             // if state sprinting/wallrunning etc
-           /* if (CalculatePathLength(player.transform.position) <= col.radius)
-            {
-                personalLastSighting = player.transform.position;
-            }*/
+           // if (CalculatePathLength(player.transform.position) <= col.radius)
+            //{
+              //  personalLastSighting = player.transform.position;
+            //}
         }
     }
 
@@ -92,6 +120,7 @@ public class EnemySight : MonoBehaviour
             playerInSight = false;
         }
     }
+    */
 
 
     float CalculatePathLength(Vector3 targetPosition)

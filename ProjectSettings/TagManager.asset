@@ -22,8 +22,8 @@ TagManager:
   - AI
   - PlayerProjectile
   - WorldObject
-  - 
-  - 
+  - AIBody
+  - InvisCol
   - 
   - 
   - 
