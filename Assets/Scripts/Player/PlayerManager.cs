@@ -63,15 +63,15 @@ public class PlayerManager : MonoBehaviour
                 case 1:
                     swap.DoSwap();
                     break;
-              case 2:
-                    if (swingController.state != SwingController.State.Swinging)
-                    {
-                        swingController.DoSwing();
-                    }
-                    else
-                    {
-                        swingController.StopSwing();
-                    }
+                case 2:
+                    if(PlayerController.instance.status != Status.grappling)
+                     {
+                         PlayerController.instance.SetUpGrapple();
+                     }
+                     else
+                     {
+                         PlayerController.instance.StopGrapple();
+                     }
                     break;
                 case 3:
                     telekinesis.DoTelekinesis();

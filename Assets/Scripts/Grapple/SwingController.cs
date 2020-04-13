@@ -70,7 +70,7 @@ public class SwingController : MonoBehaviour
 
 
     //After Reference call, place tether can change player state
-    void StartSwing()
+    public void StartSwing()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
