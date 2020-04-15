@@ -69,11 +69,11 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-        //Power Swap UI
         
         //Updates
         UpdateInteraction();
         UpdateMovingStatus();
+        UpdatePlayerManager();
 
 
         //Check for movement updates
@@ -108,6 +108,18 @@ public class PlayerController : MonoBehaviour
             if (playerInput.input.magnitude > 0.02f)
                 status = Status.moving;
 
+        }
+    }
+
+    void UpdatePlayerManager()
+    {
+        if(status == Status.crouching)
+        {
+            PlayerManager.instance.crouching = true;
+        }
+        else
+        {
+            PlayerManager.instance.crouching = true;
         }
     }
 

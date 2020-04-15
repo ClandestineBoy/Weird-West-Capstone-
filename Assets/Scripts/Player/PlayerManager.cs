@@ -20,6 +20,7 @@ public class PlayerManager : MonoBehaviour
     private SwingController swingController;
     private Telekinesis telekinesis;
 
+    public bool crouching = false;
     public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
     public LightLevel lightState = new LightLevel();
 
