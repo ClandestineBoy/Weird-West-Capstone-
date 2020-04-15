@@ -6,10 +6,11 @@ public class Swap : MonoBehaviour
 {
     int layerMaskGates = 1 << 10;
     public float manaCost;
+    CharacterController cc;
     // Start is called before the first frame update
     void Start()
     {
-        
+        cc = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -34,10 +35,12 @@ public class Swap : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == 11)
             {
-                Vector3 newPos = hit.transform.gameObject.transform.position;
+                cc.enabled = false;
+                Vector3 newPos = hit.transform.gameObject.transform.position + Vector3.up;
                 Vector3 oldPos = transform.position;
                 transform.position = newPos;
                 hit.transform.gameObject.transform.position = oldPos;
+                cc.enabled = true;
             }
 
         }
