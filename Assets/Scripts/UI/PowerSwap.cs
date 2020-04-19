@@ -26,6 +26,7 @@ public class PowerSwap : MonoBehaviour
         if (Input.GetMouseButton(2))
         {
             Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             swapping = true;
             SwapUI.SetActive(true);
 
@@ -47,7 +48,11 @@ public class PowerSwap : MonoBehaviour
                 {
                     if (angle > i * (360 / options.Length) && angle < (i + 1) * (360/ options.Length))
                     {
-                        PlayerManager.instance.equippedPower = i;         
+                        Debug.Log(i);
+                        if (i <= 3)
+                            PlayerManager.instance.equippedPower = i;
+                        else
+                            PlayerManager.instance.equippedWeapon = i - 4;
                           
                     }
                 }
@@ -61,6 +66,7 @@ public class PowerSwap : MonoBehaviour
             SwapUI.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             swapping = false;
+            Cursor.visible = false;
         }
     }
 }

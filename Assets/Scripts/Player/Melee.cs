@@ -5,7 +5,7 @@ using UnityEngine;
 public class Melee : MonoBehaviour
 {
     public AnimationCurve animCurve;
-    bool slashing;
+    public bool slashing;
     MeshRenderer mesh;
     BoxCollider box;
     // Start is called before the first frame update
@@ -19,14 +19,10 @@ public class Melee : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !slashing)
-        {
-            StartCoroutine(Slash());
-
-        }
+       
     }
 
-    IEnumerator Slash()
+   public  IEnumerator Slash()
     {
         box.enabled = true;
         mesh.enabled = true;

@@ -16,23 +16,25 @@ public class Gun : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(0)) {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100,layerMask))
+       
+    }
+    public void Shoot()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 100, layerMask))
+        {
+            Debug.Log(hit.transform.name);
+            if (hit.transform.gameObject.layer == 14)
             {
-                Debug.Log(hit.transform.name);
-                if (hit.transform.gameObject.layer == 14)
+                hit.transform.root.gameObject.GetComponent<AINav>().RagDoll();
+
+                foreach (Rigidbody rb in hit.transform.root.gameObject.GetComponent<AINav>().rbs)
                 {
-                    hit.transform.root.gameObject.GetComponent<AINav>().RagDoll();
-                   
-                    foreach (Rigidbody rb in hit.transform.root.gameObject.GetComponent<AINav>().rbs)
-                    {
-                        rb.useGravity = true;
-                    }
-                    hit.transform.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 75, ForceMode.Impulse);
-                    Debug.Log("boom2");
+                    rb.useGravity = true;
                 }
+                hit.transform.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 75, ForceMode.Impulse);
+                Debug.Log("boom2");
             }
         }
     }

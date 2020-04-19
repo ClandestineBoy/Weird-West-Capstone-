@@ -40,11 +40,11 @@ public class Mist : MonoBehaviour
         {
             PlayerMovement.instance.crouchSpeed = mistSpeed;
             PlayerManager.instance.SpendMana(manaCost);
-            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y - .5f, Camera.main.transform.position.z);
+            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y - .95f, Camera.main.transform.position.z);
             PlayerMovement.instance.controller.height = PlayerController.instance.halfheight / 10;
             yield return new WaitForSeconds(mistDuration);
             PlayerMovement.instance.controller.height = PlayerController.instance.halfheight;
-            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + .5f, Camera.main.transform.position.z);
+            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + .95f, Camera.main.transform.position.z);
         }
         
         BecomeHuman();

@@ -14,12 +14,15 @@ public class PlayerManager : MonoBehaviour
 
 
     public int equippedPower;
+    public int equippedWeapon;
 
     private Mist mist;
     private Swap swap;
     private SwingController swingController;
     private Telekinesis telekinesis;
     private StealthGrapple stealthGrapple;
+    private Gun gun;
+    private Melee melee;
 
     public bool crouching = false;
     public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
@@ -35,6 +38,8 @@ public class PlayerManager : MonoBehaviour
         swap = GetComponent<Swap>();
         swingController = GetComponent<SwingController>();
         telekinesis = GetComponent<Telekinesis>();
+        gun = GetComponent<Gun>();
+        melee = GetComponentInChildren<Melee>();
 
         equippedPower = 3;
         instance = this;
@@ -85,15 +90,30 @@ public class PlayerManager : MonoBehaviour
             }
 
         }
-
-        /*if (SwingController.instance.state != SwingController.State.Swinging)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
+            switch (equippedWeapon)
             {
-                StartCoroutine(mist.BecomeMist());
+                case 0:
+                    gun.Shoot();
+                    break;
+                case 1:
+                    if (!melee.slashing)
+                    {
+                        StartCoroutine(melee.Slash());
+                    }
+                    break;
             }
-        }*/
-    }
+        }
+
+            /*if (SwingController.instance.state != SwingController.State.Swinging)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftShift) && !mist.isMist)
+                {
+                    StartCoroutine(mist.BecomeMist());
+                }
+            }*/
+        }
 
     public void SpendMana(float manaCost)
     {
