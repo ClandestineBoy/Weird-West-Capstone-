@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Swap : MonoBehaviour
 {
@@ -56,11 +57,13 @@ public class Swap : MonoBehaviour
             {
                 PlayerManager.instance.SpendMana(manaCost);
                 cc.enabled = false;
+                hit.transform.gameObject.GetComponent<NavMeshAgent>().enabled = false;
                 Vector3 newPos = hit.transform.gameObject.transform.position + Vector3.up;
                 Vector3 oldPos = transform.position;
                 transform.position = newPos;
                 hit.transform.gameObject.transform.position = oldPos;
                 cc.enabled = true;
+                hit.transform.gameObject.GetComponent<NavMeshAgent>().enabled = true;
             }
 
         }

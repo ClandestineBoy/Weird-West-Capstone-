@@ -38,10 +38,16 @@ public class Mist : MonoBehaviour
         }
         else
         {
-            PlayerMovement.instance.crouchSpeed = mistSpeed;
+            PlayerMovement.instance.crouchSpeed = mistSpeed/4;
             PlayerManager.instance.SpendMana(manaCost);
             Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y - .95f, Camera.main.transform.position.z);
             PlayerMovement.instance.controller.height = PlayerController.instance.halfheight / 10;
+          //while (Input.GetMouseButton(1) && play)
+            //{
+
+            //}
+            
+            
             yield return new WaitForSeconds(mistDuration);
             PlayerMovement.instance.controller.height = PlayerController.instance.halfheight;
             Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + .95f, Camera.main.transform.position.z);
