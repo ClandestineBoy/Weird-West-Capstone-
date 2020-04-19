@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
+    //everything except npc root capsule collider
     int layerMask = 1 << 0 | 1<< 1 | 1<<2 | 1<<3 | 1<<4 | 1<<5 | 1<<6 | 1<<7 | 1<< 8 | 1<<9 | 1 << 10 | 1<<12| 1<<13 | 1<<14;
     // Start is called before the first frame update
     void Start()
@@ -14,6 +15,7 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetMouseButtonDown(0)) {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

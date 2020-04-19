@@ -22,6 +22,7 @@ public class EnemySight : MonoBehaviour
 
 
     public bool inRange;
+    public float dist;
     
     // Start is called before the first frame update
     private void Awake()
@@ -50,15 +51,25 @@ public class EnemySight : MonoBehaviour
         Vector3 endDir2 = Quaternion.Euler(0, -fieldOfViewAngle/2, 0) * -transform.forward;
         Vector3 endPoint1 = transform.position - endDir1 * col.radius;
         Vector3 endPoint2 = transform.position - endDir2 * col.radius;
-      //  Debug.Log(string.Format("Enemy location: {0} {1}, End location: {2} {3}", transform.position.x, transform.position.z, endPoint1.x, endPoint1.z));
+
+        Vector3 periphDir1 = Quaternion.Euler(0, 80, 0) * -transform.forward;
+        Vector3 periphDir2 = Quaternion.Euler(0, -80, 0) * -transform.forward;
+        Vector3 periphPoint1 = transform.position - periphDir1 * 3;
+        Vector3 periphPoint2 = transform.position - periphDir2 * 3;
+        //  Debug.Log(string.Format("Enemy location: {0} {1}, End location: {2} {3}", transform.position.x, transform.position.z, endPoint1.x, endPoint1.z));
         Debug.DrawLine(transform.position, endPoint1, Color.red);
 
         Debug.DrawLine(transform.position, endPoint2, Color.red);
+
+        //Peripheral
+        Debug.DrawLine(transform.position, periphPoint1, Color.red);
+        Debug.DrawLine(transform.position, periphPoint2, Color.red);
 
         if (inRange)
         {
            
             Vector3 direction = player.transform.position - transform.position;
+            dist = Vector3.Distance(player.transform.position, transform.position);
             float angle = Vector3.Angle(direction, transform.forward);
 
             if (angle < fieldOfViewAngle / 2)
@@ -76,8 +87,35 @@ public class EnemySight : MonoBehaviour
                         playerInSight = false;
                 }
                 else playerInSight = false;
-            } else
+            } // peripheral vision
+            else if (angle < 80 && dist < 3)
+            {
+                RaycastHit hit;
+
+                if (Physics.Raycast(transform.position, direction.normalized, out hit, col.radius))
+                {
+                    if (hit.collider.gameObject == player)
+                    {
+                        playerInSight = true;
+                        lastPlayerSighting.position = player.transform.position;
+                    }
+                    else
+                        playerInSight = false;
+                }
+
+            } else 
                 playerInSight = false;
+
+
+            // if state sprinting/wallrunning etc
+            if (PlayerController.instance.status == Status.moving)
+            {
+                if (CalculatePathLength(player.transform.position) <= col.radius)
+                {
+                    personalLastSighting = player.transform.position;
+                    playerInSight = true;
+                }
+            }
         }
 
     }
@@ -123,7 +161,7 @@ public class EnemySight : MonoBehaviour
     */
 
 
-    float CalculatePathLength(Vector3 targetPosition)
+   public float CalculatePathLength(Vector3 targetPosition)
     {
         NavMeshPath path = new NavMeshPath();
 

@@ -28,6 +28,8 @@ public class EnemyAI : MonoBehaviour
 
     public static float lightMod = 1;
     public float distMod;
+    public bool objectHeard;
+    public Vector3 heardPos;
 
     public Image detection;
 
@@ -46,7 +48,11 @@ public class EnemyAI : MonoBehaviour
         detection.fillAmount = alertMeter;
         if (!aINav.ragDolled)
         {
-            if (enemySight.playerInSight && alertMeter < alertMax)
+            if (!enemySight.playerInSight && objectHeard && alertMeter < alertMax)
+            {
+                Distracted();
+            }
+            else if (enemySight.playerInSight && alertMeter < alertMax)
             {
                 if (!alerting)
                     StartCoroutine(Alerting());
@@ -70,13 +76,36 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
-   
+
+
+    void Distracted()
+    {
+        //Debug.Log("heard something!");
+        nav.isStopped = false;
+        nav.SetDestination(heardPos);
+        nav.speed = patrolSpeed;
+
+        if (nav.remainingDistance < 2)
+        {
+            StartCoroutine(Inspect());
+        }     
+    }
+
+    IEnumerator Inspect()
+    {
+        //run looking around animation
+        yield return new WaitForSeconds(10);
+        objectHeard = false;
+    }
+
+
     IEnumerator Alerting()
     {
         Debug.Log("alerting");
         alerting = true;
         while (alertMeter < 1)
         {
+            distMod = 10/enemySight.dist;
             alertMeter += Time.deltaTime*lightMod * distMod;
             yield return 0;
             if (!enemySight.playerInSight)

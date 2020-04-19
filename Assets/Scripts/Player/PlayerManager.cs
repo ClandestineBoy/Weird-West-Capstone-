@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviour
     private Swap swap;
     private SwingController swingController;
     private Telekinesis telekinesis;
+    private StealthGrapple stealthGrapple;
 
     public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
     public LightLevel lightState = new LightLevel();
@@ -28,13 +29,13 @@ public class PlayerManager : MonoBehaviour
     {
         NPCS = GameObject.FindGameObjectsWithTag("NPC");
 
-
+        stealthGrapple = GetComponent<StealthGrapple>();
         mist = GetComponent<Mist>();
         swap = GetComponent<Swap>();
         swingController = GetComponent<SwingController>();
         telekinesis = GetComponent<Telekinesis>();
 
-        equippedPower = 2;
+        equippedPower = 3;
         instance = this;
     }
 
@@ -64,7 +65,10 @@ public class PlayerManager : MonoBehaviour
                     swap.DoSwap();
                     break;
                 case 2:
-                    if(PlayerController.instance.status != Status.grappling)
+                    if (PlayerController.instance.status == Status.crouching)
+                    {
+                        stealthGrapple.GrappleCheck();   
+                    } else if(PlayerController.instance.status != Status.grappling)
                      {
                          PlayerController.instance.SetUpGrapple();
                      }
