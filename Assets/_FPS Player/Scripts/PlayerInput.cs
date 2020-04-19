@@ -35,7 +35,7 @@ public class PlayerInput : MonoBehaviour
 
     public bool run
     {
-        get { return Input.GetKey(KeyCode.LeftShift); }
+        get { return Input.GetKeyDown(KeyCode.LeftShift); }
     }
 
     public bool crouch

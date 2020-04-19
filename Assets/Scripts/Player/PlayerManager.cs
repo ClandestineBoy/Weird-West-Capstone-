@@ -21,6 +21,7 @@ public class PlayerManager : MonoBehaviour
     private Telekinesis telekinesis;
     private StealthGrapple stealthGrapple;
 
+    public bool crouching = false;
     public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
     public LightLevel lightState = new LightLevel();
 
