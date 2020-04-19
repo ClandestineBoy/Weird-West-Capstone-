@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Swap : MonoBehaviour
 {
+    bool crouchTime = false;
     int layerMaskGates = 1 << 10;
     public float manaCost;
     CharacterController cc;
@@ -17,16 +18,34 @@ public class Swap : MonoBehaviour
 
     void Update()
     {
-     
+        if(crouchTime)
+        SlowTime();
     }
 
     public void DoSwap()
     {
-        if (PlayerManager.instance.currentHealth > manaCost * 2)
+        if (PlayerManager.instance.crouching)
+        {
+            crouchTime = true;
+        }
+        else if (PlayerManager.instance.currentHealth > manaCost * 2)
         {
             SwapAction();
         }
     }
+
+    void SlowTime()
+    {
+        Time.timeScale = .4f;
+        PlayerManager.instance.SpendMana(1);
+        if (Input.GetMouseButtonUp(1))
+        {
+            Time.timeScale = 1;
+            crouchTime = false;
+            SwapAction();
+        }
+    }
+
     void SwapAction()
     {
         RaycastHit hit;
@@ -35,6 +54,7 @@ public class Swap : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == 11)
             {
+                PlayerManager.instance.SpendMana(manaCost);
                 cc.enabled = false;
                 Vector3 newPos = hit.transform.gameObject.transform.position + Vector3.up;
                 Vector3 oldPos = transform.position;

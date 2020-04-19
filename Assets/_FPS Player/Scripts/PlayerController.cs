@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     bool canInteract;
     bool canGrabLedge;
     bool controlledSlide;
+    bool sprinting;
+   // [HideInInspector]
+    public bool canSprint = true;
 
     float rayDistance;
     float slideLimit;
@@ -43,7 +46,7 @@ public class PlayerController : MonoBehaviour
     float radius;
     float height;
     float halfradius;
-    float halfheight;
+    public float halfheight;
 
     int wallDir = 1;
 
@@ -119,7 +122,22 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            PlayerManager.instance.crouching = true;
+            PlayerManager.instance.crouching = false;
+        }
+        if (playerInput.run && canSprint)
+        {
+            if (sprinting)
+            {
+                sprinting = false;
+            }
+            else
+            {
+                sprinting = true;
+            }
+        }
+        if(playerInput.input == Vector2.zero)
+        {
+            sprinting = false;
         }
     }
 
@@ -173,10 +191,10 @@ public class PlayerController : MonoBehaviour
     void DefaultMovement()
     {
         //uncrouch the player if they begin sprinting
-        if (playerInput.run && status == Status.crouching)
+        if (sprinting && status == Status.crouching)
             Uncrouch();
 
-        movement.Move(playerInput.input, playerInput.run, (status == Status.crouching));
+        movement.Move(playerInput.input, sprinting, (status == Status.crouching));
         if (movement.grounded && playerInput.Jump())
         {
             if (status == Status.crouching)
@@ -245,7 +263,7 @@ public class PlayerController : MonoBehaviour
     bool canSlide()
     {
         if (!movement.grounded) return false;
-        if (playerInput.input.magnitude <= 0.02f || !playerInput.run) return false;
+        if (playerInput.input.magnitude <= 0.02f || !sprinting) return false;
         if (slideTime > 0 || status == Status.sliding) return false;
         return true;
     }
