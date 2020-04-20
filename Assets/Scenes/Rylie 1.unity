@@ -4969,6 +4969,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 875842652, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e, type: 3}
+      propertyPath: mistSpeed
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 2156404830400202900, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5034,5 +5038,15 @@ PrefabInstance:
       propertyPath: pendulum.tether.tetherTransform
       value: 
       objectReference: {fileID: 435217993}
+    - target: {fileID: 9203277960024923784, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+        type: 3}
+      propertyPath: walkSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9203277960024923784, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+        type: 3}
+      propertyPath: runSpeed
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e, type: 3}

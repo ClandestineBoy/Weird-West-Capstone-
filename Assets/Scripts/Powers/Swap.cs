@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class Swap : MonoBehaviour
 {
     bool crouchTime = false;
-    int layerMaskGates = 1 << 10;
+    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1<<11 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
     public float manaCost;
     CharacterController cc;
     // Start is called before the first frame update
@@ -27,11 +27,12 @@ public class Swap : MonoBehaviour
     {
         if (PlayerManager.instance.crouching)
         {
-            crouchTime = true;
+            SwapAction();
         }
         else if (PlayerManager.instance.currentHealth > manaCost * 2)
         {
             SwapAction();
+            crouchTime = true;
         }
     }
 
@@ -51,7 +52,7 @@ public class Swap : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 100))
+        if (Physics.Raycast(ray, out hit, 100, layerMask))
         {
             if (hit.transform.gameObject.layer == 11)
             {

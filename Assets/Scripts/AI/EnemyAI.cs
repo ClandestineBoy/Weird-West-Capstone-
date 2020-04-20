@@ -130,10 +130,12 @@ public class EnemyAI : MonoBehaviour
         if (!enemySight.playerInSight && alertMeter < alertMax) { 
         while (alertMeter > 0)
             {
-                alertMeter -= Time.deltaTime*lightMod;
-                yield return 0;
                 if (enemySight.playerInSight)
                     break;
+                alertMeter -= Time.deltaTime*lightMod;
+                yield return 0;
+               // if (enemySight.playerInSight)
+                 //   break;
             }
         if  (alertMeter < 0)
             {

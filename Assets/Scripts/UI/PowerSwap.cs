@@ -25,6 +25,7 @@ public class PowerSwap : MonoBehaviour
     {
         if (Input.GetMouseButton(2))
         {
+            Time.timeScale = .2f;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             swapping = true;
@@ -63,6 +64,7 @@ public class PowerSwap : MonoBehaviour
 
         } else if (Input.GetMouseButtonUp(2))
         {
+            Time.timeScale = 1;
             SwapUI.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             swapping = false;

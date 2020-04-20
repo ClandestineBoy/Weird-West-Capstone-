@@ -23,7 +23,9 @@ public class EnemySight : MonoBehaviour
 
     public bool inRange;
     public float dist;
-    
+
+    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -76,7 +78,7 @@ public class EnemySight : MonoBehaviour
             {
                 RaycastHit hit;
 
-                if (Physics.Raycast(transform.position, direction.normalized, out hit, col.radius))
+                if (Physics.Raycast(transform.position, direction.normalized, out hit, col.radius, layerMask))
                 {
                     if (hit.collider.gameObject == player)
                     {
@@ -92,7 +94,7 @@ public class EnemySight : MonoBehaviour
             {
                 RaycastHit hit;
 
-                if (Physics.Raycast(transform.position, direction.normalized, out hit, col.radius))
+                if (Physics.Raycast(transform.position, direction.normalized, out hit, col.radius, layerMask))
                 {
                     if (hit.collider.gameObject == player)
                     {
