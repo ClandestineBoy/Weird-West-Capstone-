@@ -24,9 +24,9 @@ TagManager:
   - WorldObject
   - AIBody
   - InvisCol
-  - 
-  - 
-  - 
+  - Wallrun
+  - LedgeGrab
+  - GrapplePoint
   - 
   - 
   - 

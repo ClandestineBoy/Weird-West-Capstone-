@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask wallrunLayer;
 
+    int layermask = 1<<18;
+
     GameObject vaultHelper;
 
     Vector3 wallNormal = Vector3.zero;
@@ -542,7 +544,7 @@ public class PlayerController : MonoBehaviour
     Vector3 dirToTether;
     Vector3 previousPos;
     float grappleArmLength;
-    float grappleRange = 100f;
+    float grappleRange = 40f;
 
     void grappleMovement()
     {
@@ -575,16 +577,14 @@ public class PlayerController : MonoBehaviour
         
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, grappleRange,layermask))
         {
+            Debug.Log(hit.transform.gameObject.name);
+            Debug.Log(grappleArmLength);
             tetherPoint = hit.point;
-            grappleArmLength = Vector3.Distance(transform.localPosition, tetherPoint);
-            if(grappleArmLength <= grappleRange)
-            {
                 pendulum.bob.velocity += new Vector3(0, movement.moveDirection.y / 2, 0);
                 pendulum.SwitchTether(hit.point);
                 PlayerController.instance.status = Status.grappling;
-            }
         }
     }
 

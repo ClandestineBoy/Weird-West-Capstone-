@@ -54,7 +54,6 @@ public class Swap : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == 11)
             {
-                PlayerManager.instance.SpendMana(manaCost);
                 cc.enabled = false;
                 Vector3 newPos = hit.transform.gameObject.transform.position + Vector3.up;
                 Vector3 oldPos = transform.position;
