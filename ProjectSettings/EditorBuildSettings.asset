@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Stealth.unity
+    guid: 2dd1d2d67a403d6449a1fc07295eca81
   m_configObjects: {}
