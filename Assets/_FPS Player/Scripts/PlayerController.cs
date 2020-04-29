@@ -368,7 +368,7 @@ public class PlayerController : MonoBehaviour
         if (!hasWallToSide(wallDir) || movement.grounded)
             status = Status.moving;
 
-        movement.Move(move, movement.runSpeed, (1f - s) + (s / 4f)/2);
+        movement.Move(move, movement.runSpeed, ((1f - s) == 0) ? (s / 4f)/2 : .125f);
     }
 
     void CheckForWallrun()
@@ -386,6 +386,10 @@ public class PlayerController : MonoBehaviour
 
         if(Physics.Raycast(transform.position + (transform.right * wall * radius), transform.right * wall, out var hit, halfradius, wallrunLayer))
         {
+            if(status != Status.wallRunning)
+            {
+                movement.moveDirection.y = 0;
+            }
             wallDir = wall;
             wallNormal = Vector3.Cross(hit.normal, Vector3.up) * -wallDir;
             status = Status.wallRunning;
