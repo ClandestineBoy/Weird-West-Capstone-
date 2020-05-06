@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grappling, grabbedLedge, climbingLedge, vaulting }
 
 public class PlayerController : MonoBehaviour
 {
+    public Text debug;
+
     public static PlayerController instance;
     public Status status;
 
@@ -55,26 +58,31 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         instance = this;
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
         CreateVaultHelper();
+        
         playerInput = GetComponent<PlayerInput>();
         movement = GetComponent<PlayerMovement>();
+       
 
         if (GetComponentInChildren<AnimateLean>())
             animateLean = GetComponentInChildren<AnimateLean>();
-
+        
         slideLimit = movement.controller.slopeLimit - .1f;
         radius = movement.controller.radius;
         height = movement.controller.height;
         halfradius = radius / 2f;
         halfheight = height / 2f;
         rayDistance = halfheight + radius + .1f;
+
     }
 
     /******************************* UPDATE ******************************/
     void Update()
     {
-        
+        //build debug stuff
+        debug.text = "Status: " + status + "\nCurrent Height: " + movement.controller.height;
+
         //Updates
         UpdateInteraction();
         UpdateMovingStatus();

@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private bool forceGravity;
     private float forceTime = 0;
 
-    private void Start()
+    private void Awake()
     {
         instance = this;
         // Saving component references to improve performance.
@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (forceTime > 0)
             forceTime -= Time.deltaTime;
+
     }
 
     private void FixedUpdate()
