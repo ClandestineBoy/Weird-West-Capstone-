@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
+
 public class EnemyAI : MonoBehaviour
 {
     public float patrolSpeed = 3f;
@@ -199,6 +200,7 @@ public class EnemyAI : MonoBehaviour
         nav.speed = patrolSpeed;
         if (nav.destination == lastPlayerSighting.resetPosition || nav.remainingDistance < 1)
         {
+            nav.isStopped = true;
             patrolTimer += Time.deltaTime;
             if (patrolTimer >= patrolWaitTime)
             {

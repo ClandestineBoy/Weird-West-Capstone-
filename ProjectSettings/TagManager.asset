@@ -7,6 +7,7 @@ TagManager:
   - DimLight
   - BrightLight
   - NPC
+  - Ragdoll
   layers:
   - Default
   - TransparentFX

@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Rylie 1.unity
+    guid: 77bdc3fcf5ad3b641b6672ee5ade8aeb
+  - enabled: 1
     path: Assets/Scenes/Stealth.unity
     guid: 2dd1d2d67a403d6449a1fc07295eca81
   m_configObjects: {}

@@ -60,6 +60,17 @@ public class AINav : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!ragDolled)
+        {
+            if (agent.isStopped)
+            {
+                animator.SetBool("isWalking", false);
+            }
+            else
+            {
+                animator.SetBool("isWalking", true);
+            }
+        }
        /* if (fallen) {
             agent.SetDestination(transform.position);
             agent.speed = 0;

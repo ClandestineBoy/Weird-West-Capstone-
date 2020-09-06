@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class PlayerManager : MonoBehaviour
     private Melee melee;
 
     public bool crouching = false;
+
+    public Image hp;
+    public Image mp;
     public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
     public LightLevel lightState = new LightLevel();
 
@@ -47,6 +51,9 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
+
+        hp.fillAmount = currentHealth / maxHealth;
+        mp.fillAmount = currentMana / maxMana;
         /*if (Input.GetKeyDown(KeyCode.Space))
         {
             

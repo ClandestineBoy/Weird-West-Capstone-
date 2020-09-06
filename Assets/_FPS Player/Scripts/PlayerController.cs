@@ -360,7 +360,7 @@ public class PlayerController : MonoBehaviour
 
         if (playerInput.Jump())
         {
-            movement.Jump(((Vector3.up * (s + 0.5f)) + (wallNormal * 2f * s) + (transform.right * -wallDir * 1.25f)).normalized, s + 0.5f);
+            movement.Jump(((Vector3.up * (s + 1.5f)) + (wallNormal * 2f * s) + (transform.right * -wallDir * 1.25f)).normalized, s + 0.5f);
             playerInput.ResetJump();
             status = Status.moving;
         }
@@ -368,7 +368,7 @@ public class PlayerController : MonoBehaviour
         if (!hasWallToSide(wallDir) || movement.grounded)
             status = Status.moving;
 
-        movement.Move(move, movement.runSpeed, (1f - s) + (s / 4f)/2);
+        movement.Move(move, movement.runSpeed *1.25f, (1f - s) + (s / 4f)/2);
     }
 
     void CheckForWallrun()
