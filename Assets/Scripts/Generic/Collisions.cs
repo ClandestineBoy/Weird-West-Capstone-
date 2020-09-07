@@ -26,13 +26,12 @@ public class Collisions : MonoBehaviour
     {
         if (rb.velocity.magnitude > 1)
         {
-            Debug.Log("NOISE");
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5 * rb.velocity.magnitude, layerMask);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 10 * rb.velocity.magnitude, layerMask);
             foreach (Collider col in hitColliders)
             {
                 
                EnemySight enemySight = col.gameObject.GetComponent<EnemySight>();
-                 if (enemySight.CalculatePathLength(transform.position) <= enemySight.col.radius)
+                 if (col.gameObject.GetComponent<EnemySight>().CalculatePathLength(transform.position) <= enemySight.col.radius)
                 {
                     col.gameObject.GetComponent<EnemyAI>().objectHeard = true;
                     col.gameObject.GetComponent<EnemyAI>().heardPos = transform.position;

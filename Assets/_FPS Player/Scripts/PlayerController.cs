@@ -1,14 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grappling, grabbedLedge, climbingLedge, vaulting }
 
 public class PlayerController : MonoBehaviour
 {
-    public Text debug;
-
     public static PlayerController instance;
     public Status status;
 
@@ -58,31 +55,26 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         instance = this;
-        //rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         CreateVaultHelper();
-        
         playerInput = GetComponent<PlayerInput>();
         movement = GetComponent<PlayerMovement>();
-       
 
         if (GetComponentInChildren<AnimateLean>())
             animateLean = GetComponentInChildren<AnimateLean>();
-        
+
         slideLimit = movement.controller.slopeLimit - .1f;
         radius = movement.controller.radius;
         height = movement.controller.height;
         halfradius = radius / 2f;
         halfheight = height / 2f;
         rayDistance = halfheight + radius + .1f;
-
     }
 
     /******************************* UPDATE ******************************/
     void Update()
     {
-        //build debug stuff
-        debug.text = "Status: " + status + "\nCurrent Height: " + movement.controller.height;
-
+        
         //Updates
         UpdateInteraction();
         UpdateMovingStatus();
@@ -368,7 +360,7 @@ public class PlayerController : MonoBehaviour
 
         if (playerInput.Jump())
         {
-            movement.Jump(((Vector3.up * (s + 0.5f)) + (wallNormal * 2f * s) + (transform.right * -wallDir * 1.25f)).normalized, s + 0.5f);
+            movement.Jump(((Vector3.up * (s + 1.5f)) + (wallNormal * 2f * s) + (transform.right * -wallDir * 1.25f)).normalized, s + 0.5f);
             playerInput.ResetJump();
             status = Status.moving;
         }
@@ -376,7 +368,7 @@ public class PlayerController : MonoBehaviour
         if (!hasWallToSide(wallDir) || movement.grounded)
             status = Status.moving;
 
-        movement.Move(move, movement.runSpeed, ((1f - s) == 0) ? (s / 4f)/2 : .125f);
+        movement.Move(move, movement.runSpeed *1.25f, (1f - s) + (s / 4f)/2);
     }
 
     void CheckForWallrun()
@@ -394,10 +386,6 @@ public class PlayerController : MonoBehaviour
 
         if(Physics.Raycast(transform.position + (transform.right * wall * radius), transform.right * wall, out var hit, halfradius, wallrunLayer))
         {
-            if(status != Status.wallRunning)
-            {
-                movement.moveDirection.y = 0;
-            }
             wallDir = wall;
             wallNormal = Vector3.Cross(hit.normal, Vector3.up) * -wallDir;
             status = Status.wallRunning;

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
+
 public class EnemyAI : MonoBehaviour
 {
     public float patrolSpeed = 3f;
@@ -32,6 +33,7 @@ public class EnemyAI : MonoBehaviour
     public Vector3 heardPos;
 
     public Image detection;
+    public GameObject myCanvas;
 
     private void Awake()
     {
@@ -45,6 +47,37 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       /* Vector3 line1 = transform.position - player.position;
+        float angle = Vector3.SignedAngle( new Vector3(line1.x, 0, line1.z), new Vector3(player.forward.x, 0 , player.forward.z), Vector3.up);
+        Debug.Log(angle);
+        */
+/*
+        // Get vector from player to AI
+        Vector3 targetDir = transform.position - player.position;
+
+        // Convert vector to polar coordinates (distance & angle) ignoring height
+        float dist = Vector3.Distance(new Vector3(targetDir.x, 0, targetDir.z), new Vector3(player.forward.x, 0, player.forward.z));
+        float angle = Vector3.SignedAngle(new Vector3(targetDir.x, 0, targetDir.z), new Vector3(player.forward.x, 0, player.forward.z), Vector3.up);
+
+        // Limit angle to FOV
+        angle = Mathf.Min(angle, Camera.main.fov / 2);
+
+        // Create vector from player to desired indicator position
+        Vector3 player2indicator = new Vector3(dist * Mathf.Cos(angle * Mathf.Deg2Rad), 0, dist * Mathf.Sin(angle * Mathf.Deg2Rad));
+
+        // Valculate vector from AI to desired indicator position (relative vector from parent)
+        Vector3 indicator = targetDir - player2indicator;
+
+        // Set indicator height
+        indicator.y = 2.0f;
+        Debug.Log(indicator);
+
+        // Now use indicator to set position relative to parent
+        myCanvas.GetComponent<RectTransform>().localPosition = indicator;
+        */
+
+
+
         detection.fillAmount = alertMeter;
         if (!aINav.ragDolled)
         {
@@ -81,6 +114,7 @@ public class EnemyAI : MonoBehaviour
     void Distracted()
     {
         //Debug.Log("heard something!");
+        //need to add a pause for the ai to look around first after being startled
         nav.isStopped = false;
         nav.SetDestination(heardPos);
         nav.speed = patrolSpeed;
@@ -199,6 +233,7 @@ public class EnemyAI : MonoBehaviour
         nav.speed = patrolSpeed;
         if (nav.destination == lastPlayerSighting.resetPosition || nav.remainingDistance < 1)
         {
+            nav.isStopped = true;
             patrolTimer += Time.deltaTime;
             if (patrolTimer >= patrolWaitTime)
             {
