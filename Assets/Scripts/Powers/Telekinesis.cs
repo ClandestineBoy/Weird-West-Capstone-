@@ -83,13 +83,21 @@ public class Telekinesis : MonoBehaviour
                 if (hit.transform.gameObject.GetComponent<AINav>() != null)
                     liftedObject = hit.transform.gameObject;
                 else
+                {
+                    Transform tempParent = hit.transform.root;
+                    hit.transform.root.DetachChildren();
+                 tempParent.position = hit.transform.position;
+                    hit.transform.root.parent = tempParent;
                     liftedObject = hit.transform.root.gameObject;
+                }
 
                 //Ragdoll
-               
 
-                if (liftedObject.GetComponent<AINav>() != null && !liftedObject.GetComponent<AINav>().ragDolled)
+
+                if (liftedObject.GetComponent<AINav>() != null)
                     liftedObject.GetComponent<AINav>().RagDoll();
+                
+            
 
                 liftingObject = true;
             }
@@ -146,10 +154,16 @@ public class Telekinesis : MonoBehaviour
                 if (hit.transform.gameObject.GetComponent<AINav>() != null)
                     liftedObject = hit.transform.gameObject;
                 else
+                {
+                    Transform tempParent = hit.transform.root;
+                    hit.transform.root.DetachChildren();
+                    tempParent.position = hit.transform.position;
+                    hit.transform.root.parent = tempParent;
                     liftedObject = hit.transform.root.gameObject;
+                }
 
                 //Ragdoll
-                if (liftedObject.GetComponent<AINav>() != null && !liftedObject.GetComponent<AINav>().ragDolled)
+                if (liftedObject.GetComponent<AINav>() != null)
                     liftedObject.GetComponent<AINav>().RagDoll();
                 liftingObject = true;
             }
