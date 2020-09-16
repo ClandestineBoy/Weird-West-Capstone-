@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     Vector3 slideDir;
     Vector3 vaultOver;
     Vector3 vaultDir;
+    Vector3 ledgeNormal;
 
    public PlayerMovement movement;
     PlayerInput playerInput;
@@ -45,10 +46,13 @@ public class PlayerController : MonoBehaviour
     float rayDistance;
     float slideLimit;
     float slideTime;
+    float climbTime;
     float radius;
     float height;
     float halfradius;
     public float halfheight;
+    public float ledgeSpeed;
+
 
     int wallDir = 1;
 
@@ -126,7 +130,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerManager.instance.crouching = false;
         }
-        if (playerInput.run && canSprint)
+        if (playerInput.run && canSprint && movement.grounded)
         {
             if (sprinting)
             {
@@ -298,38 +302,43 @@ public class PlayerController : MonoBehaviour
     }
     /*********************************************************************/
 
-    /************************** LADDER CLIMBING **************************/
+    /************************** CLAMBERING **************************/
+    bool canClamber()
+    {
+        if (climbTime > 0 || status == Status.climbingLadder || movement.moveDirection.y <= 0 || !sprinting) return false;
+        return true;
+    }
     void LadderMovement()
     {
+        if (climbTime > 0)
+            climbTime -= Time.deltaTime;
         Vector3 input = playerInput.input;
         Vector3 move = Vector3.Cross(Vector3.up, ladderNormal).normalized;
-        move *= input.x;
-        move.y = input.y * movement.walkSpeed;
 
-        bool goToGround = false;
-        goToGround = (move.y < -0.02f && movement.grounded);
+            move *= input.x;
 
-        if (playerInput.Jump())
-        {
-            movement.Jump((-ladderNormal + Vector3.up * 2f).normalized, 1f);
-            playerInput.ResetJump();
-            status = Status.moving;
-        }
+            move.y = movement.walkSpeed * climbTime; // need to be a speed that slowly deminishes as the clamber comes to an end
 
-        if (!hasObjectInfront(0.05f, ladderLayer) || goToGround)
-        {
-            status = Status.moving;
-            Vector3 pushUp = ladderNormal;
-            pushUp.y = 0.25f;
+            if (playerInput.Jump())
+            {
+                movement.Jump((-ladderNormal + Vector3.up * 2f).normalized, 1f);
+                playerInput.ResetJump();
+                status = Status.moving;
+                climbTime = 0;
+            }
 
-            movement.ForceMove(pushUp, movement.walkSpeed, 0.25f, true);
-        }
-        else
             movement.Move(move, 1f, 0f);
+
+        if (climbTime <= 0)
+        {
+            status = Status.moving;
+        }
     }
 
     void CheckLadderClimbing()
     {
+        Debug.Log(climbTime);
+        Debug.Log("CAN INTERACT: " + canInteract);
         if (!canInteract)
             return;
         //Check for ladder all across player (so they cannot use the side)
@@ -338,13 +347,13 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(transform.position, transform.forward, out var hit, radius + 0.125f, ladderLayer) && right && left)
         {
-            if (hit.normal != hit.transform.forward) return;
-
             ladderNormal = -hit.normal;
-            if (hasObjectInfront(0.05f, ladderLayer) && playerInput.input.y > 0.02f)
+            if (hasObjectInfront(0.05f, ladderLayer) && playerInput.input.y > 0.02f && canClamber())
             {
                 canInteract = false;
                 status = Status.climbingLadder;
+                climbTime = 1f;
+                Debug.Log("ladder");
             }
         }
     }
@@ -408,12 +417,22 @@ public class PlayerController : MonoBehaviour
     {
         if (playerInput.Jump())
         {
-            movement.Jump((Vector3.up - transform.forward).normalized, 1f);
+            movement.Jump((Vector3.up + transform.forward).normalized, 1f);
             playerInput.ResetJump();
             status = Status.moving;
         }
-
-        movement.Move(Vector3.zero, 0f, 0f); //Stay in place
+        if (playerInput.input.x > 0)
+        {
+            movement.Move(new Vector3(ledgeNormal.z,0,ledgeNormal.x), movement.crouchSpeed / 2, 0f); //inch to the right
+        }
+        if (playerInput.input.x < 0)
+        {
+            movement.Move(-new Vector3(ledgeNormal.z, 0, ledgeNormal.x), movement.crouchSpeed / 2, 0f); //inch to the right
+        }
+        else
+        {
+            movement.Move(Vector3.zero, 0f, 0f); //Stay in place
+        }
     }
 
     void ClimbLedgeMovement()
@@ -422,7 +441,7 @@ public class PlayerController : MonoBehaviour
         Vector3 right = Vector3.Cross(Vector3.up, dir).normalized;
         Vector3 move = Vector3.Cross(dir, right).normalized;
 
-        movement.Move(move, movement.walkSpeed, 0f);
+        movement.Move(move, movement.walkSpeed * ledgeSpeed, 0f);
         if (new Vector2(dir.x, dir.z).magnitude < 0.125f)
             status = Status.idle;
     }
@@ -451,6 +470,7 @@ public class PlayerController : MonoBehaviour
             {
                 canInteract = false;
                 status = Status.grabbedLedge;
+                
             }
         }
     }
