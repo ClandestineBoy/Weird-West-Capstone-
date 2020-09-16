@@ -26,6 +26,8 @@ public class EnemyAI : MonoBehaviour
     private float alertMax = 1;
     private int wayPointIndex;
     private bool alerting;
+   public bool armed;
+    bool currentlyShooting;
 
     public static float lightMod = 1;
     public float distMod;
@@ -33,7 +35,16 @@ public class EnemyAI : MonoBehaviour
     public Vector3 heardPos;
 
     public Image detection;
-    public GameObject myCanvas;
+
+    //UI Follow Round Screen Variables
+    // No scaling is done for distance yet
+    public GameObject IndicatorAnchor;
+    private Canvas CanvasIndicators;
+    private GameObject text;
+    private Text myText;
+
+    public static bool inCombat;
+
 
     private void Awake()
     {
@@ -42,46 +53,84 @@ public class EnemyAI : MonoBehaviour
         aINav = GetComponent<AINav>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         lastPlayerSighting = GameObject.FindGameObjectWithTag("GameController").GetComponent<LastPlayerSighting>();
+
+
+
+    }
+    private void Start()
+    {
+        CanvasIndicators = GameObject.Find("Indicators").GetComponent<Canvas>();
+
+        //Change to ALERT Image
+        text = new GameObject("myText");
+        text.transform.SetParent(CanvasIndicators.transform);
+
+        myText = text.AddComponent<Text>();
+        Font ArialFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
+        myText.font = ArialFont;
+        myText.material = ArialFont.material;
+        myText.text = "AI";
+        myText.alignment = TextAnchor.MiddleCenter;
+        myText.fontSize = 20;
+        myText.color = Color.red;
+        myText.transform.localPosition = new Vector3(0, 0, 0);
     }
 
     // Update is called once per frame
     void Update()
     {
-       /* Vector3 line1 = transform.position - player.position;
-        float angle = Vector3.SignedAngle( new Vector3(line1.x, 0, line1.z), new Vector3(player.forward.x, 0 , player.forward.z), Vector3.up);
-        Debug.Log(angle);
-        */
-/*
-        // Get vector from player to AI
-        Vector3 targetDir = transform.position - player.position;
+        //ALERT Imagine Move Round bounds of screen
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(IndicatorAnchor.transform.position);
+        float distance = screenPos.z;
 
-        // Convert vector to polar coordinates (distance & angle) ignoring height
-        float dist = Vector3.Distance(new Vector3(targetDir.x, 0, targetDir.z), new Vector3(player.forward.x, 0, player.forward.z));
-        float angle = Vector3.SignedAngle(new Vector3(targetDir.x, 0, targetDir.z), new Vector3(player.forward.x, 0, player.forward.z), Vector3.up);
+        Vector3 screenCenter = new Vector3(Screen.width, Screen.height, 0) / 2;
 
-        // Limit angle to FOV
-        angle = Mathf.Min(angle, Camera.main.fov / 2);
+        //How far in the UI goes (.1f = 10% in)
+        float margin = 0.1f;
+        Vector3 screenBounds = screenCenter * (1 - margin);
 
-        // Create vector from player to desired indicator position
-        Vector3 player2indicator = new Vector3(dist * Mathf.Cos(angle * Mathf.Deg2Rad), 0, dist * Mathf.Sin(angle * Mathf.Deg2Rad));
+        if (screenPos.z < 0)
+            screenPos *= -1;
 
-        // Valculate vector from AI to desired indicator position (relative vector from parent)
-        Vector3 indicator = targetDir - player2indicator;
+        screenPos -= screenCenter;
 
-        // Set indicator height
-        indicator.y = 2.0f;
-        Debug.Log(indicator);
+        if (screenPos.z < 0 || screenPos.x > screenBounds.x || screenPos.x < -screenBounds.x || screenPos.y > screenBounds.y || screenPos.y < -screenBounds.y)
+        {
+            // Off screen
+            float angle = Mathf.Atan2(screenPos.y, screenPos.x);
+            angle -= 90 * Mathf.Deg2Rad;
 
-        // Now use indicator to set position relative to parent
-        myCanvas.GetComponent<RectTransform>().localPosition = indicator;
-        */
+            float cos = Mathf.Cos(angle);
+            float sin = -Mathf.Sin(angle);
+
+            //y = mx+b where b = 0
+            float m = cos / sin;
+
+            if (screenPos.y > screenBounds.y)
+                screenPos = new Vector3(screenBounds.y / m, screenBounds.y, 0);
+            if (screenPos.y < -screenBounds.y)
+                screenPos = new Vector3(-screenBounds.y / m, -screenBounds.y, 0);
+
+            if (screenPos.x > screenBounds.x)
+                screenPos = new Vector3(screenBounds.x, screenBounds.x * m, 0);
+            if (screenPos.x < -screenBounds.x)
+                screenPos = new Vector3(-screenBounds.x, -screenBounds.x * m, 0);
+        }
+
+        screenPos += screenCenter;
+        myText.transform.position = screenPos;
 
 
-
+        //Detection and Behavior
         detection.fillAmount = alertMeter;
         if (!aINav.ragDolled)
         {
-            if (!enemySight.playerInSight && objectHeard && alertMeter < alertMax)
+            if (alertMeter >= alertMax && !armed)
+            {
+                aINav.animator.SetBool("startled", true);
+
+            }
+            else if (!enemySight.playerInSight && objectHeard && alertMeter < alertMax)
             {
                 Distracted();
             }
@@ -90,7 +139,7 @@ public class EnemyAI : MonoBehaviour
                 if (!alerting)
                     StartCoroutine(Alerting());
             }
-            else if (enemySight.playerInSight)
+            else if (enemySight.playerInSight || currentlyShooting)
             {
                 Debug.Log("Shoot!");
                 Shooting();
@@ -185,9 +234,11 @@ public class EnemyAI : MonoBehaviour
       //  Debug.Log("Shooting");
         //may change this to spherical raycast
         nav.isStopped = true;
+
         //Reset vision timer if in sight
         chaseTimer = 0;
     }
+    
     void Chasing()
     {
         //Debug.Log("Chasing!");
@@ -254,6 +305,13 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-    
+    public void StartCombatMode()
+    {
+        Debug.Log("hooray");
+        inCombat = true;
+        armed = true;
+        EnemySight.fieldOfViewAngle = 160;
+        enemySight.col.radius = 25;
+    }
 
 }

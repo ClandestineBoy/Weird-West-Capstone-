@@ -20,9 +20,9 @@ public class EnemySight : MonoBehaviour
     private HashIDs hash;
     private Vector3 previousSighting;
 
-
+    private int frames = 0;
     public bool inRange;
-    public float dist;
+    public float dist = 20;
 
     int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
 
@@ -43,14 +43,15 @@ public class EnemySight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        frames++;
         if (lastPlayerSighting.position != previousSighting)
         {
             personalLastSighting = lastPlayerSighting.position;
         }
         anim.SetBool(hash.playerInSightBool, playerInSight);
 
-        Vector3 endDir1 = Quaternion.Euler(0, fieldOfViewAngle/2, 0) * -transform.forward;
-        Vector3 endDir2 = Quaternion.Euler(0, -fieldOfViewAngle/2, 0) * -transform.forward;
+        Vector3 endDir1 = Quaternion.Euler(0, fieldOfViewAngle / 2, 0) * -transform.forward;
+        Vector3 endDir2 = Quaternion.Euler(0, -fieldOfViewAngle / 2, 0) * -transform.forward;
         Vector3 endPoint1 = transform.position - endDir1 * col.radius;
         Vector3 endPoint2 = transform.position - endDir2 * col.radius;
 
@@ -67,11 +68,14 @@ public class EnemySight : MonoBehaviour
         Debug.DrawLine(transform.position, periphPoint1, Color.red);
         Debug.DrawLine(transform.position, periphPoint2, Color.red);
 
+        if (frames % 3 == 0) { 
+            dist = Vector3.Distance(player.transform.position, transform.position);
+         }
         if (inRange)
         {
            
             Vector3 direction = player.transform.position - transform.position;
-            dist = Vector3.Distance(player.transform.position, transform.position);
+            
             float angle = Vector3.Angle(direction, transform.forward);
 
             if (angle < fieldOfViewAngle / 2)

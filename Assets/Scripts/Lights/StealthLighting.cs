@@ -19,25 +19,31 @@ public class StealthLighting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (entered)
+        //Only make changes to FOV when not in combat
+        if (!EnemyAI.inCombat)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position,player.transform.position, out hit, Mathf.Infinity))
+            if (entered)
             {
-                float dist = Vector3.Distance(transform.position, player.transform.position);
-              if (dist < col.radius / 2)
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, player.transform.position, out hit, Mathf.Infinity))
                 {
-                    EnemySight.fieldOfViewAngle = 90;
-                    EnemyAI.lightMod = 1;
-                } else
-                {
-                    EnemySight.fieldOfViewAngle = 70;
-                    EnemyAI.lightMod = .5f;
+                    float dist = Vector3.Distance(transform.position, player.transform.position);
+                    if (dist < col.radius / 2)
+                    {
+                        EnemySight.fieldOfViewAngle = 90;
+                        EnemyAI.lightMod = 1;
+                    }
+                    else
+                    {
+                        EnemySight.fieldOfViewAngle = 70;
+                        EnemyAI.lightMod = .5f;
+                    }
                 }
-            } else
-            {
-                EnemySight.fieldOfViewAngle = 50;
-                EnemyAI.lightMod = .25f;
+                else
+                {
+                    EnemySight.fieldOfViewAngle = 50;
+                    EnemyAI.lightMod = .25f;
+                }
             }
         }
     }

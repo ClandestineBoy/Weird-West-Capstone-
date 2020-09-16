@@ -10,7 +10,7 @@ public class AINav : MonoBehaviour
     float reactionTime;
     float runAwaySpeed;
     bool running;
-    private Animator animator;
+    public Animator animator;
     bool fallen;
     public Transform spawn;
 
