@@ -26,7 +26,7 @@ public class Collisions : MonoBehaviour
     {
         if (rb.velocity.magnitude > 1)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 10 * rb.velocity.magnitude, layerMask);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 7.5f * rb.velocity.magnitude, layerMask);
             foreach (Collider col in hitColliders)
             {
                 
