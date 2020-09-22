@@ -24,8 +24,12 @@ public class EnemySight : MonoBehaviour
     public bool inRange;
     public float dist = 20;
 
+    private List<GameObject> DeadBodies = new List<GameObject>();
+    bool liftedBody = true;
+
     int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
 
+    int deadBodyMask = 1 << 14;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -70,7 +74,52 @@ public class EnemySight : MonoBehaviour
 
         if (frames % 3 == 0) { 
             dist = Vector3.Distance(player.transform.position, transform.position);
+
+
+
+            //Detect Dead Bodies
+            Collider[] BodyPart = Physics.OverlapSphere(transform.position, 10, deadBodyMask);
+
+
+            if (BodyPart.Length > 0 && !gameObject.GetComponent<EnemyAI>().bodySeen){
+
+                foreach (Collider c in BodyPart)
+                {
+                    if (gameObject.GetComponent<EnemyAI>().bodySeen)
+                    {
+                        //Debug.Log("I'm Breaking");
+                        break;
+                    }
+                    Vector3 direction = c.transform.position - transform.position;
+
+                    float angle = Vector3.Angle(direction, transform.forward);
+
+                    if (angle < fieldOfViewAngle / 2)
+                    {
+                        RaycastHit hit;
+
+                        if (Physics.Raycast(transform.position, direction.normalized, out hit, 10, layerMask))
+                        {
+                            if (hit.collider.gameObject.layer == 14 && hit.collider.transform.root.GetComponent<AINav>().ragDolled && !DeadBodies.Contains(hit.collider.transform.root.gameObject) &&
+                                !hit.collider.transform.root.gameObject.GetComponent<AINav>().liftedBody)
+                            {
+                                //Debug.Log("Found you!");
+                                gameObject.GetComponent<EnemyAI>().distractedPos = hit.collider.gameObject.transform.position;
+                                gameObject.GetComponent<EnemyAI>().bodySeen = true;
+                                DeadBodies.Add(hit.collider.transform.root.gameObject);
+                            } else if (hit.collider.gameObject.layer == 14 && hit.collider.transform.root.gameObject.GetComponent<AINav>().liftedBody)
+                            {
+                              //  Debug.Log("OMYGOD");
+                                //Freak out you see a floating body
+                            }
+                        }
+                    }
+                }
+            }
          }
+
+
+
         if (inRange)
         {
            
@@ -125,6 +174,11 @@ public class EnemySight : MonoBehaviour
         }
 
     }
+
+
+
+
+
 
 
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Telekinesis : MonoBehaviour
 {
     public Transform liftPoint;
-    private GameObject liftedObject;
+    public static GameObject liftedObject;
     bool liftingObject;
     bool isNPC;
     float objectVelocity = 18;
@@ -124,6 +124,7 @@ public class Telekinesis : MonoBehaviour
                 rb.AddForce(ray.direction * 50, ForceMode.Impulse);
                 isNPC = false;
             }
+            liftedObject.GetComponent<AINav>().liftedBody = false;
         }
         liftedObject = null;
         liftingObject = false;
@@ -190,6 +191,7 @@ public class Telekinesis : MonoBehaviour
                 rb.AddForce(velocity / objectVelocity, ForceMode.Impulse);
                 isNPC = false;
             }
+            liftedObject.GetComponent<AINav>().liftedBody = false;
         }
         liftedObject = null;
         liftingObject = false;

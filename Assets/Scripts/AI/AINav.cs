@@ -15,6 +15,7 @@ public class AINav : MonoBehaviour
     public Transform spawn;
 
     public bool ragDolled;
+    public bool liftedBody;
 
 
     Vector3 runPos;
@@ -135,6 +136,7 @@ public class AINav : MonoBehaviour
     public void RagDoll()
     {
         ragDolled = true;
+        liftedBody = true;
         foreach (CapsuleCollider cc in ccs)
         {
             cc.isTrigger = false;

@@ -26,13 +26,14 @@ public class EnemyAI : MonoBehaviour
     private float alertMax = 1;
     private int wayPointIndex;
     private bool alerting;
-   public bool armed;
+    public bool armed;
     bool currentlyShooting;
 
     public static float lightMod = 1;
     public float distMod;
     public bool objectHeard;
-    public Vector3 heardPos;
+    public bool bodySeen;
+    public Vector3 distractedPos;
 
     public Image detection;
 
@@ -81,24 +82,40 @@ public class EnemyAI : MonoBehaviour
     {
         //ALERT Imagine Move Round bounds of screen
         Vector3 screenPos = Camera.main.WorldToScreenPoint(IndicatorAnchor.transform.position);
-        float distance = screenPos.z;
+        //Distance to Scale UI
+        //float distance = screenPos.z;
 
         Vector3 screenCenter = new Vector3(Screen.width, Screen.height, 0) / 2;
 
         //How far in the UI goes (.1f = 10% in)
         float margin = 0.1f;
-        Vector3 screenBounds = screenCenter * (1 - margin);
+        //Vector3 screenBounds = screenCenter * (1 - margin);
 
-        if (screenPos.z < 0)
-            screenPos *= -1;
+        // Screen bounds for individual sides
+        float screenBoundsRight = screenCenter.x * (1 - margin);
+        float screenBoundsLeft = -screenCenter.x * (1 - margin);
+        float screenBoundsTop = screenCenter.y * (1 - margin);
+        float screenBoundsBottom = -screenCenter.y * (1 - margin * 2.5f);
 
         screenPos -= screenCenter;
 
-        if (screenPos.z < 0 || screenPos.x > screenBounds.x || screenPos.x < -screenBounds.x || screenPos.y > screenBounds.y || screenPos.y < -screenBounds.y)
+        if (screenPos.z < 0)
+        {
+            // Only invert x & y.  z still negative if behind to force off screen conditional when x & y are *in* bounds
+            screenPos = new Vector3(-screenPos.x, -screenPos.y, screenPos.z);
+        }
+
+        float angle = Mathf.Atan2(screenPos.y, screenPos.x);
+        angle -= 90 * Mathf.Deg2Rad;
+
+        // Debug.Log(string.Format("Angle: {0}", angle * Mathf.Rad2Deg));
+
+        if (screenPos.z < 0 || screenPos.x > screenBoundsRight || screenPos.x < screenBoundsLeft || screenPos.y > screenBoundsTop || screenPos.y < screenBoundsBottom)
         {
             // Off screen
-            float angle = Mathf.Atan2(screenPos.y, screenPos.x);
-            angle -= 90 * Mathf.Deg2Rad;
+
+            // Force vector to be larger than screen so we will hit bounds when behind (z is negative), but x & y not exceeding bounds
+            screenPos *= 1000;
 
             float cos = Mathf.Cos(angle);
             float sin = -Mathf.Sin(angle);
@@ -106,19 +123,20 @@ public class EnemyAI : MonoBehaviour
             //y = mx+b where b = 0
             float m = cos / sin;
 
-            if (screenPos.y > screenBounds.y)
-                screenPos = new Vector3(screenBounds.y / m, screenBounds.y, 0);
-            if (screenPos.y < -screenBounds.y)
-                screenPos = new Vector3(-screenBounds.y / m, -screenBounds.y, 0);
+            if (screenPos.y < screenBoundsBottom)
+                screenPos = new Vector3(screenBoundsBottom / m, screenBoundsBottom, 0);
+            if (screenPos.y > screenBoundsTop)
+                screenPos = new Vector3(screenBoundsTop / m, screenBoundsTop, 0);
 
-            if (screenPos.x > screenBounds.x)
-                screenPos = new Vector3(screenBounds.x, screenBounds.x * m, 0);
-            if (screenPos.x < -screenBounds.x)
-                screenPos = new Vector3(-screenBounds.x, -screenBounds.x * m, 0);
+            if (screenPos.x > screenBoundsRight)
+                screenPos = new Vector3(screenBoundsRight, screenBoundsRight * m, 0);
+            if (screenPos.x < screenBoundsLeft)
+                screenPos = new Vector3(screenBoundsLeft, screenBoundsLeft * m, 0);
         }
 
         screenPos += screenCenter;
         myText.transform.position = screenPos;
+
 
 
         //Detection and Behavior
@@ -130,7 +148,7 @@ public class EnemyAI : MonoBehaviour
                 aINav.animator.SetBool("startled", true);
 
             }
-            else if (!enemySight.playerInSight && objectHeard && alertMeter < alertMax)
+            else if (!enemySight.playerInSight && (objectHeard || bodySeen) && alertMeter < alertMax)
             {
                 Distracted();
             }
@@ -165,7 +183,7 @@ public class EnemyAI : MonoBehaviour
         //Debug.Log("heard something!");
         //need to add a pause for the ai to look around first after being startled
         nav.isStopped = false;
-        nav.SetDestination(heardPos);
+        nav.SetDestination(distractedPos);
         nav.speed = patrolSpeed;
 
         if (nav.remainingDistance < 2)
@@ -179,6 +197,7 @@ public class EnemyAI : MonoBehaviour
         //run looking around animation
         yield return new WaitForSeconds(10);
         objectHeard = false;
+        bodySeen = false;
     }
 
 
