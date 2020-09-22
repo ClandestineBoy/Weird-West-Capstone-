@@ -11,10 +11,19 @@ public class InteractButton : MonoBehaviour
     bool pressed;
     int genericLayerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 11 | 1 << 16 | 1 << 17 | 1 << 18;
     public Rigidbody rbC;
+
+    public CharacterJoint cJoint;
+    public float spring = 50.0f;
+    public float damper = 5.0f;
+    public float drag = 10.0f;
+    public float angularDrag = 5.0f;
+    public float distance = 0.2f;
     // Start is called before the first frame update
     void Start()
     {
-        
+       // springJoint.spring = spring;
+       // springJoint.damper = damper;
+       // springJoint.maxDistance = distance; 
     }
 
     // Update is called once per frame
@@ -64,7 +73,7 @@ public class InteractButton : MonoBehaviour
         } else
         {
             Debug.Log("Pressed");
-          //  EnactPressed();
+            EnactPressed();
         }
 
         heldButtonTimer = 0;
@@ -80,15 +89,15 @@ public class InteractButton : MonoBehaviour
         Debug.Log("Enacted");
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 3, genericLayerMask))
+        if (Physics.Raycast(ray, out hit, 4, genericLayerMask))
         {
             Debug.Log(hit.transform.gameObject.name);
             if (hit.transform.gameObject.layer == 14 && hit.transform.root.GetComponent<AINav>().ragDolled && !hit.transform.root.GetComponent<AINav>().liftedBody)
             {
                 Debug.Log(hit.transform.gameObject.name + "I Made it");
-                hit.transform.gameObject.AddComponent<SpringJoint>();
-                hit.transform.gameObject.GetComponent<SpringJoint>().connectedBody = rbC;
-                hit.transform.gameObject.GetComponent<SpringJoint>().anchor = hit.point;
+              //  hit.transform.gameObject.AddComponent<SpringJoint>();
+                cJoint.connectedBody = hit.transform.gameObject.GetComponent<Rigidbody>();
+                //hit.transform.gameObject.GetComponent<SpringJoint>().anchor = hit.point;
 
             }
         }
