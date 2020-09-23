@@ -30,11 +30,12 @@ public class PlayerController : MonoBehaviour
     Vector3 vaultDir;
     Vector3 ledgeNormal;
 
-   public PlayerMovement movement;
+    public PlayerMovement movement;
+    public Rigidbody rb;
+    public GameObject grapplePoint;
+    public SpringJoint sj;
     PlayerInput playerInput;
     AnimateLean animateLean;
-
-    Rigidbody rb;
 
     bool canInteract;
     bool canGrabLedge;
@@ -59,13 +60,16 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         instance = this;
-        rb = GetComponent<Rigidbody>();
         CreateVaultHelper();
         playerInput = GetComponent<PlayerInput>();
         movement = GetComponent<PlayerMovement>();
 
+        grapplePoint = Instantiate(grapplePoint);
+
         if (GetComponentInChildren<AnimateLean>())
             animateLean = GetComponentInChildren<AnimateLean>();
+
+        sj = grapplePoint.GetComponent<SpringJoint>();
 
         slideLimit = movement.controller.slopeLimit - .1f;
         radius = movement.controller.radius;
@@ -78,7 +82,8 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-        
+        Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+        Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
         UpdateMovingStatus();
@@ -105,7 +110,7 @@ public class PlayerController : MonoBehaviour
             if (movement.grounded || movement.moveDirection.y < 0)
                 canInteract = true;
         }
-        else if ((int)status >= 7)
+        else if ((int)status >= 6)
             canInteract = false;
     }
 
@@ -338,7 +343,7 @@ public class PlayerController : MonoBehaviour
     void CheckLadderClimbing()
     {
         Debug.Log(climbTime);
-        Debug.Log("CAN INTERACT: " + canInteract);
+        
         if (!canInteract)
             return;
         //Check for ladder all across player (so they cannot use the side)
@@ -362,6 +367,9 @@ public class PlayerController : MonoBehaviour
     /**************************** WALLRUNNING ****************************/
     void WallrunningMovement()
     {
+        if (instance.status != Status.wallRunning)
+            return;
+
         Vector3 input = playerInput.input;
         float s = (input.y > 0) ? input.y : 0;
 
@@ -568,28 +576,25 @@ public class PlayerController : MonoBehaviour
 
     void grappleMovement()
     {
-        dirToTether = tetherPoint - transform.position;
-        dirToTether.Normalize();
-
+        sj.maxDistance -= .1f;
+     
         if (Input.GetKey(KeyCode.W))
         {
-            pendulum.bob.velocity += pendulum.bob.velocity.normalized * 1f;
+            rb.AddForce(transform.forward * 5f, ForceMode.Force);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            pendulum.bob.velocity += -Camera.main.transform.right * 1f;
+            rb.AddForce(-transform.right * 5f, ForceMode.Force);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            pendulum.bob.velocity += Camera.main.transform.right * 1f;
+            rb.AddForce(transform.right * 5f, ForceMode.Force);
         }
 
-        // First shorten arm length and pull up
-        transform.localPosition = pendulum.pullIn(Time.deltaTime * 10, transform.localPosition);
-
-        // Then calculate predicted position
-        transform.localPosition = pendulum.MoveBob(transform.localPosition, previousPos, Time.deltaTime);
-        previousPos = transform.localPosition;
+        if(instance.status != Status.grappling)
+        {
+            StopGrapple();
+        }
     }
 
     public void SetUpGrapple()
@@ -597,20 +602,30 @@ public class PlayerController : MonoBehaviour
         
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, grappleRange,layermask))
+        if (Physics.Raycast(ray, out hit, grappleRange))
         {
             Debug.Log(hit.transform.gameObject.name);
             Debug.Log(grappleArmLength);
             tetherPoint = hit.point;
-                pendulum.bob.velocity += new Vector3(0, movement.moveDirection.y / 2, 0);
-                pendulum.SwitchTether(hit.point);
-                PlayerController.instance.status = Status.grappling;
+            instance.status = Status.grappling;
+            grapplePoint.transform.position = tetherPoint;
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.velocity = movement.controller.velocity;
+            sj.connectedBody = rb;
+            sj.maxDistance = Vector3.Distance(transform.position, grapplePoint.transform.position)-1f;
+            movement.controller.enabled = false;
+            canInteract = false;
         }
     }
 
     public void StopGrapple()
     {
+        movement.controller.enabled = true;
+        movement.moveDirection = rb.velocity;
+        canInteract = true;
         status = Status.idle;
+        sj.connectedBody = null;
+        Destroy(rb);
     }
 
     /*********************************************************************/
