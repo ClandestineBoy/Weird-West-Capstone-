@@ -34,7 +34,7 @@ public class Collisions : MonoBehaviour
                  if (col.gameObject.GetComponent<EnemySight>().CalculatePathLength(transform.position) <= enemySight.col.radius)
                 {
                     col.gameObject.GetComponent<EnemyAI>().objectHeard = true;
-                    col.gameObject.GetComponent<EnemyAI>().heardPos = transform.position;
+                    col.gameObject.GetComponent<EnemyAI>().distractedPos = transform.position;
                 }
             }
         }
