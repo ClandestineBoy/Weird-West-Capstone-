@@ -14,7 +14,7 @@ public class EnemySight : MonoBehaviour
     public SphereCollider col;
     private Animator anim;
     private LastPlayerSighting lastPlayerSighting;
-    private GameObject player;
+    public GameObject player;
     private Animator playerAnim;
     //private PlayerHealth playerHealth;
     private HashIDs hash;
@@ -27,7 +27,7 @@ public class EnemySight : MonoBehaviour
     private List<GameObject> DeadBodies = new List<GameObject>();
     bool liftedBody = true;
 
-    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
+    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
 
     int deadBodyMask = 1 << 14;
     // Start is called before the first frame update
@@ -42,6 +42,10 @@ public class EnemySight : MonoBehaviour
 
         personalLastSighting = lastPlayerSighting.resetPosition;
         previousSighting = lastPlayerSighting.resetPosition;
+        if (gameObject.GetComponent<EnemyAI>().attackType == 2)
+        {
+            col.radius = 50;
+        }
     }
 
     // Update is called once per frame

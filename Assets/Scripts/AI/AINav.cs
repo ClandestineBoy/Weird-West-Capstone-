@@ -135,8 +135,11 @@ public class AINav : MonoBehaviour
 
     public void RagDoll()
     {
+        if (EnemyAI.enemiesInCombat.Contains(gameObject))
+        {
+            EnemyAI.enemiesInCombat.Remove(gameObject);
+        }
         ragDolled = true;
-        liftedBody = true;
         foreach (CapsuleCollider cc in ccs)
         {
             cc.isTrigger = false;

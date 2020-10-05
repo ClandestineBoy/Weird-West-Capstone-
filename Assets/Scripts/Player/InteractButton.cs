@@ -82,19 +82,30 @@ public class InteractButton : MonoBehaviour
     void EnactHeld()
     {
 
-    }
-
-    void EnactPressed()
-    {
-        Debug.Log("Enacted");
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 4, genericLayerMask))
         {
-            Debug.Log(hit.transform.gameObject.name);
+           
             if (hit.transform.gameObject.layer == 14 && hit.transform.root.GetComponent<AINav>().ragDolled && !hit.transform.root.GetComponent<AINav>().liftedBody)
             {
-                Debug.Log(hit.transform.gameObject.name + "I Made it");
+                Debug.Log(hit.transform.gameObject.name);
+                Destroy(hit.transform.root.gameObject);
+            }
+        }
+    }
+
+    void EnactPressed()
+    {
+        
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 4, genericLayerMask))
+        {
+            //Debug.Log(hit.transform.gameObject.name);
+            if (hit.transform.gameObject.layer == 14 && hit.transform.root.GetComponent<AINav>().ragDolled && !hit.transform.root.GetComponent<AINav>().liftedBody)
+            {
+               // Debug.Log(hit.transform.gameObject.name + "I Made it");
               //  hit.transform.gameObject.AddComponent<SpringJoint>();
                 cJoint.connectedBody = hit.transform.gameObject.GetComponent<Rigidbody>();
                 //hit.transform.gameObject.GetComponent<SpringJoint>().anchor = hit.point;

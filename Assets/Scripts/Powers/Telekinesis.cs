@@ -10,7 +10,7 @@ public class Telekinesis : MonoBehaviour
     bool isNPC;
     float objectVelocity = 18;
     public float manaCost;
-    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 11 | 1<<16 | 1<<17 | 1<<18;
+    int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 11 | 1<<16 | 1<<17 | 1<<18;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +37,7 @@ public class Telekinesis : MonoBehaviour
                 PlayerManager.instance.SpendMana(manaCost);
                 StealthPickUp();
             }
-            else
+            else if (liftingObject)
             {
                 StealthDropObject();
             }
@@ -48,7 +48,7 @@ public class Telekinesis : MonoBehaviour
                 PlayerManager.instance.SpendMana(manaCost);
                 PickUp();
             }
-            else
+            else if (liftingObject)
             {
                 DropObject();
             }
@@ -95,7 +95,10 @@ public class Telekinesis : MonoBehaviour
 
 
                 if (liftedObject.GetComponent<AINav>() != null)
+                {
                     liftedObject.GetComponent<AINav>().RagDoll();
+                    liftedObject.GetComponent<AINav>().liftedBody = true;
+                }
                 
             
 
@@ -124,7 +127,7 @@ public class Telekinesis : MonoBehaviour
                 rb.AddForce(ray.direction * 50, ForceMode.Impulse);
                 isNPC = false;
             }
-            liftedObject.GetComponent<AINav>().liftedBody = false;
+            liftedObject.transform.root.GetComponent<AINav>().liftedBody = false;
         }
         liftedObject = null;
         liftingObject = false;
@@ -165,7 +168,10 @@ public class Telekinesis : MonoBehaviour
 
                 //Ragdoll
                 if (liftedObject.GetComponent<AINav>() != null)
+                {
                     liftedObject.GetComponent<AINav>().RagDoll();
+                    liftedObject.GetComponent<AINav>().liftedBody = true;
+                }
                 liftingObject = true;
             }
         }
@@ -191,7 +197,7 @@ public class Telekinesis : MonoBehaviour
                 rb.AddForce(velocity / objectVelocity, ForceMode.Impulse);
                 isNPC = false;
             }
-            liftedObject.GetComponent<AINav>().liftedBody = false;
+            liftedObject.transform.root.GetComponent<AINav>().liftedBody = false;
         }
         liftedObject = null;
         liftingObject = false;
