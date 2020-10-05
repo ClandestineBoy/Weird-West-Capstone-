@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
     bool canGrabLedge;
     bool controlledSlide;
     bool sprinting;
+    public bool offGrapple;
    // [HideInInspector]
     public bool canSprint = true;
 
@@ -150,6 +151,10 @@ public class PlayerController : MonoBehaviour
         {
             sprinting = false;
         }
+        if(status != Status.moving && status != Status.idle || movement.controller.isGrounded)
+        {
+            offGrapple = false;
+        }
     }
 
     void UpdateLean()
@@ -205,7 +210,14 @@ public class PlayerController : MonoBehaviour
         if (sprinting && status == Status.crouching)
             Uncrouch();
 
-        movement.Move(playerInput.input, sprinting, (status == Status.crouching));
+        if (offGrapple)
+        {
+           movement.Move(playerInput.input, 1); 
+        }
+        else
+        {
+            movement.Move(playerInput.input, sprinting, (status == Status.crouching));
+        }
         if (movement.grounded && playerInput.Jump())
         {
             if (status == Status.crouching)
@@ -623,7 +635,8 @@ public class PlayerController : MonoBehaviour
         movement.controller.enabled = true;
         movement.moveDirection = rb.velocity;
         canInteract = true;
-        status = Status.idle;
+        status = Status.moving;
+        offGrapple = true;
         sj.connectedBody = null;
         Destroy(rb);
     }

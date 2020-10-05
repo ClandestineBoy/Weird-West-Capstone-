@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void Update()
     {
+        Debug.Log(moveDirection);
         if (forceTime > 0)
             forceTime -= Time.deltaTime;
 
@@ -107,6 +108,26 @@ public class PlayerMovement : MonoBehaviour
         }
         else
             moveDirection = move;
+
+        UpdateJump();
+
+        grounded = (controller.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
+    }
+
+    public void Move(Vector2 input, float appliedGravity)
+    {
+        if (forceTime > 0)
+            return;
+
+        if (appliedGravity > 0)
+        {
+            moveDirection.y -= gravity * Time.deltaTime * appliedGravity;
+
+            Vector3 inputMod = new Vector3(input.x, 0, input.y);
+            inputMod = transform.rotation * inputMod;
+            moveDirection.x += inputMod.x / 4;
+            moveDirection.z += inputMod.z / 4;
+        }
 
         UpdateJump();
 
