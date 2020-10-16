@@ -24,18 +24,28 @@ public class Gun : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 100, layerMask))
         {
-            Debug.Log(hit.transform.name);
+
+            //Debug.Log(hit.transform.name);
             if (hit.transform.gameObject.layer == 14)
             {
-                hit.transform.root.gameObject.GetComponent<AINav>().RagDoll();
-
-                foreach (Rigidbody rb in hit.transform.root.gameObject.GetComponent<AINav>().rbs)
+                if (hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3 || hit.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth <= 25)
                 {
-                    rb.useGravity = true;
+                    hit.transform.root.gameObject.GetComponent<AINav>().RagDoll();
+
+                    foreach (Rigidbody rb in hit.transform.root.gameObject.GetComponent<AINav>().rbs)
+                    {
+                        rb.useGravity = true;
+                    }
+                    hit.transform.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 75, ForceMode.Impulse);
+                    Debug.Log("boom2");
                 }
-                hit.transform.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 75, ForceMode.Impulse);
-                Debug.Log("boom2");
+                else if (hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
+                {
+                    hit.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth -= 25;
+                }
             }
+
         }
     }
 }
+

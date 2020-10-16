@@ -32,10 +32,13 @@ public class StealthGrapple : MonoBehaviour
                 tether.position = hit.point;
                 hit.transform.gameObject.GetComponent<Rigidbody>().useGravity = false;
                 StartCoroutine(PullObject(hit.transform.gameObject));
-            } else if (hit.transform.gameObject.layer == 14)
+            } else if (hit.transform.gameObject.layer == 14 && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3)
             {              
                 tether.position = hit.point;
                 StartCoroutine(PullPerson(hit.transform.gameObject));
+            } else if (hit.transform.gameObject.layer == 14 && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
+            {
+                PlayerController.instance.GetKnockedBack(hit.transform.root.transform);
             }
 
         }

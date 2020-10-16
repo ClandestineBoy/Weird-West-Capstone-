@@ -46,14 +46,20 @@ public class Melee : MonoBehaviour
     {
         if (other.gameObject.CompareTag("NPC"))
         {
-            other.gameObject.GetComponent<AINav>().RagDoll();
-
-            foreach (Rigidbody rb in other.GetComponent<AINav>().rbs)
+            if (other.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3 || other.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth <= 25)
             {
-                rb.useGravity = true;
-                //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                rb.AddForce(transform.right * 5, ForceMode.Impulse);
-               
+                other.gameObject.GetComponent<AINav>().RagDoll();
+
+                foreach (Rigidbody rb in other.GetComponent<AINav>().rbs)
+                {
+                    rb.useGravity = true;
+                    //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    rb.AddForce(transform.right * 5, ForceMode.Impulse);
+
+                }
+            } else if (other.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
+            {
+                other.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth -= 25;
             }
         }
     }

@@ -76,7 +76,7 @@ public class Telekinesis : MonoBehaviour
                 liftingObject = true;
 
             }
-            else if (hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14)
+            else if ((hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14) && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3)
             {
                 isNPC = true;
                 liftPoint.position = transform.position + transform.forward * 3.5f;
@@ -103,6 +103,9 @@ public class Telekinesis : MonoBehaviour
             
 
                 liftingObject = true;
+            } else if ((hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14) && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
+            {
+                PlayerController.instance.GetKnockedBack(hit.transform.root.transform);
             }
         }
     }
@@ -151,7 +154,7 @@ public class Telekinesis : MonoBehaviour
                 liftingObject = true;
 
             }
-            else if (hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14)
+            else if ((hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14) && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3)
             {
                 isNPC = true;
                 liftPoint.position = hit.point;
@@ -173,6 +176,10 @@ public class Telekinesis : MonoBehaviour
                     liftedObject.GetComponent<AINav>().liftedBody = true;
                 }
                 liftingObject = true;
+            }
+            else if ((hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14) && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
+            {
+                PlayerController.instance.GetKnockedBack(hit.transform.root.transform);
             }
         }
     }

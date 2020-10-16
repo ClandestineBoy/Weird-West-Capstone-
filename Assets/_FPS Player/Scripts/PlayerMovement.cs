@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void Update()
     {
-        Debug.Log(moveDirection);
+       // Debug.Log(moveDirection);
         if (forceTime > 0)
             forceTime -= Time.deltaTime;
 

@@ -273,59 +273,64 @@ public class EnemyAI : MonoBehaviour
 
     void AttackPattern()
     {
-        nav.isStopped = false;
-        if (!foundAttackPoint)
+        if (attackType != 2)
         {
-            inAttackPattern = true;
-            NavMeshHit hitNM;
-            RaycastHit hitRC;
-            Vector3 RandomPoint;
-            float distToPlayer = Vector3.Distance(player.position, transform.position);
-            if (distToPlayer < 10)
+           // Debug.Log(attackType);
+            //Debug.Log("runnintoAttack");
+            nav.isStopped = false;
+            if (!foundAttackPoint)
             {
-                
-                RandomPoint = new Vector3(transform.position.x + Random.Range(-5, 5), transform.position.y + Random.Range(-5, 5), transform.position.z + Random.Range(-5, 5));
-                // RandomPoint =  new Vector3(Random.Range(-5, 5),Random.Range(-5, 5), Random.Range(-5, 5));
-                // RandomPoint -= transform.position +(transform.position - player.position);
-                //RandomPoint += player.position - transform.position;
-               
-                Vector3 dir = (transform.position - player.transform.position);
-                dir.Normalize();
-                RandomPoint += (dir * 5);
-                RandomPoint = new Vector3(RandomPoint.x, transform.position.y, RandomPoint.z);
-                Debug.DrawLine(transform.position, RandomPoint, Color.green);
-            }
-            else
-            {
-                RandomPoint = new Vector3(transform.position.x + Random.Range(-5, 5), transform.position.y + Random.Range(-5, 5), transform.position.z + Random.Range(-5, 5));
-            }
-
-            //Check for if RandomPoint gets point on navMesh, calculate RayCast from point on navMesh + AI height, check if RayCast hit Player.
-            if (NavMesh.SamplePosition(RandomPoint, out hitNM, 25, NavMesh.AllAreas))
-            {
-                // Debug.Log("NavPointFound");
-                if (Physics.Raycast(hitNM.position + Vector3.up, (player.position - (hitNM.position + Vector3.up)).normalized, out hitRC, 25, layerMask))
+                inAttackPattern = true;
+                NavMeshHit hitNM;
+                RaycastHit hitRC;
+                Vector3 RandomPoint;
+                float distToPlayer = Vector3.Distance(player.position, transform.position);
+                if (distToPlayer < 10)
                 {
-                    // Debug.DrawLine(hitNM.position+Vector3.up, enemySight.player.transform.position, Color.blue);
-                    //Debug.Log("FoundPlayer");
-                    if (hitRC.transform.gameObject == player || hitRC.transform.root == player)
-                    {
 
-                        // Debug.Log("AttackPointFound");
-                        attackPoint = hitNM.position;
-                        foundAttackPoint = true;
+                    RandomPoint = new Vector3(transform.position.x + Random.Range(-5, 5), transform.position.y + Random.Range(-5, 5), transform.position.z + Random.Range(-5, 5));
+                    // RandomPoint =  new Vector3(Random.Range(-5, 5),Random.Range(-5, 5), Random.Range(-5, 5));
+                    // RandomPoint -= transform.position +(transform.position - player.position);
+                    //RandomPoint += player.position - transform.position;
+
+                    Vector3 dir = (transform.position - player.transform.position);
+                    dir.Normalize();
+                    RandomPoint += (dir * 5);
+                    RandomPoint = new Vector3(RandomPoint.x, transform.position.y, RandomPoint.z);
+                    Debug.DrawLine(transform.position, RandomPoint, Color.green);
+                }
+                else
+                {
+                    RandomPoint = new Vector3(transform.position.x + Random.Range(-5, 5), transform.position.y + Random.Range(-5, 5), transform.position.z + Random.Range(-5, 5));
+                }
+
+                //Check for if RandomPoint gets point on navMesh, calculate RayCast from point on navMesh + AI height, check if RayCast hit Player.
+                if (NavMesh.SamplePosition(RandomPoint, out hitNM, 25, NavMesh.AllAreas))
+                {
+                    // Debug.Log("NavPointFound");
+                    if (Physics.Raycast(hitNM.position + Vector3.up, (player.position - (hitNM.position + Vector3.up)).normalized, out hitRC, 25, layerMask))
+                    {
+                        // Debug.DrawLine(hitNM.position+Vector3.up, enemySight.player.transform.position, Color.blue);
+                        //Debug.Log("FoundPlayer");
+                        if (hitRC.transform.gameObject == player || hitRC.transform.root == player)
+                        {
+
+                            // Debug.Log("AttackPointFound");
+                            attackPoint = hitNM.position;
+                            foundAttackPoint = true;
+                        }
                     }
                 }
             }
-        }
 
 
-           
+
             if (nav.destination != attackPoint)
             {
                 nav.SetDestination(attackPoint);
             }
-            if (nav.remainingDistance < .5f && !currentlyAttacking)
+        }
+            if ((nav.remainingDistance < .5f || attackType == 2) && !currentlyAttacking)
             {
                 //Debug.Log("InPlace");
                 StartCoroutine(Attack());
@@ -347,7 +352,7 @@ public class EnemyAI : MonoBehaviour
         currentlyAttacking = true;
 
 
-        if (attackType == 0)
+        if (attackType != 1)
         {
             //Debug.Log("AT1");
             nav.isStopped = true;
@@ -427,16 +432,19 @@ public class EnemyAI : MonoBehaviour
 
     void Chasing()
     {
-        if (!inAir)
+        if (!inAir && attackType != 2)
         {
             nav.SetDestination(player.position);
         }
         if (!currentlyAttacking)
         {
             //Debug.Log("ChasingMe");
-            nav.isStopped = false;
-            nav.SetDestination(player.position);
-            nav.speed = runSpeed;
+            if (attackType != 2)
+            {
+                nav.isStopped = false;
+                nav.SetDestination(player.position);
+                nav.speed = runSpeed;
+            }
 
             //if they chase too long, they lose track of you after 10 seconds and move to your last position
             //may need to increase sight range beyond shooting range
@@ -475,9 +483,11 @@ public class EnemyAI : MonoBehaviour
     {
 
         //Debug.Log("Losing");
-        nav.isStopped = false;
-        nav.SetDestination(enemySight.personalLastSighting);
-        nav.speed = runSpeed;
+        if (attackType != 2){
+            nav.isStopped = false;
+            nav.SetDestination(enemySight.personalLastSighting);
+            nav.speed = runSpeed;
+        }
         if (nav.remainingDistance < .5f)
         {
             endChaseTimer += Time.deltaTime;

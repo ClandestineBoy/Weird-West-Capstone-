@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -33,6 +35,13 @@ public class PlayerManager : MonoBehaviour
     public LightLevel lightState = new LightLevel();
 
    GameObject[] NPCS;
+
+    public PostProcessVolume ppVolume;
+    Vignette vignette;
+    LensDistortion lensDistortion;
+    public AnimationCurve linearCurve;
+    public AnimationCurve humpCurve;
+
     private void Start()
     {
         NPCS = GameObject.FindGameObjectsWithTag("NPC");
@@ -47,6 +56,9 @@ public class PlayerManager : MonoBehaviour
 
         equippedPower = 3;
         instance = this;
+        ppVolume = GameObject.Find("Post-Processing Volume").GetComponent<PostProcessVolume>();
+        ppVolume.profile.TryGetSettings(out vignette);
+        ppVolume.profile.TryGetSettings(out lensDistortion);
     }
 
     private void Update()
@@ -168,24 +180,67 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-   /* public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("DimLight") || other.gameObject.CompareTag("BrightLight"))
-        {
-            //When entering bright light access npcs from array to activate light changes in enemyAI script
-   
-            foreach (GameObject n in NPCS)
-            {
-                if (n.GetComponent<EnemyAI>() != null)
-                {
-                    if (other.gameObject.CompareTag("BrightLight")) 
-                        n.GetComponent<EnemyAI>().BrightLight();
+    /* public void OnTriggerEnter(Collider other)
+     {
+         if (other.gameObject.CompareTag("DimLight") || other.gameObject.CompareTag("BrightLight"))
+         {
+             //When entering bright light access npcs from array to activate light changes in enemyAI script
 
-                    else if (other.gameObject.CompareTag("DimLight"))
-                        n.GetComponent<EnemyAI>().DimLight();
-                }
-            }
-        } 
-    }   */
-        
+             foreach (GameObject n in NPCS)
+             {
+                 if (n.GetComponent<EnemyAI>() != null)
+                 {
+                     if (other.gameObject.CompareTag("BrightLight")) 
+                         n.GetComponent<EnemyAI>().BrightLight();
+
+                     else if (other.gameObject.CompareTag("DimLight"))
+                         n.GetComponent<EnemyAI>().DimLight();
+                 }
+             }
+         } 
+     }   */
+
+    // VFX
+     public IEnumerator StealthVignette()
+    {
+        float startValue = vignette.intensity.value;
+        float endValue = 0 ;
+        if (vignette.intensity.value < .35f)
+        {
+            endValue = .35f;
+        }
+        float t = 0;
+        while (t < 1)
+        {
+            vignette.intensity.value = Mathf.LerpUnclamped(startValue, endValue, linearCurve.Evaluate(t));
+            t += Time.deltaTime * 10;
+            yield return 0;
+        }
+        vignette.intensity.value = endValue;
+
+    }
+
+    public IEnumerator SwapDistort()
+    {
+        float startValue = lensDistortion.intensity.value;
+        float endValue = -100;
+        float t = 0;
+        while (t < 1)
+        {
+            lensDistortion.intensity.value = Mathf.LerpUnclamped(startValue, endValue, linearCurve.Evaluate(t));
+            t += Time.deltaTime * 10;
+            yield return 0;
+        }
+        t = 0;
+        startValue = lensDistortion.intensity.value;
+        endValue = 1;
+        while (t < 1)
+        {
+            lensDistortion.intensity.value = Mathf.LerpUnclamped(startValue, endValue, humpCurve.Evaluate(t));
+            t += Time.deltaTime * 10;
+            yield return 0;
+        }
+        lensDistortion.intensity.value = endValue;
+
+    }
 }

@@ -31,7 +31,7 @@ public class Swap : MonoBehaviour
         }
         else if (PlayerManager.instance.currentHealth > manaCost * 2)
         {
-            SwapAction();
+           // SwapAction();
             crouchTime = true;
         }
     }
@@ -39,7 +39,7 @@ public class Swap : MonoBehaviour
     void SlowTime()
     {
         Time.timeScale = .4f;
-        PlayerManager.instance.SpendMana(1);
+        PlayerManager.instance.SpendMana(.1f);
         if (Input.GetMouseButtonUp(1))
         {
             Time.timeScale = 1;
@@ -54,18 +54,29 @@ public class Swap : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 100, layerMask))
         {
-            if (hit.transform.gameObject.layer == 11)
+            if (hit.transform.gameObject.layer == 11 && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3)
             {
-                cc.enabled = false;
-                hit.transform.gameObject.GetComponent<NavMeshAgent>().enabled = false;
-                Vector3 newPos = hit.transform.gameObject.transform.position + Vector3.up;
-                Vector3 oldPos = transform.position;
-                transform.position = newPos;
-                hit.transform.gameObject.transform.position = oldPos;
-                cc.enabled = true;
-                hit.transform.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+                StartCoroutine(SwapWait(hit));
+                StartCoroutine(PlayerManager.instance.SwapDistort());
+            } else if (hit.transform.root.gameObject.GetComponent<EnemyAI>() != null && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
+            {
+                PlayerController.instance.GetKnockedBack(hit.transform.root.transform);
             }
 
         }
+    }
+
+    IEnumerator SwapWait(RaycastHit hit)
+    {
+        yield return new WaitForSeconds(.1f);
+
+        cc.enabled = false;
+        hit.transform.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+        Vector3 newPos = hit.transform.gameObject.transform.position + Vector3.up;
+        Vector3 oldPos = transform.position;
+        transform.position = newPos;
+        hit.transform.gameObject.transform.position = oldPos;
+        cc.enabled = true;
+        hit.transform.gameObject.GetComponent<NavMeshAgent>().enabled = true;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grappling, grabbedLedge, climbingLedge, vaulting }
+public enum Status { idle, moving, crouching, sliding, climbingLadder, wallRunning, grappling, grabbedLedge, climbingLedge, vaulting, crowdControlled }
 
 public class PlayerController : MonoBehaviour
 {
@@ -83,8 +83,8 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-        Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
-        Debug.Log("CAN INTERACT: " + canInteract);
+       // Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+        //Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
         UpdateMovingStatus();
@@ -196,6 +196,9 @@ public class PlayerController : MonoBehaviour
                 VaultMovement();
                 break;
             case Status.grappling:
+                grappleMovement();
+                break;
+            case Status.crowdControlled:
                 grappleMovement();
                 break;
             default:
@@ -310,12 +313,18 @@ public class PlayerController : MonoBehaviour
     {
         movement.controller.height = halfheight;
         status = Status.crouching;
+        StartCoroutine(PlayerManager.instance.StealthVignette());       
     }
 
     void Uncrouch()
     {
+        if (status != Status.sliding)
+        {
+            StartCoroutine(PlayerManager.instance.StealthVignette());
+        }
         movement.controller.height = height;
         status = Status.moving;
+        //StartCoroutine(PlayerManager.instance.StealthVignette());
     }
     /*********************************************************************/
 
@@ -603,7 +612,7 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(transform.right * 5f, ForceMode.Force);
         }
 
-        if(instance.status != Status.grappling)
+        if(instance.status != Status.grappling && instance.status != Status.crowdControlled)
         {
             StopGrapple();
         }
@@ -621,10 +630,13 @@ public class PlayerController : MonoBehaviour
             tetherPoint = hit.point;
             instance.status = Status.grappling;
             grapplePoint.transform.position = tetherPoint;
+            if (rb != null)
+                Destroy(rb);
             rb = gameObject.AddComponent<Rigidbody>();
             rb.velocity = movement.controller.velocity;
             sj.connectedBody = rb;
             sj.maxDistance = Vector3.Distance(transform.position, grapplePoint.transform.position)-1f;
+            movement.grounded = false;
             movement.controller.enabled = false;
             canInteract = false;
         }
@@ -632,6 +644,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopGrapple()
     {
+        //movement.moveDirection = rb.velocity;
         movement.controller.enabled = true;
         movement.moveDirection = rb.velocity;
         canInteract = true;
@@ -640,6 +653,29 @@ public class PlayerController : MonoBehaviour
         sj.connectedBody = null;
         Destroy(rb);
     }
+
+    /**************************Knocked*Back********************************/
+
+    public void GetKnockedBack(Transform knockBackSource)
+    {
+        Vector3 Dir = (transform.position - knockBackSource.position).normalized;
+        if (rb != null)
+            Destroy(rb);
+        rb = gameObject.AddComponent<Rigidbody>();
+        rb.AddForce(new Vector3(Dir.x,.65f,Dir.y)*12.5f, ForceMode.Impulse);
+        status = Status.crowdControlled;
+        movement.controller.enabled = false;
+        canInteract = false;
+        movement.grounded = false;
+        StartCoroutine(EndKnockBack());
+    }
+
+    IEnumerator EndKnockBack()
+    {
+        yield return 0;
+        StopGrapple();
+    }
+
 
     /*********************************************************************/
 
@@ -650,4 +686,7 @@ public class PlayerController : MonoBehaviour
 
         return (Physics.CapsuleCastAll(top, bottom, 0.25f, transform.forward, dis, layer).Length >= 1);
     }
+
+
+
 }
