@@ -244,10 +244,7 @@ public class PlayerController : MonoBehaviour
         movement.Move(slideDir, movement.slideSpeed, 1f);
         if (slideTime <= 0)
         {
-            if (playerInput.crouching)
                 Crouch();
-            else
-                Uncrouch();
         }
     }
 
@@ -389,7 +386,7 @@ public class PlayerController : MonoBehaviour
 
         if (playerInput.Jump())
         {
-            movement.Jump(((Vector3.up * (s + 1.5f)) + (wallNormal * 2f * s) + (transform.right * -wallDir * 1.25f)).normalized, s + 0.5f);
+            movement.Jump(((Vector3.up * (s + 1.5f)) + (wallNormal * 2f * s) + (transform.right * -wallDir * 1.25f)).normalized, (s + 0.5f) * 1.25f);
             playerInput.ResetJump();
             status = Status.moving;
         }
