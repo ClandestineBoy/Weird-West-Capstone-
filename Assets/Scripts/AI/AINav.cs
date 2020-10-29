@@ -160,5 +160,9 @@ public class AINav : MonoBehaviour
         GetComponent<CapsuleCollider>().enabled = false;
         GetComponentInChildren<BoxCollider>().enabled = true;
         GetComponent<NavMeshAgent>().enabled = false;
+
+        //cleanup
+        GetComponent<EnemyAI>().detection.gameObject.SetActive(false);
+      
     }
 }

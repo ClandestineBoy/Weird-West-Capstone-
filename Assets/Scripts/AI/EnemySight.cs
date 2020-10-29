@@ -8,6 +8,7 @@ public class EnemySight : MonoBehaviour
 {
     public static float fieldOfViewAngle = 60f;
     public bool playerInSight;
+    public bool hearingPlayer;
     public Vector3 personalLastSighting;
 
     private NavMeshAgent nav;
@@ -23,6 +24,8 @@ public class EnemySight : MonoBehaviour
     private int frames = 0;
     public bool inRange;
     public float dist = 20;
+    public float sightRadius = 17.5f;
+    float hearingRadius = 10;
 
     private List<GameObject> DeadBodies = new List<GameObject>();
     bool liftedBody = true;
@@ -45,6 +48,7 @@ public class EnemySight : MonoBehaviour
         if (gameObject.GetComponent<EnemyAI>().attackType == 2)
         {
             col.radius = 50;
+            sightRadius = 50;
         }
     }
 
@@ -78,6 +82,15 @@ public class EnemySight : MonoBehaviour
 
         if (frames % 3 == 0) { 
             dist = Vector3.Distance(player.transform.position, transform.position);
+
+            if (dist < sightRadius)
+            {
+                inRange = true;
+            } else
+            {
+                inRange = false;
+                playerInSight = false;
+            }
 
 
 
@@ -167,13 +180,19 @@ public class EnemySight : MonoBehaviour
 
 
             // if state sprinting/wallrunning etc
-            if (PlayerController.instance.status == Status.moving)
+            if (PlayerController.instance.status == Status.moving && !playerInSight)
             {
-                if (CalculatePathLength(player.transform.position) <= col.radius)
+                if (CalculatePathLength(player.transform.position) <= hearingRadius/1.25f)
                 {
                     personalLastSighting = player.transform.position;
-                    playerInSight = true;
+                    hearingPlayer = true;
+                } else
+                {
+                    hearingPlayer = false;
                 }
+            } else
+            {
+                hearingPlayer = false;
             }
         }
 

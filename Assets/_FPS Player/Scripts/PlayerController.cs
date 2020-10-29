@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-       // Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+       Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
         //Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
@@ -308,14 +308,17 @@ public class PlayerController : MonoBehaviour
 
     void Crouch()
     {
+      
+        StartCoroutine(PlayerManager.instance.StealthVignette());
+        
         movement.controller.height = halfheight;
         status = Status.crouching;
-        StartCoroutine(PlayerManager.instance.StealthVignette());       
+         
     }
 
     void Uncrouch()
     {
-        if (status != Status.sliding)
+        if (status != Status.sliding && status != Status.idle) 
         {
             StartCoroutine(PlayerManager.instance.StealthVignette());
         }

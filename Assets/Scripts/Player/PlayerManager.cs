@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class PlayerManager : MonoBehaviour
     private Gun gun;
     private Melee melee;
 
+    public GameObject gunHand;
+    public GameObject swordHand;
+
     public bool crouching = false;
 
     public Image hp;
@@ -41,6 +45,10 @@ public class PlayerManager : MonoBehaviour
     LensDistortion lensDistortion;
     public AnimationCurve linearCurve;
     public AnimationCurve humpCurve;
+    public Animator leftHand;
+    bool inVignette;
+
+    int myScene;
 
     private void Start()
     {
@@ -59,10 +67,14 @@ public class PlayerManager : MonoBehaviour
         ppVolume = GameObject.Find("Post-Processing Volume").GetComponent<PostProcessVolume>();
         ppVolume.profile.TryGetSettings(out vignette);
         ppVolume.profile.TryGetSettings(out lensDistortion);
+        myScene = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.K)){
+            SceneManager.LoadScene(myScene);
+        }
 
         hp.fillAmount = currentHealth / maxHealth;
         mp.fillAmount = currentMana / maxMana;
@@ -203,6 +215,15 @@ public class PlayerManager : MonoBehaviour
     // VFX
      public IEnumerator StealthVignette()
     {
+
+        if (inVignette)
+        {
+            inVignette = false;
+            vignette.active = false;
+            yield return 0;
+        }
+        inVignette = true;
+     
         float startValue = vignette.intensity.value;
         float endValue = 0 ;
         if (vignette.intensity.value < .35f)
@@ -214,14 +235,28 @@ public class PlayerManager : MonoBehaviour
         {
             vignette.intensity.value = Mathf.LerpUnclamped(startValue, endValue, linearCurve.Evaluate(t));
             t += Time.deltaTime * 10;
+            if (!inVignette)
+            {
+                // vignette.intensity.value = endValue;
+                vignette.active = false;
+                break;
+            }
             yield return 0;
+            
         }
+ 
         vignette.intensity.value = endValue;
+        if (inVignette)
+        {
+            vignette.active = true;
+        }
+        inVignette = false;
 
     }
 
     public IEnumerator SwapDistort()
     {
+        leftHand.SetBool("swapAct", true);
         float startValue = lensDistortion.intensity.value;
         float endValue = -100;
         float t = 0;
@@ -231,6 +266,7 @@ public class PlayerManager : MonoBehaviour
             t += Time.deltaTime * 10;
             yield return 0;
         }
+        leftHand.SetBool("swapAct", false);
         t = 0;
         startValue = lensDistortion.intensity.value;
         endValue = 1;

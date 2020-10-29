@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Animations;
 public class PowerSwap : MonoBehaviour
 {
     public static PowerSwap instance;
@@ -12,6 +13,7 @@ public class PowerSwap : MonoBehaviour
 
     public Vector2 moveInput;
     public TMP_Text[] options;
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +71,32 @@ public class PowerSwap : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             swapping = false;
             Cursor.visible = false;
+            if (PlayerManager.instance.equippedWeapon == 0)
+            {
+                PlayerManager.instance.gunHand.SetActive(true);
+                PlayerManager.instance.swordHand.SetActive(false);
+            } else if (PlayerManager.instance.equippedWeapon == 1)
+            {
+                PlayerManager.instance.gunHand.SetActive(false);
+                PlayerManager.instance.swordHand.SetActive(true);
+            }
+
+            if  (PlayerManager.instance.equippedPower == 0)
+            {
+                PlayerManager.instance.leftHand.SetBool("mistIdle", true);
+                PlayerManager.instance.leftHand.SetBool("teleIdle", false);
+                PlayerManager.instance.leftHand.SetBool("swapIdle", false);
+            } else if (PlayerManager.instance.equippedPower == 1)
+            {
+                PlayerManager.instance.leftHand.SetBool("swapIdle", true);
+                PlayerManager.instance.leftHand.SetBool("teleIdle", false);
+                PlayerManager.instance.leftHand.SetBool("mistIdle", false);
+            } else if (PlayerManager.instance.equippedPower == 3)
+            {
+                PlayerManager.instance.leftHand.SetBool("teleIdle", true);
+                PlayerManager.instance.leftHand.SetBool("mistIdle", false);
+                PlayerManager.instance.leftHand.SetBool("swapIdle", false);
+            }
         }
     }
 }

@@ -89,7 +89,7 @@ public class EnemyAI : MonoBehaviour
         Font ArialFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
         myText.font = ArialFont;
         myText.material = ArialFont.material;
-        myText.text = "AI";
+        myText.text = "";
         myText.alignment = TextAnchor.MiddleCenter;
         myText.fontSize = 20;
         myText.color = Color.red;
@@ -99,7 +99,13 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if ((alertMeter > 0 || enemySight.playerInSight) && !aINav.ragDolled)
+        {
+            myText.text = "!";
+        } else
+        {
+            myText.text = "";
+        }
         //ALERT Imagine Move Round bounds of screen
         Vector3 screenPos = Camera.main.WorldToScreenPoint(IndicatorAnchor.transform.position);
         //Distance to Scale UI
@@ -172,7 +178,7 @@ public class EnemyAI : MonoBehaviour
             {
                 Distracted();
             }
-            else if (enemySight.playerInSight && alertMeter < alertMax)
+            else if ((enemySight.hearingPlayer || enemySight.playerInSight) && alertMeter < alertMax)
             {
                 if (!alerting)
                     StartCoroutine(Alerting());
@@ -225,14 +231,21 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator Alerting()
     {
-        Debug.Log("alerting");
+        float listenMod = 1.5f;
+        if (enemySight.hearingPlayer)
+        {
+            listenMod = 3.5f;
+        } else
+        {
+            listenMod = 1.5f;
+        }
         alerting = true;
         while (alertMeter < 1)
         {
             distMod = 10 / enemySight.dist;
-            alertMeter += Time.deltaTime * lightMod * distMod;
+            alertMeter += (Time.deltaTime * lightMod * distMod)/listenMod;
             yield return 0;
-            if (!enemySight.playerInSight)
+            if (!enemySight.playerInSight && !enemySight.hearingPlayer)
                 break;
 
         }
@@ -250,12 +263,13 @@ public class EnemyAI : MonoBehaviour
     {
         Debug.Log("stopping");
         alerting = false;
+        float t = 0;
         yield return new WaitForSeconds(2);
-        if (!enemySight.playerInSight && alertMeter < alertMax)
+        if (!enemySight.playerInSight && !enemySight.hearingPlayer && alertMeter < alertMax)
         {
             while (alertMeter > 0)
             {
-                if (enemySight.playerInSight)
+                if (enemySight.playerInSight || enemySight.hearingPlayer)
                     break;
                 alertMeter -= Time.deltaTime * lightMod;
                 yield return 0;
@@ -504,7 +518,11 @@ public class EnemyAI : MonoBehaviour
             alertMeter = 0;
             endChaseTimer = 0;
         }
-        enemySight.col.radius = 10;
+        if (attackType != 2)
+        {
+            enemySight.sightRadius = 10;
+        }
+       // enemySight.col.radius = 10;
     }
     void Patrolling()
     {
@@ -553,7 +571,8 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            enemySight.col.radius = 25;
+            enemySight.sightRadius = 25;
+            //enemySight.col.radius = 25;
         }
     }
 

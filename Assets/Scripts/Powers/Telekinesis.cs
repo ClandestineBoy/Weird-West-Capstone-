@@ -36,10 +36,12 @@ public class Telekinesis : MonoBehaviour
             {
                 PlayerManager.instance.SpendMana(manaCost);
                 StealthPickUp();
+                PlayerManager.instance.leftHand.SetBool("teleAct", true);
             }
             else if (liftingObject)
             {
                 StealthDropObject();
+                PlayerManager.instance.leftHand.SetBool("teleAct", false);
             }
         } else
         {
@@ -47,10 +49,12 @@ public class Telekinesis : MonoBehaviour
             {
                 PlayerManager.instance.SpendMana(manaCost);
                 PickUp();
+                PlayerManager.instance.leftHand.SetBool("teleAct", true);
             }
             else if (liftingObject)
             {
                 DropObject();
+                PlayerManager.instance.leftHand.SetBool("teleAct", false);
             }
 
         }
@@ -134,6 +138,7 @@ public class Telekinesis : MonoBehaviour
         }
         liftedObject = null;
         liftingObject = false;
+        
     }
 
 
@@ -208,6 +213,7 @@ public class Telekinesis : MonoBehaviour
         }
         liftedObject = null;
         liftingObject = false;
+        
     }
 }
     
