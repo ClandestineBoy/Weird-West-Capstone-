@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-       Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+      // Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
         //Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
