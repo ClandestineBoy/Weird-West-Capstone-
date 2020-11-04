@@ -45,6 +45,7 @@ public class StealthGrapple : MonoBehaviour
     }
     IEnumerator PullObject (GameObject hitObject)
     {
+        tether.gameObject.SetActive(true);
         tether.parent = hitObject.transform;
         Vector3 StartPos = hitObject.transform.position;
         Vector3 EndPos = transform.position + transform.forward;
@@ -56,13 +57,14 @@ public class StealthGrapple : MonoBehaviour
             yield return 0;
         }
         tether.parent = null;
+        tether.gameObject.SetActive(false);
         Debug.Log("In Hand: " + hitObject.name);
         Destroy(hitObject);
     }
 
     IEnumerator PullPerson (GameObject hitObject)
     {
-       
+        tether.gameObject.SetActive(true);
         hitObject.transform.root.GetComponent<AINav>().RagDoll();
         foreach (Rigidbody rb in hitObject.transform.root.gameObject.GetComponent<AINav>().rbs)
         {
@@ -80,6 +82,7 @@ public class StealthGrapple : MonoBehaviour
         }
         GameObject ai = tether.GetChild(0).gameObject;
         ai.transform.parent = null;
-        Destroy(ai);
+        tether.gameObject.SetActive(false);
+        //Destroy(ai);
     }
 }
