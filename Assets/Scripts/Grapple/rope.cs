@@ -13,7 +13,7 @@ public class rope : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        target1 = GameObject.Find("Player Movement").transform;
         lr = GetComponent<LineRenderer>();
         if (hasParent)
         {

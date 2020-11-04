@@ -789,7 +789,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.09
+  m_Radius: 0.1
   m_Center: {x: 0, y: 0.07425375, z: 0}
 --- !u!144 &5374140262123189641
 CharacterJoint:
@@ -1130,7 +1130,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.29608977, y: 0.25, z: 0.22295304}
+  m_Size: {x: 0.29608977, y: 0.3, z: 0.22295304}
   m_Center: {x: -0.00056795776, y: 0.1, z: -0.015125535}
 --- !u!144 &4862734893394237446
 CharacterJoint:
