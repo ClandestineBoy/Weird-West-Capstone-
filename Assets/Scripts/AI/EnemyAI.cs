@@ -30,7 +30,8 @@ public class EnemyAI : MonoBehaviour
     private bool alerting;
     public bool armed;
 
-
+    public AudioClip[] AIaudio;
+    public AudioSource AIaudioSource;
     public static float lightMod = 1;
     public float distMod;
     public bool objectHeard;
@@ -247,10 +248,15 @@ public class EnemyAI : MonoBehaviour
             yield return 0;
             if (!enemySight.playerInSight && !enemySight.hearingPlayer)
                 break;
-
+            AIaudioSource.clip = AIaudio[2];
+            AIaudioSource.Play();
         }
+
         if (alertMeter < alertMax)
+        {
+            AIaudioSource.Stop();
             StartCoroutine(StopAlerting());
+        }
         else
         {
             alertMeter = 1;
@@ -381,6 +387,8 @@ public class EnemyAI : MonoBehaviour
                 yield return 0;
             }
             Shoot();
+            AIaudioSource.clip = AIaudio[0];
+            AIaudioSource.Play();
             inAttackPattern = false;
             foundAttackPoint = false;
             currentlyAttacking = false;

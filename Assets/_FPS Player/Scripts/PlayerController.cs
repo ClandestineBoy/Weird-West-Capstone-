@@ -363,7 +363,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckLadderClimbing()
     {
-        Debug.Log(climbTime);
+//        Debug.Log(climbTime);
         
         if (!canInteract)
             return;
