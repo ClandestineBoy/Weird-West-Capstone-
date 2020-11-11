@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeadBobber : MonoBehaviour
+public class HeadBobber : PlayerController
 { 
     private float timer = 0.0f; 
     float bobbingSpeed = 0.38f; 
     float bobbingAmount = .1f; 
     float midpoint = 0.0f;
+    Transform cam;
+
+    void Start()
+    {
+        cam = Camera.main.transform;
+    }
 
     void Update()
     {
-        if (Player_Controller.instance.onGround)
+        if (status == Status.moving && movement.grounded)
         {
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
@@ -36,17 +42,17 @@ public class HeadBobber : MonoBehaviour
                 float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
                 totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
                 translateChange = totalAxes * translateChange;
-                transform.localPosition = new Vector3(transform.localPosition.x, midpoint + translateChange,
-                    transform.localPosition.z);
+                cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint + translateChange,
+                    cam.transform.localPosition.z);
             }
             else
             {
-                transform.localPosition = new Vector3(transform.localPosition.x, midpoint, transform.localPosition.z);
+                cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint, cam.transform.localPosition.z);
             }
         }
         else
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(0, 0, 0), Time.deltaTime);
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(0, 0, 0), Time.deltaTime);
         }
         
     }

@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask wallrunLayer;
 
+    //everything except npc and player
+    int grappleMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 12 | 1 << 13 | 1 << 16 | 1 << 17 | 1 << 18;
+
     int layermask = 1<<18;
 
     GameObject vaultHelper;
@@ -61,6 +64,16 @@ public class PlayerController : MonoBehaviour
 
     int wallDir = 1;
 
+
+    //Headbob
+    private float timer = 0.0f;
+    float bobbingSpeed = .05f;
+    float bobbingAmount = .007f;
+    float headBobAmount = .1f;
+    float midpoint = .583f;
+    Transform cam;
+    Transform headTransform;
+
     private void Start()
     {
         instance = this;
@@ -81,12 +94,15 @@ public class PlayerController : MonoBehaviour
         halfradius = radius / 2f;
         halfheight = height / 2f;
         rayDistance = halfheight + radius + .1f;
+       
+        cam = Camera.main.transform;
+        headTransform = GameObject.Find("CameraHolder").transform;
     }
 
     /******************************* UPDATE ******************************/
     void Update()
     {
-      // Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+        Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
         //Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
@@ -105,6 +121,67 @@ public class PlayerController : MonoBehaviour
 
         //Misc
         UpdateLean();
+
+        //Headbob
+        if (status == Status.moving && movement.grounded && Time.timeScale == 1)
+        {
+            if (sprinting)
+            {
+                bobbingSpeed = .2f;
+                bobbingAmount = .008f;
+                headBobAmount = .08f;
+            } else
+            {
+                bobbingSpeed = .05f;
+                bobbingAmount = .006f;
+                headBobAmount = .05f;
+            }
+            float waveslice = 0.0f;
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
+            Debug.Log(vertical);
+            if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
+            {
+                timer = 0.0f;
+            }
+            else
+            {
+                waveslice = Mathf.Sin(timer);
+                timer = timer + bobbingSpeed;
+                if (timer > Mathf.PI * 2)
+                {
+                    timer = timer - (Mathf.PI * 2);
+                }
+            }
+
+            if (waveslice != 0)
+            {
+                float translateChange = waveslice * bobbingAmount;
+                float translateChange2 = waveslice * headBobAmount;
+                float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+                totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
+                translateChange = totalAxes * translateChange;
+                translateChange2 = totalAxes * translateChange2;
+                headTransform.localPosition = new Vector3(headTransform.localPosition.x,   translateChange2,
+                    headTransform.localPosition.z);
+                cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint + translateChange,
+                    cam.transform.localPosition.z);
+            }
+            else
+            {
+                headTransform.localPosition = new Vector3(headTransform.localPosition.x,0,
+                   headTransform.localPosition.z);
+                cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint, cam.transform.localPosition.z);
+            }
+        }
+        else
+        {
+            headTransform.localPosition = new Vector3(headTransform.localPosition.x,0,
+                  headTransform.localPosition.z);
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(0,midpoint,0), Time.deltaTime);
+            timer = 0;
+        }
+
     }
 
     void UpdateInteraction()
@@ -606,15 +683,15 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            rb.AddForce(transform.forward * 5f, ForceMode.Force);
+            rb.AddForce(transform.forward * 20f, ForceMode.Force);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            rb.AddForce(-transform.right * 5f, ForceMode.Force);
+            rb.AddForce(-transform.right * 20f, ForceMode.Force);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            rb.AddForce(transform.right * 5f, ForceMode.Force);
+            rb.AddForce(transform.right * 20f, ForceMode.Force);
         }
 
         if(instance.status != Status.grappling && instance.status != Status.crowdControlled)
@@ -635,7 +712,7 @@ public class PlayerController : MonoBehaviour
         
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, grappleRange))
+        if (Physics.Raycast(ray, out hit, grappleRange, grappleMask))
         {
             Debug.Log(hit.transform.gameObject.name);
             Debug.Log(grappleArmLength);

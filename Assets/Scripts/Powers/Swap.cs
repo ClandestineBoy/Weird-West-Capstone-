@@ -5,13 +5,17 @@ using UnityEngine.AI;
 
 public class Swap : MonoBehaviour
 {
+    public static Swap instance;
+
     bool crouchTime = false;
+   
     int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1<<11 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
     public float manaCost;
     CharacterController cc;
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
         cc = GetComponent<CharacterController>();
     }
 

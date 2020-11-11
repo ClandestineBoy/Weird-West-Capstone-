@@ -2259,7 +2259,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: joint1
+    path: joint1/joint2/joint3/joint4/joint9/joint10/joint11
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -2269,7 +2269,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: joint1
+    path: joint1/joint2/joint3/joint4/joint9/joint10/joint11
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -2279,7 +2279,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: joint1
+    path: joint1/joint2/joint3/joint4/joint9/joint10/joint11
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -2799,7 +2799,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: joint1/joint2/joint3/joint4/joint9/joint10/joint11
+    path: joint1
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -2809,7 +2809,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: joint1/joint2/joint3/joint4/joint9/joint10/joint11
+    path: joint1
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -2819,7 +2819,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: joint1/joint2/joint3/joint4/joint9/joint10/joint11
+    path: joint1
     classID: 4
     script: {fileID: 0}
   m_HasGenericRootTransform: 0
