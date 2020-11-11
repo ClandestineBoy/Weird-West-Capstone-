@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     Vector3 vaultOver;
     Vector3 vaultDir;
     Vector3 ledgeNormal;
+  
 
     public PlayerMovement movement;
     public Rigidbody rb;
@@ -52,6 +53,8 @@ public class PlayerController : MonoBehaviour
     float radius;
     float height;
     float halfradius;
+    float grappleDistance;
+    float grappleSpeed;
     public float halfheight;
     public float ledgeSpeed;
 
@@ -597,8 +600,10 @@ public class PlayerController : MonoBehaviour
 
     void grappleMovement()
     {
-        sj.maxDistance -= .1f;
-     
+
+        sj.maxDistance -= grappleSpeed;
+        grappleDistance = Vector3.Distance(transform.position, grapplePoint.transform.position);
+
         if (Input.GetKey(KeyCode.W))
         {
             rb.AddForce(transform.forward * 5f, ForceMode.Force);
@@ -615,6 +620,13 @@ public class PlayerController : MonoBehaviour
         if(instance.status != Status.grappling && instance.status != Status.crowdControlled)
         {
             StopGrapple();
+        } else if (grappleDistance < 2.5f)
+        {
+            StopGrapple();
+        }
+        if (grappleSpeed < .275f)
+        {
+            grappleSpeed += .0125f;
         }
     }
 
@@ -636,6 +648,8 @@ public class PlayerController : MonoBehaviour
             rb.velocity = movement.controller.velocity;
             sj.connectedBody = rb;
             sj.maxDistance = Vector3.Distance(transform.position, grapplePoint.transform.position)-1f;
+            grappleDistance = Vector3.Distance(transform.position, grapplePoint.transform.position);
+            grappleSpeed = .1f;
             movement.grounded = false;
             movement.controller.enabled = false;
             canInteract = false;
