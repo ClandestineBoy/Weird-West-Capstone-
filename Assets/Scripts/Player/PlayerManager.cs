@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
@@ -16,7 +17,15 @@ public class PlayerManager : MonoBehaviour
     public float currentHealth;
     public float currentMana;
 
+    [Header("PlayerAudio")] 
+    public AudioClip[] playerClips;
 
+    public AudioClip gunFxTest;
+
+    public AudioSource thisSource;
+    public AudioMixerGroup Stealthmaster;
+    public AudioMixerGroup player;
+    
     public int equippedPower;
     public int equippedWeapon;
 
@@ -61,7 +70,7 @@ public class PlayerManager : MonoBehaviour
         telekinesis = GetComponent<Telekinesis>();
         gun = GetComponent<Gun>();
         melee = GetComponentInChildren<Melee>();
-
+        thisSource = this.GetComponent<AudioSource>();
         equippedPower = 3;
         instance = this;
         ppVolume = GameObject.Find("Post-Processing Volume").GetComponent<PostProcessVolume>();
@@ -127,11 +136,25 @@ public class PlayerManager : MonoBehaviour
             {
                 case 0:
                     gun.Shoot();
+                    thisSource.clip = playerClips[0];
+                    Debug.Log(thisSource.clip);
+                    thisSource.Play();
                     break;
                 case 1:
                     if (!melee.slashing)
                     {
                         StartCoroutine(melee.Slash());
+                        int x = Random.Range(0, 1);
+                        if (x >= .5)
+                        {
+                            thisSource.clip = playerClips[1];
+                        }
+                        else
+                        {
+                            thisSource.clip = playerClips[2];
+                        }
+                        Debug.Log(thisSource.clip);
+                        thisSource.Play();
                     }
                     break;
             }
@@ -218,11 +241,14 @@ public class PlayerManager : MonoBehaviour
 
         if (inVignette)
         {
+            thisSource.outputAudioMixerGroup = player;
             inVignette = false;
             vignette.active = false;
             yield return 0;
         }
         inVignette = true;
+        thisSource.outputAudioMixerGroup = Stealthmaster;
+        
      
         float startValue = vignette.intensity.value;
         float endValue = 0 ;
