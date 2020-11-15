@@ -34,9 +34,7 @@ public class Telekinesis : MonoBehaviour
         {
             if (PlayerManager.instance.currentHealth > manaCost * 2 && !liftingObject)
             {
-                PlayerManager.instance.SpendMana(manaCost);
                 StealthPickUp();
-                PlayerManager.instance.leftHand.SetBool("teleAct", true);
             }
             else if (liftingObject)
             {
@@ -47,9 +45,7 @@ public class Telekinesis : MonoBehaviour
         {
             if (PlayerManager.instance.currentHealth > manaCost * 2 && !liftingObject)
             {
-                PlayerManager.instance.SpendMana(manaCost);
                 PickUp();
-                PlayerManager.instance.leftHand.SetBool("teleAct", true);
             }
             else if (liftingObject)
             {
@@ -61,9 +57,6 @@ public class Telekinesis : MonoBehaviour
 
 
     }
-
-
-
 
 
     void PickUp()
@@ -111,6 +104,11 @@ public class Telekinesis : MonoBehaviour
             {
                 PlayerController.instance.GetKnockedBack(hit.transform.root.transform);
             }
+            if (liftingObject)
+            {
+                PlayerManager.instance.SpendMana(manaCost);
+                PlayerManager.instance.leftHand.SetBool("teleAct", true);
+            }        
         }
     }
     void DropObject()
@@ -185,6 +183,11 @@ public class Telekinesis : MonoBehaviour
             else if ((hit.transform.gameObject.layer == 11 || hit.transform.gameObject.layer == 14) && hit.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
             {
                 PlayerController.instance.GetKnockedBack(hit.transform.root.transform);
+            }
+            if (liftingObject)
+            {
+                PlayerManager.instance.SpendMana(manaCost);
+                PlayerManager.instance.leftHand.SetBool("teleAct", true);
             }
         }
     }

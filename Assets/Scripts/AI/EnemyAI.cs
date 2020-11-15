@@ -412,9 +412,21 @@ public class EnemyAI : MonoBehaviour
         {
             player.GetComponent<PlayerManager>().currentHealth -= 25f;
         }
-        else
+        else if (Physics.Raycast(shootPoint.position, (inaccuratePos - shootPoint.position).normalized, out hitRC, Mathf.Infinity, layerMask) && hitRC.transform.gameObject.layer == 14)
         {
-            Debug.Log("I missed!");
+            if (hitRC.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3 || hitRC.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth <= 25)
+            {
+                hitRC.transform.root.gameObject.GetComponent<AINav>().RagDoll();
+                foreach (Rigidbody rb in hitRC.transform.root.gameObject.GetComponent<AINav>().rbs)
+                {
+                    rb.useGravity = true;
+                }
+                hitRC.transform.gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * 75, ForceMode.Impulse);
+            } else
+            {
+                hitRC.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth -= 25;
+            }
+          
         }
         Vector3 hitpoint = hitRC.point;
         StartCoroutine(BulletVisual(hitpoint));
@@ -562,7 +574,7 @@ public class EnemyAI : MonoBehaviour
 
     public void StartCombatMode()
     {
-        Debug.Log("hooray");
+        //Debug.Log("hooray");
         inCombat = true;
         armed = true;
        
@@ -570,18 +582,20 @@ public class EnemyAI : MonoBehaviour
         foreach(Collider c in heardYou)
         {
             c.gameObject.GetComponent<EnemyAI>().alertMeter = 1;
+
+            if (attackType == 2)
+            {
+
+            }
+            else
+            {
+                c.GetComponent<EnemySight>().sightRadius = 25;
+                //enemySight.col.radius = 25;
+            }
         }
         enemiesInCombat.Add(gameObject);
         EnemySight.fieldOfViewAngle = 160;
-        if (attackType == 2)
-        {
-
-        }
-        else
-        {
-            enemySight.sightRadius = 25;
-            //enemySight.col.radius = 25;
-        }
+        
     }
 
 }

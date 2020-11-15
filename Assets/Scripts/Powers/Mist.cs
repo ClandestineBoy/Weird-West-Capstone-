@@ -10,6 +10,7 @@ public class Mist : MonoBehaviour
     float originalWalkSpeed;
     float originalCrouchSpeed;
    public bool isMist = false;
+    public GameObject camHolder;
 
   
     
@@ -23,6 +24,7 @@ public class Mist : MonoBehaviour
     }
     public IEnumerator BecomeMist()
     {
+        PlayerManager.instance.leftHand.SetBool("mistAct", true);
         isMist = true;
         PlayerController.instance.canSprint = false;
         Physics.IgnoreLayerCollision(9, 10, true);
@@ -40,20 +42,20 @@ public class Mist : MonoBehaviour
         {
             PlayerMovement.instance.crouchSpeed = mistSpeed/4;
             
-            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y - .95f, Camera.main.transform.position.z);
+            camHolder.transform.position = new Vector3(camHolder.transform.position.x, camHolder.transform.position.y - .85f, camHolder.transform.position.z);
             PlayerMovement.instance.controller.height = PlayerController.instance.halfheight / 10;
             float prevLight = EnemyAI.lightMod;
             EnemyAI.lightMod = 0;
           while (Input.GetMouseButton(1) && PlayerManager.instance.currentHealth > 10)
             {
                 PlayerManager.instance.SpendMana(1);
-                yield return new WaitForSeconds(.2f);
+                yield return new WaitForSeconds(.25f);
             }
             EnemyAI.lightMod = prevLight;
             
             
             PlayerMovement.instance.controller.height = PlayerController.instance.halfheight;
-            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y + .95f, Camera.main.transform.position.z);
+            camHolder.transform.position = new Vector3(camHolder.transform.position.x, camHolder.transform.position.y + .85f, camHolder.transform.position.z);
         }
         
         BecomeHuman();
@@ -61,6 +63,7 @@ public class Mist : MonoBehaviour
     }
     public void BecomeHuman()
     {
+        PlayerManager.instance.leftHand.SetBool("mistAct", false);
         isMist = false;
         PlayerController.instance.canSprint = true;
         Physics.IgnoreLayerCollision(9,10, false);

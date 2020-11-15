@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
     public int equippedPower;
     public int equippedWeapon;
 
-    private Mist mist;
+    public Mist mist;
     private Swap swap;
     private SwingController swingController;
     private Telekinesis telekinesis;
@@ -39,6 +39,7 @@ public class PlayerManager : MonoBehaviour
 
     public GameObject gunHand;
     public GameObject swordHand;
+    public Vector3 swordStartRot;
 
     public bool crouching = false;
 
@@ -55,12 +56,15 @@ public class PlayerManager : MonoBehaviour
     public AnimationCurve linearCurve;
     public AnimationCurve humpCurve;
     public Animator leftHand;
+    public Animator gunHandAnim;
+    public Animator swordHandAnim;
     bool inVignette;
 
     int myScene;
 
     private void Start()
     {
+        swordStartRot = swordHand.transform.localEulerAngles;
         NPCS = GameObject.FindGameObjectsWithTag("NPC");
 
         stealthGrapple = GetComponent<StealthGrapple>();

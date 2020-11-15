@@ -5,7 +5,8 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
     //everything except npc root capsule collider
-    int layerMask = 1 << 0 | 1<< 1 | 1<<2 | 1<<3 | 1<<4 | 1<<5 | 1<<6 | 1<<7 | 1<< 8 | 1<<9  | 1<<12| 1<<13 | 1<<14 | 1<<16 | 1<<17 | 1<<18;
+    int layerMask = 1 << 0 | 1<< 1 | 1<<2 | 1<<3 | 1<<4 | 1<<5 | 1<<6 | 1<<7 | 1<< 8 | 1<<12 | 1<<13 | 1<<14 | 1<<16 | 1<<17 | 1<<18;
+    int AIMask = 1 << 11;
     public GameObject bullet;
     public Transform shootPoint;
     bool reloaded;
@@ -27,6 +28,7 @@ public class Gun : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 100, layerMask) && reloaded)
         {
+            PlayerManager.instance.gunHandAnim.SetBool("reloading", true);
             StartCoroutine(BulletVisual(hit.point));
             //Debug.Log(hit.transform.name);
             if (hit.transform.gameObject.layer == 14)
@@ -48,6 +50,33 @@ public class Gun : MonoBehaviour
                 }
             }
 
+
+            //Alert enemies
+            Collider[] heardYou = Physics.OverlapSphere(transform.position, 15, AIMask);
+            foreach (Collider c in heardYou)
+            {
+                c.gameObject.GetComponent<EnemyAI>().alertMeter = 1;
+                EnemyAI.enemiesInCombat.Add(c.gameObject);
+
+                if (c.GetComponent<EnemyAI>().attackType == 2)
+                {
+
+                }
+                else
+                {
+                    c.GetComponent<EnemySight>().sightRadius = 25;
+                    //enemySight.col.radius = 25;
+                }
+
+            }
+            if (heardYou.Length > 0)
+            {
+               EnemySight.fieldOfViewAngle = 160;
+            }
+            
+
+
+
         }
     }
 
@@ -63,6 +92,7 @@ public class Gun : MonoBehaviour
             yield return 0;
 
         }
+        PlayerManager.instance.gunHandAnim.SetBool("reloading", false);
         Destroy(newBullet);
         yield return new WaitForSeconds(2);
         reloaded = true;

@@ -24,8 +24,9 @@ public class Melee : MonoBehaviour
 
    public  IEnumerator Slash()
     {
+        PlayerManager.instance.swordHandAnim.SetBool("swinging", true);
         box.enabled = true;
-        mesh.enabled = true;
+       // mesh.enabled = true;
         slashing = true;
         float t = 0;
         Vector3 StartPos = transform.localPosition;
@@ -36,10 +37,12 @@ public class Melee : MonoBehaviour
             t += Time.deltaTime * 6;
             yield return 0;
         }
+        PlayerManager.instance.swordHandAnim.SetBool("swinging", false);
+        yield return new WaitForSeconds(.2f);
         transform.localPosition = StartPos;
         slashing = false;
         box.enabled = false;
-        mesh.enabled = false;
+      //  mesh.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,12 +57,20 @@ public class Melee : MonoBehaviour
                 {
                     rb.useGravity = true;
                     //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    rb.AddForce(transform.right * 5, ForceMode.Impulse);
+                    rb.AddForce(transform.right * 6.5f, ForceMode.Impulse);
 
                 }
             } else if (other.transform.root.gameObject.GetComponent<EnemyAI>().attackType == 3)
             {
                 other.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth -= 25;
+            }
+        } else if (other.gameObject.CompareTag("Ragdoll"))
+        {
+            foreach (Rigidbody rb in other.transform.root.GetComponent<AINav>().rbs)
+            {
+                //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                rb.AddForce(transform.right * 6.5f, ForceMode.Impulse);
+
             }
         }
     }

@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
         UpdateLean();
 
         //Headbob
-        if (status == Status.moving && movement.grounded && Time.timeScale == 1)
+        if (status == Status.moving && movement.grounded && Time.timeScale == 1 && !PlayerManager.instance.mist.isMist)
         {
             if (sprinting)
             {
@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviour
                 cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint, cam.transform.localPosition.z);
             }
         }
-        else
+        else if (!PlayerManager.instance.mist.isMist)
         {
             headTransform.localPosition = new Vector3(headTransform.localPosition.x,0,
                   headTransform.localPosition.z);
