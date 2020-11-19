@@ -16,6 +16,8 @@ public class PlayerManager : MonoBehaviour
     public float maxMana;
     public float currentHealth;
     public float currentMana;
+    public float healthTicks = 3;
+    public float manaTicks = 3;
 
     [Header("PlayerAudio")] 
     public AudioClip[] playerClips;
@@ -45,6 +47,7 @@ public class PlayerManager : MonoBehaviour
 
     public Image hp;
     public Image mp;
+    public Image tick1, tick2, tick3, tick4, tick5, tick6;
     public enum LightLevel { brightLight, dimLight, ambientLight, noLight };
     public LightLevel lightState = new LightLevel();
 
@@ -93,6 +96,41 @@ public class PlayerManager : MonoBehaviour
 
         hp.fillAmount = currentHealth / maxHealth;
         mp.fillAmount = currentMana / maxMana;
+
+        if (currentHealth <= 25)
+        {
+            tick1.fillAmount = currentHealth * 4;
+        } else if (currentHealth <= 50)
+        {
+            tick2.fillAmount = (currentHealth - 25) * 4;
+        } else if (currentHealth <= 75)
+        {
+            tick3.fillAmount = (currentHealth - 50) * 4;
+        } else if (currentHealth <= 100)
+        {
+            tick4.fillAmount = (currentHealth - 75) * 4;
+        } else if (currentHealth <= 125)
+        {
+            tick5.fillAmount = (currentHealth - 100) * 4;
+        }
+
+        if (currentMana <= 25)
+        {
+            tick6.fillAmount = (currentMana) * 4;
+        } else if (currentMana <= 50)
+        {
+            tick5.fillAmount = (currentMana - 25) * 4;
+        } else if (currentMana <= 75)
+        {
+            tick4.fillAmount = (currentMana - 50) * 4;
+        } else if (currentMana <= 100)
+        {
+            tick3.fillAmount = (currentMana - 75) * 4;
+        } else if (currentMana <= 125)
+        {
+            tick2.fillAmount = (currentMana - 100) * 4;
+        }
+
         /*if (Input.GetKeyDown(KeyCode.Space))
         {
             

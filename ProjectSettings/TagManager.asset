@@ -8,6 +8,8 @@ TagManager:
   - BrightLight
   - NPC
   - Ragdoll
+  - HealthBag
+  - EctoSyringe
   layers:
   - Default
   - TransparentFX
