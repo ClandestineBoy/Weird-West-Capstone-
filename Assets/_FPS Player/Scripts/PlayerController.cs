@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-        Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+        //Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
         //Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
-            Debug.Log(vertical);
+            //Debug.Log(vertical);
             if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
             {
                 timer = 0.0f;

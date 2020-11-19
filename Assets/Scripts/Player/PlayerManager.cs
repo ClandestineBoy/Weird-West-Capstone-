@@ -59,6 +59,8 @@ public class PlayerManager : MonoBehaviour
     public Animator gunHandAnim;
     public Animator swordHandAnim;
     bool inVignette;
+    public GameObject bloodEffect;
+    bool bloodied;
 
     int myScene;
 
@@ -216,6 +218,28 @@ public class PlayerManager : MonoBehaviour
                 currentMana = maxMana;
             }
             maxHealth = currentHealth;
+        }
+    }
+    public IEnumerator HurtEffect()
+    {
+        bloodied = true;
+        bloodEffect.SetActive(true);
+        bloodEffect.transform.localEulerAngles += new Vector3(0,0,180);
+        Color temp = bloodEffect.GetComponent<Image>().color;
+        temp.a = .75f;
+        yield return 0;
+        bloodied = false;
+        float t = 0;
+        while (t < 1)
+        {
+           temp.a = Mathf.LerpUnclamped(.75f, 0, linearCurve.Evaluate(t));
+            bloodEffect.GetComponent<Image>().color = temp;
+            t += Time.deltaTime;
+            yield return 0;
+            if (bloodied)
+            {
+                break;
+            }
         }
     }
 

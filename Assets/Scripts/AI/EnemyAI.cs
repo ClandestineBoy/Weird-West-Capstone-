@@ -60,12 +60,19 @@ public class EnemyAI : MonoBehaviour
     bool inAir;
     private Vector3 attackPoint;
     public Transform shootPoint;
+
+
+    Vector3 rightAtRedirect;
+    Vector3 leftAtRedirect;
     // 0 = shooting, 1 = melee, 2 = sniper, 3 = anti-geist
     public int attackType;
     public float enemyHealth = 100;
     public GameObject bullet;
     int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
     int AIMask = 1 << 11;
+
+
+    private int frames = 0;
 
     private void Awake()
     {
@@ -100,6 +107,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        frames++;
         if ((alertMeter > 0 || enemySight.playerInSight) && !aINav.ragDolled)
         {
             myText.text = "!";
@@ -186,17 +194,17 @@ public class EnemyAI : MonoBehaviour
             }
             else if ((enemySight.playerInSight || inAttackPattern) && attackType != 1)
             {
-                Debug.Log("Shoot!");
+                //Debug.Log("Shoot!");
                 AttackPattern();
             }
             else if (chaseTimer > chaseWaitTime && alertMeter >= alertMax && enemiesInCombat.Count == 0)
             {
-                Debug.Log("StopChasing");
+                //Debug.Log("StopChasing");
                 StopChasing();
             }
             else if (enemySight.personalLastSighting != lastPlayerSighting.resetPosition && alertMeter >= alertMax)
             {
-                Debug.Log("Chasing");
+                //Debug.Log("Chasing");
                 Chasing();
             }
             else
@@ -293,6 +301,7 @@ public class EnemyAI : MonoBehaviour
 
     void AttackPattern()
     {
+
         if (attackType != 2)
         {
            // Debug.Log(attackType);
@@ -347,10 +356,80 @@ public class EnemyAI : MonoBehaviour
 
             if (nav.destination != attackPoint)
             {
+               
+
+                rightAtRedirect = Vector3.left;
+                leftAtRedirect = Vector3.right;
+
                 nav.SetDestination(attackPoint);
+               
             }
         }
-            if ((nav.remainingDistance < .5f || attackType == 2) && !currentlyAttacking)
+
+        //Animation states and look rotation when running to attack point
+        if (frames % 3 == 0 && !currentlyAttacking && attackType != 1 && attackType != 2)
+        {
+            nav.updateRotation = false;
+            Vector3 directionToPlayer = (new Vector3 (player.position.x, 0, player.position.z) - (new Vector3(transform.position.x, 0 , transform.position.z))).normalized;
+            Vector3 directionToNextPoint = (new Vector3(attackPoint.x, 0, attackPoint.z) - (new Vector3(transform.position.x, 0, transform.position.z))).normalized;
+            float Rangle = Vector3.Angle(transform.right, directionToNextPoint);
+            float Langle = Vector3.Angle(-transform.right, directionToNextPoint);
+            //Debug.Log(Rangle + " Rangle");
+            //Debug.Log(Langle + " Langle");
+            float angle = Vector3.Angle(directionToPlayer, directionToNextPoint);
+           //walking back = 180, toward = 0, always positive
+           //Debug.Log(angle + " Angle");
+            // Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+            //transform.rotation = new Quaternion(transform.rotation.x, lookRotation.y,transform.rotation.z,transform.rotation.w);
+
+            if (Rangle < 45)
+            {
+                Debug.Log("RunningRight");
+                aINav.animator.SetBool("combatWalkBack", false);
+                aINav.animator.SetBool("combatWalkForward", false);
+                aINav.animator.SetBool("combatWalkRight", true);
+                aINav.animator.SetBool("combatWalkLeft", false);
+                aINav.animator.SetBool("combatKneel", false);
+                aINav.animator.SetBool("combatRunAfter", false);
+                aINav.animator.SetBool("combatAim", false);
+            } else if (Langle < 45)
+            {
+                aINav.animator.SetBool("combatWalkBack", false);
+                aINav.animator.SetBool("combatWalkForward", false);
+                aINav.animator.SetBool("combatWalkRight", false);
+                aINav.animator.SetBool("combatWalkLeft", true);
+                aINav.animator.SetBool("combatKneel", false);
+                aINav.animator.SetBool("combatRunAfter", false);
+                aINav.animator.SetBool("combatAim", false);
+                Debug.Log("RunningLeft");
+            } else if (angle > 135)
+            {
+                Debug.Log("RunningBack");
+                
+                aINav.animator.SetBool("combatWalkBack", true);
+                aINav.animator.SetBool("combatWalkForward", false);
+                aINav.animator.SetBool("combatWalkRight", false);
+                aINav.animator.SetBool("combatWalkLeft", false);
+                aINav.animator.SetBool("combatKneel", false);
+                aINav.animator.SetBool("combatRunAfter", false);
+                aINav.animator.SetBool("combatAim", false);
+            } else
+            {
+                Debug.Log("RunningFWD");
+                aINav.animator.SetBool("combatWalkBack", false);
+                aINav.animator.SetBool("combatWalkForward", true);
+                aINav.animator.SetBool("combatWalkRight", false);
+                aINav.animator.SetBool("combatWalkLeft", false);
+                aINav.animator.SetBool("combatKneel", false);
+                aINav.animator.SetBool("combatRunAfter", false);
+                aINav.animator.SetBool("combatAim", false);
+            }
+
+          
+
+        }
+
+        if ((nav.remainingDistance < .35f || attackType == 2) && !currentlyAttacking)
             {
                 //Debug.Log("InPlace");
                 StartCoroutine(Attack());
@@ -374,6 +453,13 @@ public class EnemyAI : MonoBehaviour
 
         if (attackType != 1)
         {
+            aINav.animator.SetBool("combatWalkBack", false);
+            aINav.animator.SetBool("combatWalkForward", false);
+            aINav.animator.SetBool("combatWalkRight", false);
+            aINav.animator.SetBool("combatWalkLeft", false);
+            aINav.animator.SetBool("combatKneel", false);
+            aINav.animator.SetBool("combatRunAfter", false);
+            aINav.animator.SetBool("combatAim", true);
             //Debug.Log("AT1");
             nav.isStopped = true;
             float t = 0;
@@ -393,6 +479,7 @@ public class EnemyAI : MonoBehaviour
             foundAttackPoint = false;
             currentlyAttacking = false;
             nav.isStopped = false;
+            nav.updateRotation = true;
         }
         else if (attackType == 1)
         {
@@ -406,11 +493,12 @@ public class EnemyAI : MonoBehaviour
     {
         RaycastHit hitRC;
         float accValue = (Vector3.Distance(player.position, transform.position) / 15) + (player.GetComponent<CharacterController>().velocity.magnitude/15);
-       Debug.Log(accValue);
+       //Debug.Log(accValue);
         Vector3 inaccuratePos = new Vector3(player.position.x + Random.Range(-accValue, accValue), player.position.y + Random.Range(-accValue, accValue), player.position.z + Random.Range(-accValue, accValue));
         if (Physics.Raycast(shootPoint.position, (inaccuratePos - shootPoint.position).normalized, out hitRC, Mathf.Infinity, layerMask) && hitRC.transform.gameObject == player.gameObject)
         {
             player.GetComponent<PlayerManager>().currentHealth -= 25f;
+            StartCoroutine(PlayerManager.instance.HurtEffect());
         }
         else if (Physics.Raycast(shootPoint.position, (inaccuratePos - shootPoint.position).normalized, out hitRC, Mathf.Infinity, layerMask) && hitRC.transform.gameObject.layer == 14)
         {
@@ -469,6 +557,13 @@ public class EnemyAI : MonoBehaviour
         if (!inAir && attackType != 2)
         {
             nav.SetDestination(player.position);
+            aINav.animator.SetBool("combatWalkBack", false);
+            aINav.animator.SetBool("combatWalkForward", false);
+            aINav.animator.SetBool("combatWalkRight", false);
+            aINav.animator.SetBool("combatWalkLeft", false);
+            aINav.animator.SetBool("combatKneel", false);
+            aINav.animator.SetBool("combatAim", false);
+            aINav.animator.SetBool("combatRunAfter", true);
         }
         if (!currentlyAttacking)
         {
