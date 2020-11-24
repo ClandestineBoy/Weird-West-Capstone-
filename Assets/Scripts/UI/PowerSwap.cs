@@ -13,13 +13,17 @@ public class PowerSwap : MonoBehaviour
 
     public Vector2 moveInput;
     public TMP_Text[] options;
-   
+    public GameObject ShadowHand;
+    public Vector3 ShadowHandStartPos;
+    public Transform shadowParent;
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        ShadowHandStartPos = ShadowHand.transform.localPosition;
+        shadowParent = ShadowHand.transform.parent;
     }
 
     // Update is called once per frame
@@ -32,6 +36,7 @@ public class PowerSwap : MonoBehaviour
             Cursor.visible = true;
             swapping = true;
             SwapUI.SetActive(true);
+            ShadowHand.SetActive(false);
 
             moveInput.x = Input.mousePosition.x - (Screen.width / 2f);
             moveInput.y = Input.mousePosition.y - (Screen.height / 2f);
@@ -81,21 +86,34 @@ public class PowerSwap : MonoBehaviour
                 PlayerManager.instance.swordHand.SetActive(true);
             }
 
-            if  (PlayerManager.instance.equippedPower == 0)
+            if (PlayerManager.instance.equippedPower == 0)
             {
                 PlayerManager.instance.leftHand.SetBool("mistIdle", true);
                 PlayerManager.instance.leftHand.SetBool("teleIdle", false);
                 PlayerManager.instance.leftHand.SetBool("swapIdle", false);
-            } else if (PlayerManager.instance.equippedPower == 1)
+                PlayerManager.instance.leftHand.SetBool("grappleIdle", false);
+            }
+            else if (PlayerManager.instance.equippedPower == 1)
             {
                 PlayerManager.instance.leftHand.SetBool("swapIdle", true);
                 PlayerManager.instance.leftHand.SetBool("teleIdle", false);
                 PlayerManager.instance.leftHand.SetBool("mistIdle", false);
-            } else if (PlayerManager.instance.equippedPower == 3)
+                PlayerManager.instance.leftHand.SetBool("grappleIdle", false);
+            }
+            else if (PlayerManager.instance.equippedPower == 2)
+            {
+                PlayerManager.instance.leftHand.SetBool("teleIdle", false);
+                PlayerManager.instance.leftHand.SetBool("mistIdle", false);
+                PlayerManager.instance.leftHand.SetBool("swapIdle", false);
+                PlayerManager.instance.leftHand.SetBool("grappleIdle", true);
+                ShadowHand.SetActive(true);
+            }
+            else if (PlayerManager.instance.equippedPower == 3)
             {
                 PlayerManager.instance.leftHand.SetBool("teleIdle", true);
                 PlayerManager.instance.leftHand.SetBool("mistIdle", false);
                 PlayerManager.instance.leftHand.SetBool("swapIdle", false);
+                PlayerManager.instance.leftHand.SetBool("grappleIdle", false);
             }
         }
     }

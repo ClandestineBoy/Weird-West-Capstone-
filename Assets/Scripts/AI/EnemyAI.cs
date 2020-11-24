@@ -497,7 +497,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 inaccuratePos = new Vector3(player.position.x + Random.Range(-accValue, accValue), player.position.y + Random.Range(-accValue, accValue), player.position.z + Random.Range(-accValue, accValue));
         if (Physics.Raycast(shootPoint.position, (inaccuratePos - shootPoint.position).normalized, out hitRC, Mathf.Infinity, layerMask) && hitRC.transform.gameObject == player.gameObject)
         {
-            player.GetComponent<PlayerManager>().currentHealth -= 25f;
+            PlayerManager.instance.GetHurt(25f);
             StartCoroutine(PlayerManager.instance.HurtEffect());
         }
         else if (Physics.Raycast(shootPoint.position, (inaccuratePos - shootPoint.position).normalized, out hitRC, Mathf.Infinity, layerMask) && hitRC.transform.gameObject.layer == 14)

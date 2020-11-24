@@ -16,8 +16,8 @@ public class PlayerManager : MonoBehaviour
     public float maxMana;
     public float currentHealth;
     public float currentMana;
-    public float healthTicks = 3;
-    public float manaTicks = 3;
+    public int healthTicks = 3;
+    public int manaTicks = 3;
 
     [Header("PlayerAudio")] 
     public AudioClip[] playerClips;
@@ -66,6 +66,7 @@ public class PlayerManager : MonoBehaviour
     bool bloodied;
 
     int myScene;
+    int frames;
 
     private void Start()
     {
@@ -90,46 +91,82 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
+        frames++;
         if (Input.GetKeyDown(KeyCode.K)){
             SceneManager.LoadScene(myScene);
         }
 
+        /*
         hp.fillAmount = currentHealth / maxHealth;
         mp.fillAmount = currentMana / maxMana;
 
         if (currentHealth <= 25)
         {
-            tick1.fillAmount = currentHealth * 4;
+            tick1.fillAmount = currentHealth /25;
         } else if (currentHealth <= 50)
         {
-            tick2.fillAmount = (currentHealth - 25) * 4;
+            tick2.fillAmount = (currentHealth - 25) /25;
         } else if (currentHealth <= 75)
         {
-            tick3.fillAmount = (currentHealth - 50) * 4;
+            tick3.fillAmount = (currentHealth - 50) /25;
         } else if (currentHealth <= 100)
         {
-            tick4.fillAmount = (currentHealth - 75) * 4;
+            tick4.fillAmount = (currentHealth - 75) /25;
         } else if (currentHealth <= 125)
         {
-            tick5.fillAmount = (currentHealth - 100) * 4;
+            tick5.fillAmount = (currentHealth - 100) /25;
         }
 
         if (currentMana <= 25)
         {
-            tick6.fillAmount = (currentMana) * 4;
+            tick6.fillAmount = (currentMana) /25;
         } else if (currentMana <= 50)
         {
-            tick5.fillAmount = (currentMana - 25) * 4;
+            tick5.fillAmount = (currentMana - 25) /25;
         } else if (currentMana <= 75)
         {
-            tick4.fillAmount = (currentMana - 50) * 4;
+            tick4.fillAmount = (currentMana - 50) /25;
         } else if (currentMana <= 100)
         {
-            tick3.fillAmount = (currentMana - 75) * 4;
+            tick3.fillAmount = (currentMana - 75) /25;
         } else if (currentMana <= 125)
         {
-            tick2.fillAmount = (currentMana - 100) * 4;
+            tick2.fillAmount = (currentMana - 100) /25;
         }
+        */
+        if (frames % 3 == 0)
+        {
+            List<Image> healthTickList = new List<Image>();
+            List<Image> manaTickList = new List<Image>();
+
+            if (healthTicks >= 1) healthTickList.Add(tick1);
+            if (healthTicks >= 2) healthTickList.Add(tick2);
+            if (healthTicks >= 3) healthTickList.Add(tick3);
+            if (healthTicks >= 4) healthTickList.Add(tick4);
+            if (healthTicks >= 5) healthTickList.Add(tick5);
+
+            if (manaTicks >= 1) manaTickList.Add(tick6);
+            if (manaTicks >= 2) manaTickList.Add(tick5);
+            if (manaTicks >= 3) manaTickList.Add(tick4);
+            if (manaTicks >= 4) manaTickList.Add(tick3);
+            if (manaTicks >= 5) manaTickList.Add(tick2);
+
+            for (int i = 0; i < healthTickList.Count; i++)
+            {
+                healthTickList[i].fillAmount = currentHealth >= (i + 1) * 25 ? 1.0f : Mathf.Max(currentHealth - 25 * i, 0) / 25.0f;
+                // Also set bar color here
+                healthTickList[i].color = Color.red;
+            }
+
+            for (int i = 0; i < manaTickList.Count; i++)
+            {
+                manaTickList[i].fillAmount = currentMana >= (i + 1) * 25 ? 1.0f : Mathf.Max(currentMana - 25 * i, 0) / 25.0f;
+                // Also set bar color here
+                manaTickList[i].color = Color.blue;
+            }
+
+        }
+
 
         /*if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -226,21 +263,49 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 currentMana -= manaCost;
-            }  
+            }
+        if (currentHealth <= 0)
+        {
+            SceneManager.LoadScene(myScene);
+        }
+        //round up
+        //manaTicks = (int)Mathf.Ceil(currentMana / 25);
+        //healthTicks = (int)Mathf.Ceil(currentHealth / 25);
+
     }
+    public void GetHurt(float damageValue)
+    {
+        currentHealth -= damageValue;
+        if (currentHealth <= 0)
+        {
+            SceneManager.LoadScene(myScene);
+        }
+        //healthTicks = (int)Mathf.Ceil(currentHealth / 25);
+    }
+
 
     public void EctoStim(float ectoAmount)
     {
         currentMana += ectoAmount;
         if (currentMana > maxMana)
         {
-            float diff = currentMana - maxMana;
-            maxHealth -= diff;
-            if (maxHealth< currentHealth)
+            //Ticks
+            manaTicks = manaTicks + 1;
+            healthTicks = healthTicks - 1;
+            maxMana = manaTicks * 25;
+            currentMana = manaTicks * 25;
+            maxHealth = healthTicks * 25;
+            //float diff = currentMana - maxMana;
+            //maxHealth -= diff;
+            if (maxHealth < currentHealth)
             {
                 currentHealth = maxHealth;
             }
-            maxMana = currentMana;
+            //maxMana = currentMana;           
+        } //if not a multiple of 25, increase mana to next tick value
+        else if (currentMana % 25 != 0)
+        {
+            currentMana = Mathf.Ceil(currentMana/25) *25;
         }
     }
 
@@ -249,13 +314,23 @@ public class PlayerManager : MonoBehaviour
         currentHealth += healthAmount;
         if (currentHealth > maxHealth)
         {
-            float diff = currentHealth - maxHealth;
-            maxMana -= diff;
+            //Ticks
+            manaTicks = manaTicks - 1;
+            healthTicks = healthTicks + 1;
+            maxHealth = healthTicks * 25;
+            currentHealth = healthTicks * 25;
+            maxMana = manaTicks * 25;
+            //float diff = currentHealth - maxHealth;
+            //maxMana -= diff;
             if (maxMana < currentMana)
             {
                 currentMana = maxMana;
             }
-            maxHealth = currentHealth;
+            //maxHealth = currentHealth;
+        }
+        else if (currentHealth % 25 != 0)
+        {
+            currentHealth = Mathf.Ceil(currentHealth/25) * 25;
         }
     }
     public IEnumerator HurtEffect()
