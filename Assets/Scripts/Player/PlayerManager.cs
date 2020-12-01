@@ -20,9 +20,11 @@ public class PlayerManager : MonoBehaviour
     [Header("PlayerAudio")] 
     public AudioClip[] playerClips;
 
+   
     public AudioClip gunFxTest;
 
     public AudioSource thisSource;
+    public AudioSource footstepSource;
     public AudioMixerGroup Stealthmaster;
     public AudioMixerGroup player;
     
@@ -149,13 +151,18 @@ public class PlayerManager : MonoBehaviour
                     {
                         StartCoroutine(melee.Slash());
                         int x = Random.Range(0, 1);
-                        if (x >= .5)
+                        if (x >= .66)
                         {
                             thisSource.clip = playerClips[1];
                         }
-                        else
+                        else if((x >= .33f && x < .66f))
                         {
                             thisSource.clip = playerClips[2];
+                        }
+                        else if (x >= 0 && x < .33f)
+
+                        {
+                            thisSource.clip = playerClips[3];
                         }
                         Debug.Log(thisSource.clip);
                         thisSource.Play();
@@ -251,7 +258,7 @@ public class PlayerManager : MonoBehaviour
             yield return 0;
         }
         inVignette = true;
-        thisSource.outputAudioMixerGroup = Stealthmaster;
+       // thisSource.outputAudioMixerGroup = Stealthmaster;
         
      
         float startValue = vignette.intensity.value;

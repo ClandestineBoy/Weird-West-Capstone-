@@ -2708,6 +2708,8 @@ MonoBehaviour:
   AIaudio:
   - {fileID: 8300000, guid: 573cf1b6c4b014844a48f177786dcc49, type: 3}
   - {fileID: 8300000, guid: 5677b335f4034c44abf4166939ecaa53, type: 3}
+  - {fileID: 8300000, guid: 36b03d76ab4b77c4faa3cc51872325fa, type: 3}
+  - {fileID: 8300000, guid: 6cc8f9ac1d053444bbc309ae153d9e9d, type: 3}
   AIaudioSource: {fileID: 4417800539874488852}
   distMod: 0
   objectHeard: 0

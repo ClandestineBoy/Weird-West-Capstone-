@@ -44,15 +44,18 @@ public class HeadBobber : PlayerController
                 translateChange = totalAxes * translateChange;
                 cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint + translateChange,
                     cam.transform.localPosition.z);
+                
             }
             else
             {
                 cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint, cam.transform.localPosition.z);
             }
+
         }
         else
         {
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(0, 0, 0), Time.deltaTime);
+
         }
         
     }

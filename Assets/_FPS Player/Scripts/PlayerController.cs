@@ -40,7 +40,8 @@ public class PlayerController : MonoBehaviour
     public SpringJoint sj;
     PlayerInput playerInput;
     AnimateLean animateLean;
-
+    public AudioClip[] footstepClips;
+    public AudioSource footstepSource;
     bool canInteract;
     bool canGrabLedge;
     bool controlledSlide;
@@ -97,6 +98,7 @@ public class PlayerController : MonoBehaviour
        
         cam = Camera.main.transform;
         headTransform = GameObject.Find("CameraHolder").transform;
+       // StartCoroutine(Footsteps());
     }
 
     /******************************* UPDATE ******************************/
@@ -143,6 +145,9 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
             {
                 timer = 0.0f;
+                footstepSource.clip = footstepClips[0];
+                footstepSource.PlayOneShot(footstepClips[0]);
+                Debug.Log("Walking");
             }
             else
             {
@@ -166,13 +171,16 @@ public class PlayerController : MonoBehaviour
                     headTransform.localPosition.z);
                 cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint + translateChange,
                     cam.transform.localPosition.z);
+                
             }
             else
             {
                 headTransform.localPosition = new Vector3(headTransform.localPosition.x,0,
                    headTransform.localPosition.z);
                 cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint, cam.transform.localPosition.z);
+                
             }
+            
         }
         else if (!PlayerManager.instance.mist.isMist)
         {
@@ -200,8 +208,12 @@ public class PlayerController : MonoBehaviour
         if ((int)status <= 1)
         {
             status = Status.idle;
+            footstepSource.Stop();
+            footstepSource.clip = null;
             if (playerInput.input.magnitude > 0.02f)
                 status = Status.moving;
+            footstepSource.clip = footstepClips[0];
+            //footstepSource.PlayOneShot(footstepClips[0]);
 
         }
     }
@@ -259,6 +271,8 @@ public class PlayerController : MonoBehaviour
         {
             case Status.sliding:
                 SlideMovement();
+               // footstepSource.clip = footstepClips[2];
+                //footstepSource.Play();
                 break;
             case Status.climbingLadder:
                 LadderMovement();
@@ -277,14 +291,18 @@ public class PlayerController : MonoBehaviour
                 break;
             case Status.grappling:
                 grappleMovement();
+
                 break;
             case Status.crowdControlled:
                 grappleMovement();
                 break;
             default:
                 DefaultMovement();
+               // footstepSource.PlayOneShot(footstepClips[0]);
                 break;
         }
+
+       // StartCoroutine(Footsteps());
     }
 
     void DefaultMovement()
@@ -299,13 +317,17 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+           // footstepSource.clip = footstepClips[0];
             movement.Move(playerInput.input, sprinting, (status == Status.crouching));
+           // footstepSource.Play();
         }
         if (movement.grounded && playerInput.Jump())
         {
             if (status == Status.crouching)
                 Uncrouch();
-
+            footstepSource.Stop();
+            //footstepSource.clip = footstepClips[1];
+           // footstepSource.Play();
             movement.Jump(Vector3.up, 1f);
             playerInput.ResetJump();
         }
@@ -327,8 +349,10 @@ public class PlayerController : MonoBehaviour
         movement.Move(slideDir, movement.slideSpeed, 1f);
         if (slideTime <= 0)
         {
+                //footstepSource.Stop();
                 Crouch();
         }
+        //footstepSource.PlayOneShot(footstepClips[2]);
     }
 
     void CheckSliding()
@@ -340,6 +364,7 @@ public class PlayerController : MonoBehaviour
             movement.controller.height = halfheight;
             controlledSlide = true;
             slideTime = 1f;
+            footstepSource.PlayOneShot(footstepClips[2]);
         }
 
         //Lower slidetime
@@ -388,6 +413,7 @@ public class PlayerController : MonoBehaviour
 
     void Crouch()
     {
+        //footstepSource.clip = footstepClips[3];
       
         StartCoroutine(PlayerManager.instance.StealthVignette());
         
@@ -402,6 +428,7 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(PlayerManager.instance.StealthVignette());
         }
+
         movement.controller.height = height;
         status = Status.moving;
         //StartCoroutine(PlayerManager.instance.StealthVignette());
@@ -730,6 +757,8 @@ public class PlayerController : MonoBehaviour
             movement.grounded = false;
             movement.controller.enabled = false;
             canInteract = false;
+            footstepSource.PlayOneShot(footstepClips[1]);
+            
         }
     }
 
@@ -778,6 +807,45 @@ public class PlayerController : MonoBehaviour
         return (Physics.CapsuleCastAll(top, bottom, 0.25f, transform.forward, dis, layer).Length >= 1);
     }
 
+    IEnumerator Footsteps()
+    {
+        while (status != null)
+        {
+            if (status == Status.moving)
+            {
+                footstepSource.clip = footstepClips[0];
+                footstepSource.PlayOneShot(footstepClips[0]);
+                yield return new WaitForSeconds(.5f);
+                // yield break;
+            }
+
+            if (status == Status.crouching)
+            {
+                footstepSource.clip = footstepClips[0];
+                footstepSource.PlayOneShot(footstepClips[0]);
+                yield return new WaitForSeconds(1.8f);
+                //  yield break;
+            }
+
+            if (status == Status.idle)
+            {
+                footstepSource.clip = null;
+                yield return new WaitForSeconds(.3f);
+                // yield break;
+
+            }
+
+            if (status == Status.sliding)
+            {
+                footstepSource.clip = footstepClips[2];
+                footstepSource.PlayOneShot(footstepClips[2]);
+                yield return new WaitForSeconds(5f);
+                // yield break;
+            }
+
+            //yield break;
+        }
+    }
 
 
 }

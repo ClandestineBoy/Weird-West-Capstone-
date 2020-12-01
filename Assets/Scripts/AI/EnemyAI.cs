@@ -249,12 +249,12 @@ public class EnemyAI : MonoBehaviour
             if (!enemySight.playerInSight && !enemySight.hearingPlayer)
                 break;
             AIaudioSource.clip = AIaudio[2];
-            AIaudioSource.Play();
+            AIaudioSource.PlayOneShot(AIaudio[2]);
         }
 
         if (alertMeter < alertMax)
         {
-            AIaudioSource.Stop();
+            AIaudioSource.PlayOneShot(AIaudio[3]);
             StartCoroutine(StopAlerting());
         }
         else

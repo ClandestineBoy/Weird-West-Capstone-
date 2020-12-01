@@ -10,6 +10,8 @@ public class PowerSwap : MonoBehaviour
 
     public GameObject SwapUI;
     public bool swapping;
+    public AudioSource UISource;
+    public AudioClip MenuTic;
 
     public Vector2 moveInput;
     public TMP_Text[] options;
@@ -45,13 +47,14 @@ public class PowerSwap : MonoBehaviour
                 {
                     angle += 360;
                 }
+                //UISource.PlayOneShot(MenuTic);
 
 
                 for (int i = 0 ; i < options.Length; i++)
                 {
                     if (angle > i * (360 / options.Length) && angle < (i + 1) * (360/ options.Length))
                     {
-                        Debug.Log(i);
+                       Debug.Log(i);
                         if (i <= 3)
                             PlayerManager.instance.equippedPower = i;
                         else
@@ -66,6 +69,7 @@ public class PowerSwap : MonoBehaviour
 
         } else if (Input.GetMouseButtonUp(2))
         {
+            //UISource.PlayOneShot(MenuTic);
             Time.timeScale = 1;
             SwapUI.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
