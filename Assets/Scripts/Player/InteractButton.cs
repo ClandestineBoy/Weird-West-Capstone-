@@ -115,6 +115,14 @@ public class InteractButton : MonoBehaviour
                 cJoint.connectedBody = hit.transform.gameObject.GetComponent<Rigidbody>();
                 //hit.transform.gameObject.GetComponent<SpringJoint>().anchor = hit.point;
 
+            } else if (hit.transform.CompareTag("HealthBag"))
+            {
+                PlayerManager.instance.HealthStim(25);
+                Destroy(hit.transform.gameObject);
+            } else if (hit.transform.CompareTag("EctoSyringe"))
+            {
+                PlayerManager.instance.EctoStim(25);
+                Destroy(hit.transform.gameObject);
             }
         }
     }

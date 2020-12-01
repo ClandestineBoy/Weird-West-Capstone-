@@ -26,11 +26,17 @@ public class rope : MonoBehaviour
 
         curTarget = target1;
 
+       // bob = GameObject.Find("ShadowArm").transform;
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (bob == null)
+        {
+            bob = GameObject.Find("ShadowArm").transform;
+        }
 
         if (PlayerController.instance.status == Status.grappling)
         {
@@ -51,12 +57,13 @@ public class rope : MonoBehaviour
 
         if (hasParent)
         {
-            lr.SetPosition(0, transform.InverseTransformPoint(curTarget.position));
+            lr.SetPosition(0, transform.InverseTransformPoint(target1.position));
         }
         else
         {
-            lr.SetPosition(0, curTarget.position);
+            lr.SetPosition(0, target1.position);
         }
+       
 
     }
 

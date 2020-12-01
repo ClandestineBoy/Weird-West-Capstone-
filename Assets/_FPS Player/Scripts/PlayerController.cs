@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
     /******************************* UPDATE ******************************/
     void Update()
     {
-        Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
+        //Debug.Log("STATUS: " + instance.status + "  " + (int)instance.status);
         //Debug.Log("CAN INTERACT: " + canInteract);
         //Updates
         UpdateInteraction();
@@ -141,7 +141,7 @@ public class PlayerController : MonoBehaviour
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
-            Debug.Log(vertical);
+            //Debug.Log(vertical);
             if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
             {
                 timer = 0.0f;
@@ -754,12 +754,27 @@ public class PlayerController : MonoBehaviour
             sj.maxDistance = Vector3.Distance(transform.position, grapplePoint.transform.position)-1f;
             grappleDistance = Vector3.Distance(transform.position, grapplePoint.transform.position);
             grappleSpeed = .1f;
+            StartCoroutine(ThrowGrapple(hit.point));
             movement.grounded = false;
             movement.controller.enabled = false;
             canInteract = false;
             footstepSource.PlayOneShot(footstepClips[1]);
             
         }
+    }
+    IEnumerator ThrowGrapple(Vector3 hitPoint)
+    {
+        PowerSwap.instance.ShadowHand.transform.parent = null;
+        float t = 0;
+        Vector3 startPoint = PowerSwap.instance.ShadowHand.transform.position;
+        while (t < 1)
+        {
+            PowerSwap.instance.ShadowHand.transform.position = Vector3.LerpUnclamped(startPoint, hitPoint, 
+                PlayerManager.instance.linearCurve.Evaluate(t));
+            t += Time.deltaTime * 5;
+            yield return 0;
+        }
+
     }
 
     public void StopGrapple()
@@ -771,12 +786,31 @@ public class PlayerController : MonoBehaviour
         status = Status.moving;
         offGrapple = true;
         sj.connectedBody = null;
+        StartCoroutine(ReturnGrapple());
         Destroy(rb);
     }
+    IEnumerator ReturnGrapple()
+    {
+        PowerSwap.instance.ShadowHand.transform.parent = PowerSwap.instance.shadowParent;
+      float t = 0;
+        Vector3 startPoint = PowerSwap.instance.ShadowHand.transform.localPosition;
+        Vector3 startRot = PowerSwap.instance.ShadowHand.transform.eulerAngles;
+        while (t < 1)
+        {
+            PowerSwap.instance.ShadowHand.transform.localPosition = Vector3.LerpUnclamped(startPoint, PowerSwap.instance.ShadowHandStartPos,
+                PlayerManager.instance.linearCurve.Evaluate(t));
+            PowerSwap.instance.ShadowHand.transform.localEulerAngles = Vector3.LerpUnclamped(startRot, 
+                PlayerManager.instance.leftHand.transform.localEulerAngles, PlayerManager.instance.linearCurve.Evaluate(t));
+            t += Time.deltaTime * 5;
+            yield return 0;
+        }
+        PowerSwap.instance.ShadowHand.transform.localPosition = PowerSwap.instance.ShadowHandStartPos;
+        PowerSwap.instance.ShadowHand.transform.localEulerAngles = PlayerManager.instance.leftHand.transform.localEulerAngles;
+    }
 
-    /**************************Knocked*Back********************************/
+        /**************************Knocked*Back********************************/
 
-    public void GetKnockedBack(Transform knockBackSource)
+        public void GetKnockedBack(Transform knockBackSource)
     {
         Vector3 Dir = (transform.position - knockBackSource.position).normalized;
         if (rb != null)
