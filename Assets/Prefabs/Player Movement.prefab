@@ -405,7 +405,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -2, y: 2, z: -26.5}
+  m_ConnectedAnchor: {x: 0, y: -2.76, z: -34.2}
   serializedVersion: 2
   m_SwingAxis: {x: 0, y: 1, z: 0}
   m_TwistLimitSpring:
@@ -7406,9 +7406,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9274f1feefbca2241be4fc81a2884c84, type: 3}
   - {fileID: 8300000, guid: c0c5d7b0b942dc345baa71fdfa2b56ee, type: 3}
   - {fileID: 8300000, guid: 5677b335f4034c44abf4166939ecaa53, type: 3}
-  gunFxTest: {fileID: 8300000, guid: 573cf1b6c4b014844a48f177786dcc49, type: 3}
+  SlideFxx: {fileID: 0}
   thisSource: {fileID: 9116028240715307689}
-  footstepSource: {fileID: 0}
   Stealthmaster: {fileID: -4897415867295191813, guid: 6e57512b002049a44a89eea01eae9285,
     type: 2}
   player: {fileID: 7161029829482068843, guid: 6e57512b002049a44a89eea01eae9285, type: 2}
@@ -26407,7 +26406,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6b6d90be29fc01f4fa2c493802e70b79,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4918753458281921464, guid: 6b6d90be29fc01f4fa2c493802e70b79,
         type: 3}

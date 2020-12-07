@@ -287,7 +287,7 @@ public class PlayerManager : MonoBehaviour
     public void GetHurt(float damageValue)
     {
         currentHealth -= damageValue;
-        thisSource.PlayOneShot(playerClips[5]);
+        thisSource.PlayOneShot(playerClips[4]);
         if (currentHealth <= 0)
         {
             SceneManager.LoadScene(myScene);

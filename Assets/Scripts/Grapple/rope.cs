@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(LineRenderer))]
 public class rope : MonoBehaviour
@@ -13,6 +15,8 @@ public class rope : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        bob = GameObject.Find("ShadowArm").transform;
+        StartCoroutine(ShadowArmOFF());
         target1 = GameObject.Find("Player Movement").transform;
         lr = GetComponent<LineRenderer>();
         if (hasParent)
@@ -26,17 +30,14 @@ public class rope : MonoBehaviour
 
         curTarget = target1;
 
-       // bob = GameObject.Find("ShadowArm").transform;
+     
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (bob == null)
-        {
-            bob = GameObject.Find("ShadowArm").transform;
-        }
+        
 
         if (PlayerController.instance.status == Status.grappling)
         {
@@ -65,6 +66,12 @@ public class rope : MonoBehaviour
         }
        
 
+    }
+    
+    IEnumerator ShadowArmOFF()
+    {
+        yield return 0;
+        GameObject.Find("ShadowArm").gameObject.SetActive(false);
     }
 
 
