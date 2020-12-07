@@ -2570,6 +2570,8 @@ GameObject:
   - component: {fileID: 8576543848336171120}
   - component: {fileID: 6629785867642617678}
   - component: {fileID: 4417800539874488852}
+  - component: {fileID: 3538245019119669188}
+  - component: {fileID: 2090872528036901935}
   m_Layer: 11
   m_Name: EnemyAI
   m_TagString: NPC
@@ -2703,7 +2705,9 @@ MonoBehaviour:
   patrolWaitTime: 3
   patrolWaypoints:
   - {fileID: 0}
+  patrolling: 0
   alertMeter: 0
+  alerting: 0
   armed: 0
   AIaudio:
   - {fileID: 8300000, guid: 573cf1b6c4b014844a48f177786dcc49, type: 3}
@@ -2800,9 +2804,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 50
+  MaxDistance: 5.390656
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -2812,21 +2816,39 @@ AudioSource:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -7.3936214
+      outSlope: -7.3936214
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.22266126
+      value: 0.39785767
+      inSlope: -1.8484054
+      outSlope: -1.8484054
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5358987
+      value: 0.23036194
+      inSlope: -0.46210134
+      outSlope: -0.46210134
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
+      value: 0.135306
+      inSlope: -0.13536029
+      outSlope: -0.13536029
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -2875,6 +2897,34 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3538245019119669188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6629785867642617677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4463cc799342a0448a2544bf6fc201df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AIClips:
+  - {fileID: 8300000, guid: d014daf32e0160146afa2880c9f752e3, type: 3}
+--- !u!114 &2090872528036901935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6629785867642617677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f85ce5ecec62dbd41a8b20ea85fd3e50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AIClips:
+  - {fileID: 8300000, guid: 36b03d76ab4b77c4faa3cc51872325fa, type: 3}
 --- !u!1 &6645076476115225384
 GameObject:
   m_ObjectHideFlags: 0

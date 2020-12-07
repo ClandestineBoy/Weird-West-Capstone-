@@ -745,6 +745,11 @@
             </e>
           </e>
         </e>
+        <e p="Audio" t="Include">
+          <e p="AIDetectionplayer.cs" t="Include" />
+          <e p="AIFootsteps.cs" t="Include" />
+          <e p="FootstepsScrip.cs" t="Include" />
+        </e>
         <e p="DestroyOnCollision.cs" t="Include" />
         <e p="FallReset.cs" t="Include" />
         <e p="Imported Packages" t="Include">
@@ -779,6 +784,14 @@
                 <e p="pg_GridShader.shader" t="Include" />
               </e>
             </e>
+          </e>
+        </e>
+        <e p="Materials" t="Include">
+          <e p="Effects" t="Include">
+            <e p="GrappleLine.shader" t="Include" />
+          </e>
+          <e p="Environment" t="Include">
+            <e p="BaseEnvironment.shader" t="Include" />
           </e>
         </e>
         <e p="NavMeshComponents" t="Include">

@@ -23,10 +23,9 @@ public class PlayerManager : MonoBehaviour
     public AudioClip[] playerClips;
 
    
-    public AudioClip gunFxTest;
+    public AudioClip SlideFxx;
 
     public AudioSource thisSource;
-    public AudioSource footstepSource;
     public AudioMixerGroup Stealthmaster;
     public AudioMixerGroup player;
     
@@ -189,9 +188,11 @@ public class PlayerManager : MonoBehaviour
                 case 0:
                     mist.enabled = true;
                     mist.DoMist();
+                     thisSource.outputAudioMixerGroup = Stealthmaster;
                     break;
                 case 1:
                     swap.DoSwap();
+                    thisSource.outputAudioMixerGroup = player;
                     break;
                 case 2:
                     if (PlayerController.instance.status == Status.crouching)
@@ -200,6 +201,8 @@ public class PlayerManager : MonoBehaviour
                     } else if(PlayerController.instance.status != Status.grappling)
                      {
                          PlayerController.instance.SetUpGrapple();
+                         thisSource.clip = playerClips[3];
+                         thisSource.PlayOneShot(playerClips[3]);
                      }
                      else
                      {
@@ -273,6 +276,7 @@ public class PlayerManager : MonoBehaviour
             }
         if (currentHealth <= 0)
         {
+            thisSource.PlayOneShot(playerClips[4]);
             SceneManager.LoadScene(myScene);
         }
         //round up
@@ -283,6 +287,7 @@ public class PlayerManager : MonoBehaviour
     public void GetHurt(float damageValue)
     {
         currentHealth -= damageValue;
+        thisSource.PlayOneShot(playerClips[5]);
         if (currentHealth <= 0)
         {
             SceneManager.LoadScene(myScene);
@@ -389,13 +394,12 @@ public class PlayerManager : MonoBehaviour
 
         if (inVignette)
         {
-            thisSource.outputAudioMixerGroup = player;
             inVignette = false;
             vignette.active = false;
             yield return 0;
         }
         inVignette = true;
-       // thisSource.outputAudioMixerGroup = Stealthmaster;
+
         
      
         float startValue = vignette.intensity.value;
