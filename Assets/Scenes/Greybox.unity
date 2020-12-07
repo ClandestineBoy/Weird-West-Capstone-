@@ -4050,6 +4050,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 567738120}
   m_CullTransparentMesh: 0
+--- !u!1 &572335548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2156404830400202906, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1770727097}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &572335567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572335548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9494ecaad3bf94294e8c0b87660101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footstepClips:
+  - {fileID: 8300000, guid: d014daf32e0160146afa2880c9f752e3, type: 3}
 --- !u!1001 &581266810
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12210,6 +12230,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 846846898, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1142621231, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e, type: 3}
       propertyPath: fallLimit
       value: -15.86
@@ -12282,7 +12306,7 @@ PrefabInstance:
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: playerClips.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
@@ -12309,6 +12333,11 @@ PrefabInstance:
       propertyPath: playerClips.Array.data[4]
       value: 
       objectReference: {fileID: 8300000, guid: a009b4a2c311a6d4399cb11be892d998, type: 3}
+    - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+        type: 3}
+      propertyPath: playerClips.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6cc8f9ac1d053444bbc309ae153d9e9d, type: 3}
     - target: {fileID: 2156404831375422878, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: m_AllowDynamicResolution
@@ -12507,6 +12536,11 @@ PrefabInstance:
     - target: {fileID: 2678477648119208942, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9116028240715307689, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
