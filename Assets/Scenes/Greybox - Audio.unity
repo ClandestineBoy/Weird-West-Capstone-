@@ -1423,6 +1423,11 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: -0.015995657
       objectReference: {fileID: 0}
+    - target: {fileID: 3538245019119669188, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: thisSource
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4853977490128504131, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -10455,7 +10460,7 @@ PrefabInstance:
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: playerClips.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
@@ -10466,7 +10471,7 @@ PrefabInstance:
         type: 3}
       propertyPath: playerClips.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: 9274f1feefbca2241be4fc81a2884c84, type: 3}
+      objectReference: {fileID: 8300000, guid: 152bc082fb6d17a4e967aa2b7fb5c277, type: 3}
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: playerClips.Array.data[2]
@@ -10476,7 +10481,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gunFxTest
       value: 
-      objectReference: {fileID: 8300000, guid: 573cf1b6c4b014844a48f177786dcc49, type: 3}
+      objectReference: {fileID: 8300000, guid: cf8d72d05a3fcd941935ce57261829fe, type: 3}
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: thisSource
@@ -10486,7 +10491,7 @@ PrefabInstance:
         type: 3}
       propertyPath: playerClips.Array.data[3]
       value: 
-      objectReference: {fileID: 8300000, guid: 5677b335f4034c44abf4166939ecaa53, type: 3}
+      objectReference: {fileID: 8300000, guid: fe41f5db674daf64387603358f27b235, type: 3}
     - target: {fileID: 2156404830400202908, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: Stealthmaster
@@ -10503,7 +10508,7 @@ PrefabInstance:
         type: 3}
       propertyPath: playerClips.Array.data[4]
       value: 
-      objectReference: {fileID: 8300000, guid: 22db8bd96ffc44e41a2f4c396b97931d, type: 3}
+      objectReference: {fileID: 8300000, guid: cf8d72d05a3fcd941935ce57261829fe, type: 3}
     - target: {fileID: 2156404830400202909, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: UISource
@@ -10538,7 +10543,7 @@ PrefabInstance:
         type: 3}
       propertyPath: footstepClips.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: 22db8bd96ffc44e41a2f4c396b97931d, type: 3}
+      objectReference: {fileID: 8300000, guid: cf8d72d05a3fcd941935ce57261829fe, type: 3}
     - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: footstepClips.Array.data[2]
@@ -10727,6 +10732,16 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: -0.015995182
       objectReference: {fileID: 0}
+    - target: {fileID: 3538245019119669188, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: AIClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3538245019119669188, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: AIClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: d014daf32e0160146afa2880c9f752e3, type: 3}
     - target: {fileID: 4853977490128504131, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -10900,7 +10915,7 @@ PrefabInstance:
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
       propertyPath: AIaudio.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -10922,6 +10937,11 @@ PrefabInstance:
       propertyPath: AIaudio.Array.data[2]
       value: 
       objectReference: {fileID: 8300000, guid: 36b03d76ab4b77c4faa3cc51872325fa, type: 3}
+    - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: AIaudio.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6cc8f9ac1d053444bbc309ae153d9e9d, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee93a3894340bf3458a1f5f28755ddbf, type: 3}
 --- !u!1001 &1818836719
@@ -11280,6 +11300,16 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.z
       value: -0.01599854
       objectReference: {fileID: 0}
+    - target: {fileID: 3538245019119669188, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: AIClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3538245019119669188, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: AIClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: d014daf32e0160146afa2880c9f752e3, type: 3}
     - target: {fileID: 4853977490128504131, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
       propertyPath: m_ConnectedAnchor.x

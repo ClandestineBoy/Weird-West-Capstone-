@@ -24,10 +24,11 @@ public class EnemyAI : MonoBehaviour
     private float chaseTimer;
     private float endChaseTimer;
     private float patrolTimer;
+    public bool patrolling;
     public float alertMeter = 0;
     private float alertMax = 1;
     private int wayPointIndex;
-    private bool alerting;
+    public bool alerting;
     public bool armed;
 
     public AudioClip[] AIaudio;
@@ -256,13 +257,13 @@ public class EnemyAI : MonoBehaviour
             yield return 0;
             if (!enemySight.playerInSight && !enemySight.hearingPlayer)
                 break;
-            AIaudioSource.clip = AIaudio[2];
-            AIaudioSource.PlayOneShot(AIaudio[2]);
+          //  AIaudioSource.clip = AIaudio[2];
+          //  AIaudioSource.PlayOneShot(AIaudio[2]);
         }
 
         if (alertMeter < alertMax)
         {
-            AIaudioSource.PlayOneShot(AIaudio[3]);
+           // AIaudioSource.PlayOneShot(AIaudio[3]);
             StartCoroutine(StopAlerting());
         }
         else
@@ -347,6 +348,7 @@ public class EnemyAI : MonoBehaviour
                             // Debug.Log("AttackPointFound");
                             attackPoint = hitNM.position;
                             foundAttackPoint = true;
+
                         }
                     }
                 }
@@ -505,6 +507,7 @@ public class EnemyAI : MonoBehaviour
             if (hitRC.transform.root.gameObject.GetComponent<EnemyAI>().attackType != 3 || hitRC.transform.root.gameObject.GetComponent<EnemyAI>().enemyHealth <= 25)
             {
                 hitRC.transform.root.gameObject.GetComponent<AINav>().RagDoll();
+                AIaudioSource.PlayOneShot(AIaudio[4]);
                 foreach (Rigidbody rb in hitRC.transform.root.gameObject.GetComponent<AINav>().rbs)
                 {
                     rb.useGravity = true;
@@ -642,6 +645,7 @@ public class EnemyAI : MonoBehaviour
     void Patrolling()
     {
         // Debug.Log("Patrolling");
+        patrolling = true;
         nav.isStopped = false;
         nav.speed = patrolSpeed;
         if (nav.destination == lastPlayerSighting.resetPosition || nav.remainingDistance < 1)

@@ -127,6 +127,7 @@ public class PlayerController : MonoBehaviour
         //Headbob
         if (status == Status.moving && movement.grounded && Time.timeScale == 1 && !PlayerManager.instance.mist.isMist)
         {
+            //waitForClip();
             if (sprinting)
             {
                 bobbingSpeed = .2f;
@@ -145,8 +146,8 @@ public class PlayerController : MonoBehaviour
             if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
             {
                 timer = 0.0f;
-                footstepSource.clip = footstepClips[0];
-                footstepSource.PlayOneShot(footstepClips[0]);
+               // footstepSource.clip = footstepClips[0];
+              //  footstepSource.PlayOneShot(footstepClips[0]);
                 Debug.Log("Walking");
             }
             else
@@ -171,7 +172,7 @@ public class PlayerController : MonoBehaviour
                     headTransform.localPosition.z);
                 cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, midpoint + translateChange,
                     cam.transform.localPosition.z);
-                
+
             }
             else
             {
@@ -188,6 +189,9 @@ public class PlayerController : MonoBehaviour
                   headTransform.localPosition.z);
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(0,midpoint,0), Time.deltaTime);
             timer = 0;
+            //footstepSource.clip = footstepClips[0];
+            //waitForClip();
+
         }
 
     }
@@ -208,11 +212,9 @@ public class PlayerController : MonoBehaviour
         if ((int)status <= 1)
         {
             status = Status.idle;
-            footstepSource.Stop();
-            footstepSource.clip = null;
             if (playerInput.input.magnitude > 0.02f)
                 status = Status.moving;
-            footstepSource.clip = footstepClips[0];
+            //footstepSource.clip = footstepClips[0];
             //footstepSource.PlayOneShot(footstepClips[0]);
 
         }
@@ -352,7 +354,7 @@ public class PlayerController : MonoBehaviour
                 //footstepSource.Stop();
                 Crouch();
         }
-        //footstepSource.PlayOneShot(footstepClips[2]);
+        //footstepSource.PlayOneShot(footstepClips[0]);
     }
 
     void CheckSliding()
@@ -841,6 +843,28 @@ public class PlayerController : MonoBehaviour
         return (Physics.CapsuleCastAll(top, bottom, 0.25f, transform.forward, dis, layer).Length >= 1);
     }
 
+    void waitForClip()
+    {
+        AudioClip clipToWait = footstepSource.clip;
+        float timer;
+        footstepSource.Play();
+        if (footstepSource.isPlaying)
+        {
+            footstepSource.Stop();
+            timer = clipToWait.length;
+            timer = timer - Time.deltaTime;
+            if (timer == 0)
+            {
+                footstepSource.Play();
+            }
+
+        }
+
+        if (!footstepSource.isPlaying)
+        {
+            footstepSource.Play();
+        }
+    } 
     IEnumerator Footsteps()
     {
         while (status != null)
