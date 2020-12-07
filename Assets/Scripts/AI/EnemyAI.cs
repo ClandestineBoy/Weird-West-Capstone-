@@ -262,7 +262,7 @@ public class EnemyAI : MonoBehaviour
 
         if (alertMeter < alertMax)
         {
-            AIaudioSource.PlayOneShot(AIaudio[3]);
+           
             StartCoroutine(StopAlerting());
         }
         else
@@ -289,6 +289,7 @@ public class EnemyAI : MonoBehaviour
                 yield return 0;
                 // if (enemySight.playerInSight)
                 //   break;
+                AIaudioSource.PlayOneShot(AIaudio[3]);
             }
             if (alertMeter < 0)
             {

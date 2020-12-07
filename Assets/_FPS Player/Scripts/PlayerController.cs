@@ -129,14 +129,14 @@ public class PlayerController : MonoBehaviour
         {
             if (sprinting)
             {
-                bobbingSpeed = .2f;
+                bobbingSpeed = .185f;
                 bobbingAmount = .008f;
-                headBobAmount = .08f;
+                headBobAmount = .05f;
             } else
             {
                 bobbingSpeed = .05f;
                 bobbingAmount = .006f;
-                headBobAmount = .05f;
+                headBobAmount = .03f;
             }
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour
                 timer = 0.0f;
                 footstepSource.clip = footstepClips[0];
                 footstepSource.PlayOneShot(footstepClips[0]);
-                Debug.Log("Walking");
+                //Debug.Log("Walking");
             }
             else
             {
@@ -186,7 +186,7 @@ public class PlayerController : MonoBehaviour
         {
             headTransform.localPosition = new Vector3(headTransform.localPosition.x,0,
                   headTransform.localPosition.z);
-            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(0,midpoint,0), Time.deltaTime);
+           cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(0,midpoint,0), Time.deltaTime);
             timer = 0;
         }
 
