@@ -100,7 +100,7 @@ public class InteractButton : MonoBehaviour
         
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 4, genericLayerMask))
+        if (Physics.Raycast(ray, out hit, 4.5f, genericLayerMask))
         {
            // if ()
             //Debug.Log(hit.transform.gameObject.name);

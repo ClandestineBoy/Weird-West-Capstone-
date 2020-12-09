@@ -696,5 +696,17 @@ public class EnemyAI : MonoBehaviour
         EnemySight.fieldOfViewAngle = 160;
         
     }
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("OUCH");
+        if ((other.gameObject.layer == 13 || other.gameObject.layer == 14) && other.gameObject.GetComponent<Rigidbody>().velocity.magnitude >10)
+        {
+            aINav.RagDoll();
+            foreach (Rigidbody rb in aINav.rbs)
+            {
+                rb.useGravity = true;
+            }
+        }
+    }
 
 }
