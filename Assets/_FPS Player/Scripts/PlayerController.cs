@@ -132,12 +132,12 @@ public class PlayerController : MonoBehaviour
             {
                 bobbingSpeed = .185f;
                 bobbingAmount = .008f;
-                headBobAmount = .05f;
+                headBobAmount = .04f;
             } else
             {
                 bobbingSpeed = .05f;
                 bobbingAmount = .006f;
-                headBobAmount = .03f;
+                headBobAmount = .02f;
             }
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
