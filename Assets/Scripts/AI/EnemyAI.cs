@@ -76,7 +76,10 @@ public class EnemyAI : MonoBehaviour
     int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 16 | 1 << 17 | 1 << 18;
     int AIMask = 1 << 11;
 
-
+    public GameObject gun;
+    public GameObject stowedGun;
+    public GameObject melee;
+    public GameObject stowedMelee;
     private int frames = 0;
 
     private void Awake()
@@ -109,8 +112,27 @@ public class EnemyAI : MonoBehaviour
         myText.fontSize = 20;
         myText.color = Color.red;
         myText.transform.localPosition = new Vector3(0, 0, 0);
-        DetectionEye.transform.localPosition = new Vector3(0,0,0);
+        DetectionEye.transform.localPosition = new Vector3(0, 0, 0);
         DetectedEye.transform.localPosition = new Vector3(0, 0, 0);
+        DetectedEye.transform.rotation = new Quaternion(0, 0, 0, 0);
+        DetectionEye.transform.rotation = new Quaternion(0, 0, 0, 0);
+        DetectedEye.transform.localScale = DetectedEye.transform.localScale * 100;
+        DetectionEye.transform.localScale = DetectionEye.transform.localScale * 100;
+
+
+        gun.SetActive(false);
+        melee.SetActive(false);
+        stowedGun.SetActive(false);
+        stowedMelee.SetActive(false);
+        if (attackType != 1) {
+            aINav.animator.SetBool("gun", true);
+            stowedGun.SetActive(true);
+             }
+        else { 
+            aINav.animator.SetBool("melee", true);
+            stowedMelee.SetActive(true);
+             }
+
         //eye = (Sprite)Resources.Load("Art/UI/eye");
         //eyeSpotted = (Sprite)Resources.Load("Art/UI/eyeSpotted");
     }
@@ -123,16 +145,18 @@ public class EnemyAI : MonoBehaviour
         {
             DetectedEye.SetActive(true);
             DetectionEye.SetActive(false);
+            //myText.text = "Detected";
         }
         else if ((alertMeter > 0 || enemySight.playerInSight) && !aINav.ragDolled)
         {
             DetectionEye.SetActive(true);
             DetectedEye.SetActive(false);
+           // myText.text = "Detecting";
         } else
         {
             DetectionEye.SetActive(false);
             DetectedEye.SetActive(false);
-            myText.text = "";
+           // myText.text = "";
         }
         //ALERT Imagine Move Round bounds of screen
         Vector3 screenPos = Camera.main.WorldToScreenPoint(IndicatorAnchor.transform.position);
@@ -149,7 +173,7 @@ public class EnemyAI : MonoBehaviour
         float screenBoundsRight = screenCenter.x * (1 - margin);
         float screenBoundsLeft = -screenCenter.x * (1 - margin);
         float screenBoundsTop = screenCenter.y * (1 - margin);
-        float screenBoundsBottom = -screenCenter.y * (1 - margin * 2.5f);
+        float screenBoundsBottom = -screenCenter.y * (1 - margin);
 
         screenPos -= screenCenter;
 
@@ -190,6 +214,8 @@ public class EnemyAI : MonoBehaviour
 
         screenPos += screenCenter;
         myText.transform.position = screenPos;
+        DetectedEye.transform.position = screenPos;
+        DetectionEye.transform.position = screenPos;
 
 
 
@@ -200,11 +226,13 @@ public class EnemyAI : MonoBehaviour
             if (alertMeter >= alertMax && !armed)
             {
                 aINav.animator.SetBool("startled", true);
+                nav.isStopped =  true;
 
             }
-            else if (!enemySight.playerInSight && (objectHeard || bodySeen) && alertMeter < alertMax)
+            else if ((!enemySight.playerInSight && !enemySight.hearingPlayer) && (objectHeard || bodySeen) && alertMeter < alertMax)
             {
                 Distracted();
+               
             }
             else if ((enemySight.hearingPlayer || enemySight.playerInSight) && alertMeter < alertMax)
             {
@@ -213,7 +241,7 @@ public class EnemyAI : MonoBehaviour
             }
             else if ((enemySight.playerInSight || inAttackPattern) && attackType != 1)
             {
-                //Debug.Log("Shoot!");
+               // Debug.Log("Shoot!");
                 AttackPattern();
             }
             else if (chaseTimer > chaseWaitTime && alertMeter >= alertMax && enemiesInCombat.Count == 0)
@@ -251,6 +279,7 @@ public class EnemyAI : MonoBehaviour
     IEnumerator Inspect()
     {
         //run looking around animation
+       // aINav.animator.SetBool("startled", true);
         yield return new WaitForSeconds(10);
         objectHeard = false;
         bodySeen = false;
@@ -561,6 +590,7 @@ public class EnemyAI : MonoBehaviour
         nav.isStopped = false;
         inAir = false;
         aINav.animator.SetBool("runningMelee", false);
+        melee.GetComponent<BoxCollider>().enabled = false;
     }
     public void NavUpdate()
     {
@@ -571,20 +601,25 @@ public class EnemyAI : MonoBehaviour
     public void NavStop()
     {
         nav.isStopped = true;
+        melee.GetComponent<BoxCollider>().enabled = true;
     }
 
     void Chasing()
     {
+       // Debug.Log("Chasing");
         if (!inAir && attackType != 2)
         {
             nav.SetDestination(player.position);
-            aINav.animator.SetBool("combatWalkBack", false);
-            aINav.animator.SetBool("combatWalkForward", false);
-            aINav.animator.SetBool("combatWalkRight", false);
-            aINav.animator.SetBool("combatWalkLeft", false);
-            aINav.animator.SetBool("combatKneel", false);
-            aINav.animator.SetBool("combatAim", false);
-            aINav.animator.SetBool("combatRunAfter", true);
+            if (attackType != 1)
+            {
+                aINav.animator.SetBool("combatWalkBack", false);
+                aINav.animator.SetBool("combatWalkForward", false);
+                aINav.animator.SetBool("combatWalkRight", false);
+                aINav.animator.SetBool("combatWalkLeft", false);
+                aINav.animator.SetBool("combatKneel", false);
+                aINav.animator.SetBool("combatAim", false);
+                aINav.animator.SetBool("combatRunAfter", true);
+            }
         }
         if (!currentlyAttacking)
         {
@@ -621,9 +656,9 @@ public class EnemyAI : MonoBehaviour
             {
                 chaseTimer = 0;
             }
-            if (nav.remainingDistance < 1f && !currentlyAttacking)
+            if (nav.remainingDistance < 7.5f && !currentlyAttacking)
             {
-              //  Debug.Log("ChasingAttack");
+                //Debug.Log("ChasingAttack");
                 StartCoroutine(Attack());
             }       
         }
@@ -716,7 +751,7 @@ public class EnemyAI : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OUCH");
+
         if ((other.gameObject.layer == 13 || other.gameObject.layer == 14) && other.gameObject.GetComponent<Rigidbody>().velocity.magnitude >10)
         {
             aINav.RagDoll();
@@ -724,6 +759,18 @@ public class EnemyAI : MonoBehaviour
             {
                 rb.useGravity = true;
             }
+        }
+    }
+    public void EquipWeapon()
+    {
+        stowedGun.SetActive(false);
+        stowedMelee.SetActive(false);
+        if (attackType != 1)
+        {
+            gun.SetActive(true);
+        } else
+        {
+            melee.SetActive(true);
         }
     }
 
