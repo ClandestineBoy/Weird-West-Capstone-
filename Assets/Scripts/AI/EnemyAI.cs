@@ -44,9 +44,13 @@ public class EnemyAI : MonoBehaviour
     //UI Follow Round Screen Variables
     // No scaling is done for distance yet
     public GameObject IndicatorAnchor;
+    public GameObject DetectionEye;
+    public GameObject DetectedEye;
     private Canvas CanvasIndicators;
     private GameObject text;
     private Text myText;
+    //private Sprite eye;
+    //private Sprite eyeSpotted;
 
     public static bool inCombat;
     //ENemies who chase timer have not exceeded limit
@@ -93,6 +97,8 @@ public class EnemyAI : MonoBehaviour
         //Change to ALERT Image
         text = new GameObject("myText");
         text.transform.SetParent(CanvasIndicators.transform);
+        DetectionEye.transform.SetParent(CanvasIndicators.transform);
+        DetectedEye.transform.SetParent(CanvasIndicators.transform);
 
         myText = text.AddComponent<Text>();
         Font ArialFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
@@ -103,17 +109,29 @@ public class EnemyAI : MonoBehaviour
         myText.fontSize = 20;
         myText.color = Color.red;
         myText.transform.localPosition = new Vector3(0, 0, 0);
+        DetectionEye.transform.localPosition = new Vector3(0,0,0);
+        DetectedEye.transform.localPosition = new Vector3(0, 0, 0);
+        //eye = (Sprite)Resources.Load("Art/UI/eye");
+        //eyeSpotted = (Sprite)Resources.Load("Art/UI/eyeSpotted");
     }
 
     // Update is called once per frame
     void Update()
     {
         frames++;
-        if ((alertMeter > 0 || enemySight.playerInSight) && !aINav.ragDolled)
+        if (alertMeter >= alertMax && !aINav.ragDolled)
         {
-            myText.text = "!";
+            DetectedEye.SetActive(true);
+            DetectionEye.SetActive(false);
+        }
+        else if ((alertMeter > 0 || enemySight.playerInSight) && !aINav.ragDolled)
+        {
+            DetectionEye.SetActive(true);
+            DetectedEye.SetActive(false);
         } else
         {
+            DetectionEye.SetActive(false);
+            DetectedEye.SetActive(false);
             myText.text = "";
         }
         //ALERT Imagine Move Round bounds of screen
