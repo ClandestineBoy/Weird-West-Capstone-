@@ -17,7 +17,7 @@ public class Mist : MonoBehaviour
     public void DoMist()
     {
         
-        if (!isMist && PlayerManager.instance.currentHealth > manaCost *2)
+        if (!isMist && (PlayerManager.instance.currentHealth > manaCost *2 || PlayerManager.instance.currentMana >= 0))
         {
             StartCoroutine(BecomeMist());
         }

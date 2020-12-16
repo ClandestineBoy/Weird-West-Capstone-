@@ -33,7 +33,7 @@ public class Swap : MonoBehaviour
         {
             SwapAction();
         }
-        else if (PlayerManager.instance.currentHealth > manaCost * 2)
+        else if (PlayerManager.instance.currentHealth > manaCost * 2 || PlayerManager.instance.currentMana > 0)
         {
            // SwapAction();
             crouchTime = true;

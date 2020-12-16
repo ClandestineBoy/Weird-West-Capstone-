@@ -16,6 +16,7 @@ public class AINav : MonoBehaviour
 
     public bool ragDolled;
     public bool liftedBody;
+    public GameObject tkEffect;
 
 
     Vector3 runPos;
