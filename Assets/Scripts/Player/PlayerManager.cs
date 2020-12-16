@@ -201,8 +201,8 @@ public class PlayerManager : MonoBehaviour
                     } else if(PlayerController.instance.status != Status.grappling)
                      {
                          PlayerController.instance.SetUpGrapple();
-                         thisSource.clip = playerClips[3];
-                         thisSource.PlayOneShot(playerClips[3]);
+                         //thisSource.clip = playerClips[3];
+                         //thisSource.PlayOneShot(playerClips[3]);
                      }
                      else
                      {

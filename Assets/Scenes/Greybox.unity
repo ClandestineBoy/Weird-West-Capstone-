@@ -680,8 +680,8 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
+    m_Bits: 1029943
+  m_UseGeometry: 1
   m_DefaultArea: 0
   m_IgnoreNavMeshAgent: 1
   m_IgnoreNavMeshObstacle: 1
@@ -1059,13 +1059,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 1
+      propertyPath: patrolWaypoints.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 0
+      propertyPath: attackType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -1913,13 +1913,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 0
+      propertyPath: AIaudio.Array.size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: AIaudio.Array.size
-      value: 5
+      propertyPath: patrolWaypoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: attackType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -1931,11 +1936,6 @@ PrefabInstance:
       propertyPath: AIaudio.Array.data[4]
       value: 
       objectReference: {fileID: 8300000, guid: ac33637a4b6be214eaaa68d49bb2b17d, type: 3}
-    - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
-        type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
       propertyPath: patrolWaypoints.Array.data[0]
@@ -2509,12 +2509,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
+      propertyPath: patrolWaypoints.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
+      propertyPath: attackType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
@@ -3411,13 +3411,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 1
+      propertyPath: patrolWaypoints.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 0
+      propertyPath: attackType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -3529,7 +3529,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh29798
+  m_Name: pb_Mesh301026
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5343,13 +5343,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 0
+      propertyPath: patrolWaypoints.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 2
+      propertyPath: attackType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -5795,13 +5795,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 0
+      propertyPath: patrolWaypoints.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 1
+      propertyPath: attackType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -7105,13 +7105,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 2
+      propertyPath: patrolWaypoints.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 0
+      propertyPath: attackType
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -10344,13 +10344,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 0
+      propertyPath: patrolWaypoints.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 2
+      propertyPath: attackType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -10603,13 +10603,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 1
+      propertyPath: patrolWaypoints.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 0
+      propertyPath: attackType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -11311,12 +11311,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
+      propertyPath: patrolWaypoints.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
+      propertyPath: attackType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
@@ -11654,12 +11654,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
+      propertyPath: patrolWaypoints.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
+      propertyPath: attackType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
@@ -13502,14 +13502,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
-      propertyPath: footstepSource
-      value: 
-      objectReference: {fileID: 1091979088}
-    - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
-        type: 3}
       propertyPath: footstepClips.Array.size
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+        type: 3}
+      propertyPath: headCurve.m_Curve.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
+        type: 3}
+      propertyPath: footstepSource
+      value: 
+      objectReference: {fileID: 1091979088}
     - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
       propertyPath: footstepClips.Array.data[0]
@@ -13529,11 +13534,6 @@ PrefabInstance:
         type: 3}
       propertyPath: footstepClips.Array.data[3]
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
-        type: 3}
-      propertyPath: headCurve.m_Curve.Array.size
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2678477647233681918, guid: efdc1b1de5ab2b340a12ce1eb2dcf00e,
         type: 3}
@@ -14055,13 +14055,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
-      value: 0
+      propertyPath: patrolWaypoints.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
-      value: 2
+      propertyPath: attackType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
@@ -14608,12 +14608,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: attackType
+      propertyPath: patrolWaypoints.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
-      propertyPath: patrolWaypoints.Array.size
+      propertyPath: attackType
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8576543848336171135, guid: ee93a3894340bf3458a1f5f28755ddbf,

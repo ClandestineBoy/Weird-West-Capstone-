@@ -774,7 +774,7 @@ public class PlayerController : MonoBehaviour
             movement.grounded = false;
             movement.controller.enabled = false;
             canInteract = false;
-            //footstepSource.PlayOneShot(footstepClips[1]);
+            footstepSource.PlayOneShot(footstepClips[1]);
             
         }
     }
