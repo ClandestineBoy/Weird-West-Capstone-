@@ -119,7 +119,7 @@ public class EnemyAI : MonoBehaviour
         DetectedEye.transform.localScale = DetectedEye.transform.localScale * 100;
         DetectionEye.transform.localScale = DetectionEye.transform.localScale * 100;
 
-
+        aINav.animator = GetComponent<Animator>();
         gun.SetActive(false);
         melee.SetActive(false);
         stowedGun.SetActive(false);

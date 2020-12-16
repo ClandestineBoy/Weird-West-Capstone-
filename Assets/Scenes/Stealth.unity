@@ -5208,6 +5208,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   ragDolled: 0
   liftedBody: 0
+  tkEffect: {fileID: 0}
   rbs: []
   ccs: []
   scs: []
@@ -32956,6 +32957,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   ragDolled: 0
   liftedBody: 0
+  tkEffect: {fileID: 0}
   rbs: []
   ccs: []
   scs: []
@@ -42091,6 +42093,7 @@ MonoBehaviour:
   spawn: {fileID: 0}
   ragDolled: 0
   liftedBody: 0
+  tkEffect: {fileID: 0}
   rbs: []
   ccs: []
   scs: []
@@ -43211,6 +43214,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4141998327634718554, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4141998327634718554, guid: ee93a3894340bf3458a1f5f28755ddbf,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4853977490128504131, guid: ee93a3894340bf3458a1f5f28755ddbf,
         type: 3}
