@@ -16,6 +16,7 @@ public class AINav : MonoBehaviour
 
     public bool ragDolled;
     public bool liftedBody;
+    public GameObject tkEffect;
 
 
     Vector3 runPos;
@@ -72,6 +73,15 @@ public class AINav : MonoBehaviour
                 animator.SetBool("isWalking", true);
             }
         }
+        else if (Telekinesis.liftedObject == gameObject)
+        {
+            tkEffect.SetActive(true);
+        }
+        else
+        {
+            tkEffect.SetActive(false);
+        }
+       
        /* if (fallen) {
             agent.SetDestination(transform.position);
             agent.speed = 0;

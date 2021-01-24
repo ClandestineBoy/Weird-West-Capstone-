@@ -112,15 +112,17 @@ public class PlayerController : MonoBehaviour
         UpdatePlayerManager();
 
 
-        //Check for movement updates
-        CheckSliding();
-        CheckCrouching();
-        CheckForWallrun();
-        CheckLadderClimbing();
-        UpdateLedgeGrabbing();
-        CheckForVault();
-        //Add new check to change status right here
+       
+            //Check for movement updates
+            CheckSliding();
+            CheckCrouching();
+            CheckForWallrun();
+            CheckLadderClimbing();
+            UpdateLedgeGrabbing();
+            CheckForVault();
+            //Add new check to change status right here
 
+        
         //Misc
         UpdateLean();
 
@@ -522,6 +524,9 @@ public class PlayerController : MonoBehaviour
 
     void CheckForWallrun()
     {
+       // if (status == Status.grappling)
+         //   return;
+
         if (!canInteract || movement.grounded || movement.moveDirection.y >= 0)
             return;
 
@@ -537,6 +542,10 @@ public class PlayerController : MonoBehaviour
         {
             wallDir = wall;
             wallNormal = Vector3.Cross(hit.normal, Vector3.up) * -wallDir;
+            if (status == Status.grappling)
+            {
+                StopGrapple();
+            }
             status = Status.wallRunning;
         }
     }
@@ -617,6 +626,9 @@ public class PlayerController : MonoBehaviour
 
     void UpdateLedgeGrabbing()
     {
+        if (status == Status.grappling)
+            return;
+
         if (movement.grounded || movement.moveDirection.y > 0)
             canGrabLedge = true;
 

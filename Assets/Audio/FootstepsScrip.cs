@@ -37,7 +37,7 @@ public class FootstepsScrip : MonoBehaviour
     {
         thisSource.volume = Random.Range(.7f, 1f);
         thisSource.pitch = Random.Range(.8f, 1.1f);
-        thisSource.clip = footstepClips[0];
-        thisSource.PlayOneShot(footstepClips[0]);
+        //thisSource.clip = footstepClips[0];
+        //thisSource.PlayOneShot(footstepClips[0]);
     }
 }

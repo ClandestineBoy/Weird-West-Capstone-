@@ -10,6 +10,7 @@ public class Telekinesis : MonoBehaviour
     bool isNPC;
     float objectVelocity = 18;
     public float manaCost;
+    public GameObject tkEffect, tkEffect2;
     int layerMask = 1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 12 | 1 << 13 | 1 << 14 | 1 << 11 | 1<<16 | 1<<17 | 1<<18;
     // Start is called before the first frame update
     void Start()
@@ -20,9 +21,14 @@ public class Telekinesis : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (liftingObject)
         {
             liftedObject.transform.position = Vector3.Lerp(liftedObject.transform.position, liftPoint.position, Time.deltaTime * 2);
+            tkEffect.SetActive(true); 
+        } else
+        {
+            tkEffect.SetActive(false);
         }
 
 
@@ -32,7 +38,7 @@ public class Telekinesis : MonoBehaviour
     {
         if (PlayerController.instance.status == Status.crouching)
         {
-            if (PlayerManager.instance.currentHealth > manaCost * 2 && !liftingObject)
+            if ((PlayerManager.instance.currentHealth > manaCost * 2 || PlayerManager.instance.currentMana >0) && !liftingObject)
             {
                 StealthPickUp();
             }
@@ -43,7 +49,7 @@ public class Telekinesis : MonoBehaviour
             }
         } else
         {
-            if (PlayerManager.instance.currentHealth > manaCost * 2 && !liftingObject)
+            if ((PlayerManager.instance.currentHealth > manaCost * 2 || PlayerManager.instance.currentMana >0) && !liftingObject)
             {
                 PickUp();
             }
